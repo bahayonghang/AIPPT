@@ -1,5 +1,13 @@
 # AIPPT
 
+## Recommended Installation
+
+Install the skill with:
+
+```bash
+npx skills add bahayonghang/AIPPT
+```
+
 AIPPT is a Claude Code skill for creating brand-aware, research-backed presentation decks from scratch.
 
 It turns a topic, brief, website, white paper, notes, or brand assets into a complete deck workflow with brand intake, evidence-based research, outline generation, slide specifications, page planning, and final delivery artifacts.

@@ -1,5 +1,13 @@
 # AIPPT
 
+## 推荐安装方式
+
+请优先使用以下命令安装：
+
+```bash
+npx skills add bahayonghang/AIPPT
+```
+
 AIPPT 是一个用于 **从零创建全新演示文稿 / PPT / slide deck** 的 Claude Code Skill。
 
 它可以把主题、需求简报、官网、白皮书、笔记或品牌素材，转化为一套完整的演示工作流，包括品牌素材收集、证据化研究、提纲生成、逐页 slide spec、页面规划，以及最终交付产物。
