@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: AIPPT
-  text: A professional skill for building brand-aware decks from scratch
-  tagline: Replace ad-hoc slide making with a staged workflow built on brand intake, research evidence, slide planning, and verifiable deliverables.
+  text: A research-driven skill for building new decks from scratch
+  tagline: Replace ad-hoc slide making with brand intake, evidence-backed research, sticky-note outline approval, page planning, and verifiable delivery.
   actions:
     - theme: brand
       text: Get Started
@@ -18,28 +18,28 @@ hero:
 
 features:
   - title: New decks only
-    details: AIPPT is designed for creating a new deck from scratch, not for editing an existing PPTX or slide file.
+    details: "AIPPT is for creating a new deck from scratch, not for editing an existing PPTX or slide file."
   - title: Evidence before claims
-    details: Fact-heavy slides must stay traceable to research entries and source IDs.
-  - title: Brand before decoration
-    details: Brand constraints, assets, typography, and forbidden elements are aligned before visual execution.
-  - title: Slide-spec driven workflow
-    details: Outline and slide spec act as the execution contract for layout planning and rendering.
-  - title: Canonical layouts
-    details: Slides are planned with Bento Grid layout families instead of ad-hoc card sizes and coordinates.
+    details: "Fact-heavy slides must stay traceable to `research_dossier` entries and source IDs."
+  - title: Outline hard stop
+    details: "`outline.approved` is the execution gate. Rendering must not start before the sticky-note outline is confirmed."
+  - title: Slide spec plus page plan
+    details: "`slide_spec` locks narrative and content budgets, while `page_plan` locks layout, card mapping, and citation placement."
+  - title: Style profile aware
+    details: "AIPPT now includes a style registry and a formal `style_profile` artifact."
   - title: Verifiable delivery
-    details: Prompt bundles, SVG pages, and handoff assets are checked against explicit quality rules.
+    details: "Prompt bundles, SVG pages, and handoff assets can be checked with artifact validators, SVG validators, and static preview generation."
 ---
 
 ## What AIPPT is
 
 AIPPT is a Claude Code skill for creating a **new presentation deck** from a topic, brief, website, white paper, notes, or brand assets.
 
-It is intentionally workflow-driven. Instead of jumping straight into layout or visuals, it enforces a progression from brand intake to brief alignment, research, outline, slide spec, page planning, output generation, and verification.
+It is intentionally workflow-driven. Instead of jumping straight into layout or visuals, it enforces a progression from brand intake to brief alignment, research, sticky-note outline approval, slide spec, page plan, style selection, output generation, and verification.
 
 ## What it produces
 
-Based on the actual skill definition, AIPPT can produce:
+Based on the current skill definition, AIPPT can produce:
 
 - `brand_profile`
 - `brief_summary`
@@ -47,7 +47,9 @@ Based on the actual skill definition, AIPPT can produce:
 - `outline`
 - `slide_spec`
 - `page_plan`
-- prompt bundles, SVG pages, or brand-ready assets depending on delivery mode
+- `style_profile`
+- `review_report`
+- `delivery_manifest`
 
 ## Good fit
 
@@ -57,18 +59,20 @@ Based on the actual skill definition, AIPPT can produce:
 - teaching slide decks
 - executive review decks
 - policy or market interpretation decks
+- dense board or industry briefings
 
 ## Not a fit
 
 - editing an existing `.pptx`, `.ppt`, `.key`, or Google Slides file
 - reviewing a finished deck
 - polishing a single slide inside an existing template
+- creating only a cover image or one-off slide asset
 
 ## Documentation
 
 - [Getting Started](/en/guide/getting-started)
 - [Workflow](/en/guide/workflow)
 - [Output Modes](/en/guide/output-modes)
-- [References](/en/guide/references)
-- [Evaluation](/en/guide/evaluation)
+- [References and Resource Layer](/en/guide/references)
+- [Evaluation, Scripts, and Regression](/en/guide/evaluation)
 - [简体中文文档](/)

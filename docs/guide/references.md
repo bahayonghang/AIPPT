@@ -1,66 +1,144 @@
-# 参考文件
+# 参考文件与资源层
 
-AIPPT 的实际行为由 `skills/aippt/` 下的 skill 定义和 reference 文件共同约束。本页只描述仓库中真实存在的文件。
+AIPPT 的当前行为由 [SKILL.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/SKILL.md)、`references/`、`styles/`、`scripts/`、`assets/` 与 `evals/` 共同定义。
 
 ## 核心定义
 
 ### `skills/aippt/SKILL.md`
 
-这是 Skill 的主文件，定义：
+主文件定义：
 
-- 适用范围
-- 非目标场景
-- 能力依赖
-- 核心规则
-- 全阶段工作流
-- 三种输出模式
+- 适用范围与非目标场景
+- staged workflow
+- artifact contract
+- output modes
 - Office 兼容性说明
-- 验证要求
-- 回归测试入口
+- review / verification 规则
+- regression testing 入口
 
-## 参考文件列表
+## References
 
-### `skills/aippt/references/brand-intake.md`
+### `references/brand-intake.md`
 
-用于 Stage 0，定义品牌与素材收集清单、优先级、提问方式以及 `brand_profile` 输出模板。
+Stage 0 使用。定义品牌与素材收集清单、品牌信号优先级、提问方式，以及 `brand_profile` 模板。
 
-### `skills/aippt/references/research-protocol.md`
+### `references/research-protocol.md`
 
-用于 Stage 2，定义研究来源优先级、source entry 模板、research dossier 模板，以及 anti-fabrication 规则。
+Stage 2 使用。定义来源优先级、source entry 模板、research dossier 结构，以及 anti-fabrication 规则。
 
-### `skills/aippt/references/outline-prompt.md`
+### `references/cognitive-design-principles.md`
 
-用于 Stage 3A，定义 `outline` 的生成规则、输出 JSON 包裹格式，以及 story-first 的结构约束。
+Stage 3 与 Stage 8 使用。定义认知负载、3-second test、层级控制与 `story_role` 对密度的约束。
 
-### `skills/aippt/references/slide-spec-schema.md`
+### `references/outline-prompt.md`
 
-用于 Stage 3B，定义 `slide_spec` 的字段结构、预算规则与字段解释。
+Stage 3 使用。定义 `outline` 的生成模板、sticky-note 预览要求，以及 `approved` hard-stop gate。
 
-### `skills/aippt/references/bento-grid-system.md`
+### `references/slide-spec-schema.md`
 
-用于 Stage 4，定义标准化页面布局名称、坐标、尺寸、间距、特殊页面原型与反模式。
+Stage 4 使用。定义 `slide_spec` 字段结构、预算规则、`story_role` 与 `review_focus`。
 
-### `skills/aippt/references/design-prompt.md`
+### `references/bento-grid-system.md`
 
-用于 Stage 5，把页面规划转换为 render-ready SVG prompt，并约束字体、安全区、引用、占位与溢出处理方式。
+Stage 5 使用。定义标准布局名称、坐标、尺寸、间距、特殊页面原型与反模式。
 
-### `skills/aippt/references/svg-quality-checklist.md`
+### `references/page-plan-schema.md`
 
-用于 Stage 6，检查 research integrity、story completeness、layout integrity、overflow、citation visibility、SVG 技术要求与交付完整性。
+Stage 5 使用。定义 `page_plan` 的结构，包括 `final_layout`、`card_map`、`citations_placement`、`overflow_strategy` 等。
 
-### `skills/aippt/references/eval-prompts.md`
+### `references/design-prompt.md`
 
-用于回归测试，提供正向触发案例与负向触发案例，用来验证：
+Stage 7 使用。把 `slide_spec + page_plan + style_profile` 转换为 render-ready SVG prompt，并约束字体、安全区、引用、占位与 review-driven fixes。
 
-- 新建 deck 请求是否正确触发 AIPPT
+### `references/review-taxonomy.md`
+
+Stage 8 使用。定义可移植的 typed review 体系：
+
+- `attribute_change`
+- `layout_restructure`
+- `full_rethink`
+- `content_reduction`
+- `deck_coordination`
+
+### `references/svg-quality-checklist.md`
+
+Stage 8 使用。定义两层校验：
+
+- hard-rule validation
+- typed review and refinement
+
+### `references/eval-prompts.md`
+
+人工可读的回归测试集合，用来验证：
+
+- 新建 deck 请求是否正确触发
 - 现有 deck 编辑请求是否被正确排除
 - 工作流是否仍能稳定产出 source-backed 工件
+
+## Style Registry
+
+### `references/styles/index.json`
+
+style preset 注册表，当前包含：
+
+- `business`
+- `tech`
+- `minimal`
+- `scientific`
+- `editorial-infographic`
+- `creative`
+
+### `references/styles/*.yaml`
+
+每个 preset 定义：
+
+- palette
+- typography
+- card style
+- chart colors
+- layout bias
+- slide-type overrides
+
+## Scripts
+
+### `scripts/build-prompt-bundle.mjs`
+
+把 `slide_spec + page_plan + style_profile + brand_profile` 组装成逐页 prompt bundle。
+
+### `scripts/validate-artifacts.mjs`
+
+校验 `outline`、`slide_spec`、`page_plan`、`delivery_manifest` 的一一映射和字段合法性。
+
+### `scripts/validate-svg.mjs`
+
+校验 SVG 的 viewBox、字号、安全区与 citation footer 等硬规则。
+
+### `scripts/build-preview.mjs`
+
+基于 SVG 目录和预览模板生成静态 `index.html`。
+
+## Assets
+
+### `assets/preview-template.html`
+
+静态预览模板，供 `build-preview.mjs` 使用。
+
+## Evals
+
+### `evals/evals.json`
+
+机器可读的 workflow eval 集，覆盖正向与负向用例。
+
+### `evals/trigger-evals.json`
+
+机器可读的 trigger eval 集，用于后续 description optimization。
 
 ## 建议的维护方式
 
 如果更新了 Skill 流程，建议同步检查以下内容是否一致：
 
-- `SKILL.md` 中的阶段定义
-- reference 文件中的模板与字段
-- README 中的对外说明
+- `SKILL.md` 中的阶段定义与 artifact contract
+- references 中的模板与 schema
+- styles registry 与 preset 文件
+- scripts 的输入输出契约
 - `docs/` 站点中的说明与导航

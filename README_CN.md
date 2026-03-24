@@ -128,6 +128,7 @@ Skill 的具体行为由以下参考文件约束：
 安装依赖并启动本地文档站：
 
 ```bash
+cd docs
 npm install
 npm run docs:dev
 ```
@@ -135,12 +136,14 @@ npm run docs:dev
 构建静态文档：
 
 ```bash
+cd docs
 npm run docs:build
 ```
 
 预览构建结果：
 
 ```bash
+cd docs
 npm run docs:preview
 ```
 

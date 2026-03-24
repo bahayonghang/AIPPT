@@ -126,6 +126,7 @@ The skill behavior is defined by these reference files:
 This repository now includes a minimal VitePress documentation setup.
 
 ```bash
+cd docs
 npm install
 npm run docs:dev
 ```
@@ -133,12 +134,14 @@ npm run docs:dev
 Build static documentation:
 
 ```bash
+cd docs
 npm run docs:build
 ```
 
 Preview the built site:
 
 ```bash
+cd docs
 npm run docs:preview
 ```
 

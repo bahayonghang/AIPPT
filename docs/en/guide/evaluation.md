@@ -1,8 +1,12 @@
-# Evaluation
+# Evaluation, Scripts, and Regression
 
-AIPPT ships with a regression prompt set in `skills/aippt/references/eval-prompts.md`.
+AIPPT now ships with:
 
-Its purpose is to validate both **trigger quality** and **workflow completeness**.
+- human-readable evaluation prompts: `skills/aippt/references/eval-prompts.md`
+- machine-readable workflow evals: `skills/aippt/evals/evals.json`
+- machine-readable trigger evals: `skills/aippt/evals/trigger-evals.json`
+
+Together they validate **trigger quality**, **workflow completeness**, and **tooling contract consistency**.
 
 ## What to evaluate
 
@@ -11,8 +15,10 @@ Each test case should check:
 1. whether `aippt` triggered or stayed silent correctly
 2. whether brand and brief context were collected where needed
 3. whether source-backed research outputs kept source IDs visible
-4. whether both `outline` and `slide_spec` were produced
-5. whether the chosen layout family and output mode made sense
+4. whether `outline`, `slide_spec`, `page_plan`, and `style_profile` were all produced
+5. whether rendering was blocked before `outline.approved = true`
+6. whether the chosen layout family and delivery mode made sense
+7. whether `delivery_manifest` and `review_report` were available when needed
 
 ## Positive trigger cases
 
@@ -37,33 +43,45 @@ These requests should not trigger AIPPT:
 
 - editing a specific slide in an existing PPTX
 - reviewing or critiquing an already finished deck
+- tweaking one page layout or title
+- creating only a cover image or one-off slide asset
 
-Those tasks belong to deck editing or review workflows, not to AIPPT's new-deck workflow.
+Those tasks belong to editing, review, or single-slide creation workflows, not to AIPPT's new-deck workflow.
 
 ## Recommended regression checks
 
-After updating these files, rerun the evaluation prompts:
+After updating these files, rerun evaluation:
 
 - `skills/aippt/SKILL.md`
 - `skills/aippt/references/outline-prompt.md`
 - `skills/aippt/references/slide-spec-schema.md`
-- `skills/aippt/references/bento-grid-system.md`
+- `skills/aippt/references/page-plan-schema.md`
 - `skills/aippt/references/design-prompt.md`
+- `skills/aippt/references/review-taxonomy.md`
+- `skills/aippt/references/styles/*.yaml`
 
-Confirm that:
+## Script validation layer
 
-- new-deck prompts still trigger reliably
-- existing-deck edit prompts still do not trigger
-- fact-heavy slides still keep citation refs visible
-- outline and slide spec remain one-to-one
-- page planning still uses canonical layouts instead of ad-hoc coordinates
+In addition to prompt regression, run:
+
+```bash
+cd docs
+npm run aippt:validate-artifacts
+npm run aippt:validate-svg
+```
+
+These validate:
+
+- one-to-one mapping across `outline`, `slide_spec`, `page_plan`, and `delivery_manifest`
+- SVG hard rules such as viewBox, font floor, safe-zone placement, and footer citations
 
 ## Success criteria
 
-According to `eval-prompts.md`, a healthy AIPPT should:
+A healthy current AIPPT should:
 
 - reliably recognize new-deck requests
 - avoid swallowing existing-deck edit requests
-- produce source-backed `outline`
-- produce source-backed `slide_spec`
-- keep page-planning and delivery outputs verifiable
+- consistently produce `brand_profile`, `brief_summary`, and `research_dossier`
+- consistently produce `outline`, `slide_spec`, `page_plan`, and `style_profile`
+- block rendering when `outline.approved = false`
+- keep planning outputs and delivery outputs verifiable

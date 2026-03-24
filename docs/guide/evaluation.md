@@ -1,18 +1,24 @@
-# 评估与回归测试
+# 评估、脚本与回归测试
 
-AIPPT 自带一份评估提示词集合：`skills/aippt/references/eval-prompts.md`。
+AIPPT 现在同时提供：
 
-它的作用不是演示设计内容本身，而是验证 Skill 的 **触发质量** 与 **工作流完整性**。
+- 人工可读的评估提示集：`skills/aippt/references/eval-prompts.md`
+- 机器可读的 workflow eval：`skills/aippt/evals/evals.json`
+- 机器可读的 trigger eval：`skills/aippt/evals/trigger-evals.json`
+
+它们共同用于验证 **触发质量**、**工作流完整性** 和 **工具链契约一致性**。
 
 ## 评估维度
 
-每个测试用例都应该检查以下问题：
+每个测试用例都应该检查：
 
-1. `aippt` 是否在正确的场景触发或保持静默
+1. `aippt` 是否在正确场景触发或保持静默
 2. 是否收集了品牌信息与 brief 关键信息
 3. 是否生成了带 source ID 的 research 输出
-4. 是否同时生成了 `outline` 与 `slide_spec`
-5. 是否选择了合理的布局族与输出模式
+4. 是否同时生成了 `outline`、`slide_spec`、`page_plan` 和 `style_profile`
+5. 是否在 `outline.approved = true` 之前阻止渲染
+6. 是否选择了合理的布局族与交付模式
+7. 是否在需要时能产出 `delivery_manifest` 与 `review_report`
 
 ## 正向触发案例
 
@@ -27,7 +33,7 @@ AIPPT 自带一份评估提示词集合：`skills/aippt/references/eval-prompts.
 - 政策解读
 - 无网络但有材料的 deck 生成
 
-这些案例共同指向一个条件：
+共同条件是：
 
 > 用户需要从零创建一套新的演示文稿，而不是编辑已有文件。
 
@@ -37,33 +43,45 @@ AIPPT 自带一份评估提示词集合：`skills/aippt/references/eval-prompts.
 
 - 修改现有 PPTX 的某一页
 - 审校或点评一套已经做好的 deck
+- 只想微调某一页版式或标题
+- 只需要封面图或单页素材
 
-原因是这些任务属于“编辑 / 审核现有演示”，不属于 AIPPT 的“从零搭建新 deck”职责。
+这些任务属于“编辑 / 审核现有演示”或“单页创作”，不属于 AIPPT 的“从零搭建新 deck”职责。
 
-## 建议的回归测试方法
+## 推荐回归测试方法
 
-每次调整以下文件后，建议复跑评估：
+每次调整以下文件后，建议至少复跑评估：
 
 - `skills/aippt/SKILL.md`
 - `skills/aippt/references/outline-prompt.md`
 - `skills/aippt/references/slide-spec-schema.md`
-- `skills/aippt/references/bento-grid-system.md`
+- `skills/aippt/references/page-plan-schema.md`
 - `skills/aippt/references/design-prompt.md`
+- `skills/aippt/references/review-taxonomy.md`
+- `skills/aippt/references/styles/*.yaml`
 
-重点确认：
+## 脚本校验层
 
-- 新建 deck 需求仍然稳定触发
-- 编辑已有 deck 的需求仍然不会误触发
-- 事实密集型页面仍然保留 citation refs
-- outline 与 slide spec 仍是一一对应关系
-- 页面规划仍然使用规范布局而不是临时坐标
+除了 prompt regression，还建议跑脚本校验：
+
+```bash
+cd docs
+npm run aippt:validate-artifacts
+npm run aippt:validate-svg
+```
+
+它们分别验证：
+
+- `outline`、`slide_spec`、`page_plan`、`delivery_manifest` 的映射关系
+- SVG 的 viewBox、字号、安全区与 citation footer 等硬规则
 
 ## 成功标准
 
-根据 `eval-prompts.md`，一个健康的 AIPPT 应该满足：
+一个健康的新版 AIPPT 应该满足：
 
 - 能可靠识别“新建演示”型请求
 - 不会吞掉“修改已有 deck”型请求
-- 工作流仍能输出 source-backed 的 `outline`
-- 工作流仍能输出 source-backed 的 `slide_spec`
+- 工作流能稳定输出 `brand_profile`、`brief_summary`、`research_dossier`
+- 工作流能稳定输出 `outline`、`slide_spec`、`page_plan`、`style_profile`
+- 在 `outline.approved = false` 时不会进入渲染阶段
 - 页面规划和最终交付模式可验证
