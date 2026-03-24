@@ -1,0 +1,39 @@
+id: scientific
+name: Scientific
+mood: Scholarly, rigorous, calm.
+color_scheme:
+  primary: "#1F4E79"
+  secondary: "#5B7C99"
+  accent: "#2A9D8F"
+  background: "#FBFCFE"
+  surface: "#FFFFFF"
+  text: "#1F2937"
+  muted: "#6B7280"
+  chart_colors:
+    - "#1F4E79"
+    - "#2A9D8F"
+    - "#E9C46A"
+    - "#E76F51"
+    - "#6C91BF"
+typography:
+  heading_font: "Source Sans 3, Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  body_font: "Source Sans 3, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  cjk_font: "'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif"
+  heading_weight: 700
+  body_scale: 1.0
+card_style:
+  border_radius: 12
+  gap: 20
+  padding: 24
+  border: "#D8E2EC"
+  shadow: "0 8px 20px rgba(31, 78, 121, 0.06)"
+layout_bias:
+  preferred:
+    - hero-plus-three
+    - media-text
+    - two-by-two-dashboard
+slide_type_overrides:
+  data:
+    accent_usage: "medium"
+  timeline:
+    accent_usage: "medium"

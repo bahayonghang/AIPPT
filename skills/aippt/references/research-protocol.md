@@ -2,7 +2,7 @@
 
 Use this file in **Stage 2**.
 
-The goal is to produce a research dossier that is usable for both story planning and on-slide citations.
+The goal is to produce a research dossier that is usable for story planning, slide citations, and later review.
 
 ## Operating rules
 
@@ -22,23 +22,23 @@ Use this order unless the user gives stricter instructions:
 4. High-quality analyst or original reporting
 5. Secondary summaries only for discovery, not final proof
 
-## Capability-aware tool choice
+## Capability-aware workflow
 
-If the runtime supports **search grounding + URL context**, prefer that sequence:
+If the runtime supports search plus deep-read context:
 
-1. grounding for discovery
-2. URL context for deep reading
-3. extract structured claims with dates and source IDs
+1. grounding or search for discovery
+2. direct page or document reading for proof
+3. extract structured facts with dates and source IDs
 
-If those capabilities do not exist, fall back to the platform's search + fetch/browser workflow while preserving the same evidence structure.
+If the runtime does not support live web work, restrict the dossier to user-provided materials and state that limitation explicitly.
 
 ## Research workflow
 
 1. Derive 3-6 research themes from the brief.
 2. Collect source entries with stable IDs like `R1`, `R2`, `R3`.
-3. For each source, extract only facts that are relevant to the deck.
-4. Build chapter packets so each future section already knows its evidence.
-5. Mark uncertain or weak facts with lower confidence.
+3. Extract only facts relevant to the future deck.
+4. Build section-level evidence packets so later stages do not have to rediscover facts.
+5. Mark weak, ambiguous, or conflicting facts with lower confidence.
 
 ## Source entry template
 
@@ -53,7 +53,6 @@ If those capabilities do not exist, fall back to the platform's search + fetch/b
 - Why it matters: ...
 - Key facts:
   - ...
-  - ...
 - Quotable numbers:
   - ...
 - Confidence: high / medium / low
@@ -66,6 +65,10 @@ If those capabilities do not exist, fall back to the platform's search + fetch/b
 - Main storyline evidence: ...
 - Strongest numeric proof points: ...
 - Gaps or weak areas: ...
+
+## Source Registry
+### R1
+- ...
 
 ## Section Evidence Map
 ### Section 1
@@ -83,7 +86,7 @@ If those capabilities do not exist, fall back to the platform's search + fetch/b
 
 ## Structured fallback format
 
-When the runtime supports structured output, you may also produce:
+When structured output is possible, return:
 
 ```text
 [RESEARCH_DOSSIER]
@@ -97,10 +100,18 @@ When the runtime supports structured output, you may also produce:
         "title": "2025 Annual Report",
         "url": "https://example.com",
         "publication_date": "2025-03-18",
-        "access_date": "2026-03-23",
+        "access_date": "2026-03-24",
         "facts": ["..."],
         "numbers": ["..."],
         "confidence": "high"
+      }
+    ],
+    "section_packets": [
+      {
+        "section_id": "P1",
+        "goal": "Explain the market shift",
+        "evidence_refs": ["R1", "R3"],
+        "facts": ["..."]
       }
     ]
   }
@@ -110,4 +121,4 @@ When the runtime supports structured output, you may also produce:
 
 ## Anti-fabrication rule
 
-If you do not have a number, date, quote, or ranking from a source entry, do not invent it for the deck.
+If you do not have a number, date, quote, ranking, or causal claim from a source entry, do not invent it for the deck.

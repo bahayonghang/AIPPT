@@ -1,0 +1,40 @@
+id: minimal
+name: Minimal Clean
+mood: Restrained, editorial, whitespace-heavy.
+color_scheme:
+  primary: "#111827"
+  secondary: "#374151"
+  accent: "#6B7280"
+  background: "#FFFFFF"
+  surface: "#F7F7F5"
+  text: "#111827"
+  muted: "#6B7280"
+  chart_colors:
+    - "#111827"
+    - "#4B5563"
+    - "#9CA3AF"
+    - "#D1D5DB"
+    - "#6B7280"
+typography:
+  heading_font: "IBM Plex Sans, Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  body_font: "IBM Plex Sans, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  cjk_font: "'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif"
+  heading_weight: 600
+  body_scale: 0.98
+card_style:
+  border_radius: 10
+  gap: 20
+  padding: 24
+  border: "#E5E7EB"
+  shadow: "0 6px 18px rgba(17, 24, 39, 0.05)"
+layout_bias:
+  preferred:
+    - single-focus
+    - symmetric-two-column
+    - hero-plus-two
+slide_type_overrides:
+  cover:
+    background: "#FFFFFF"
+    text: "#111827"
+  breathing:
+    accent_usage: "low"

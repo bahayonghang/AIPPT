@@ -1,0 +1,39 @@
+id: creative
+name: Creative Bold
+mood: Expressive, brand-led, energetic.
+color_scheme:
+  primary: "#4C1D95"
+  secondary: "#7C3AED"
+  accent: "#F59E0B"
+  background: "#FAF5FF"
+  surface: "#FFFFFF"
+  text: "#2E1065"
+  muted: "#7E22CE"
+  chart_colors:
+    - "#7C3AED"
+    - "#F59E0B"
+    - "#EC4899"
+    - "#06B6D4"
+    - "#10B981"
+typography:
+  heading_font: "Clash Display, Sora, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  body_font: "Inter, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  cjk_font: "'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif"
+  heading_weight: 700
+  body_scale: 1.0
+card_style:
+  border_radius: 16
+  gap: 20
+  padding: 24
+  border: "#E9D5FF"
+  shadow: "0 14px 36px rgba(76, 29, 149, 0.12)"
+layout_bias:
+  preferred:
+    - hero-plus-three
+    - mixed-grid
+    - media-text
+slide_type_overrides:
+  cover:
+    accent_usage: "high"
+  breathing:
+    accent_usage: "medium"

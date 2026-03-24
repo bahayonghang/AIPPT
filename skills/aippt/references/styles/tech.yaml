@@ -1,0 +1,40 @@
+id: tech
+name: Tech Modern
+mood: Precise, high-contrast, product-focused.
+color_scheme:
+  primary: "#58A6FF"
+  secondary: "#1F6FEB"
+  accent: "#2EE6A6"
+  background: "#0D1117"
+  surface: "#161B22"
+  text: "#F0F6FC"
+  muted: "#8B949E"
+  chart_colors:
+    - "#58A6FF"
+    - "#2EE6A6"
+    - "#A371F7"
+    - "#F2CC60"
+    - "#FF7B72"
+typography:
+  heading_font: "Space Grotesk, Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  body_font: "Inter, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  cjk_font: "'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif"
+  heading_weight: 700
+  body_scale: 1.0
+card_style:
+  border_radius: 14
+  gap: 20
+  padding: 24
+  border: "#30363D"
+  shadow: "0 12px 32px rgba(0, 0, 0, 0.35)"
+layout_bias:
+  preferred:
+    - hero-plus-three
+    - mixed-grid
+    - media-text
+slide_type_overrides:
+  cover:
+    background: "#0D1117"
+    text: "#F0F6FC"
+  comparison:
+    accent_usage: "medium"

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{TITLE}}</title>
+    <style>
+      :root {
+        --accent: {{ACCENT_COLOR}};
+        --bg: #0f172a;
+        --surface: #111827;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+        background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+        color: var(--text);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 28px;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        position: sticky;
+        top: 0;
+        background: rgba(2, 6, 23, 0.92);
+        backdrop-filter: blur(12px);
+        z-index: 10;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+      }
+
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        display: grid;
+        place-items: center;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+      }
+
+      button {
+        border: 1px solid rgba(148, 163, 184, 0.24);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 14px;
+        cursor: pointer;
+      }
+
+      button.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      main {
+        padding: 28px;
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+      }
+
+      .slide-card {
+        background: rgba(17, 24, 39, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+
+      .slide-card h3 {
+        margin: 0;
+        padding: 16px 18px;
+        font-size: 15px;
+        color: var(--muted);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      }
+
+      .slide-card object,
+      .viewer object {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border: 0;
+        background: white;
+      }
+
+      .viewer {
+        display: none;
+        gap: 20px;
+      }
+
+      .viewer.active {
+        display: grid;
+      }
+
+      .viewer-main {
+        background: rgba(17, 24, 39, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 18px;
+        padding: 20px;
+      }
+
+      .viewer-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .viewer-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .thumbs {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .thumb {
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(17, 24, 39, 0.92);
+      }
+
+      .thumb button {
+        width: 100%;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        padding: 10px 12px;
+        text-align: left;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <div class="logo">{{LOGO}}</div>
+        <div>{{TITLE}}</div>
+      </div>
+      <div class="controls">
+        <button id="galleryMode" class="active">Gallery</button>
+        <button id="viewerMode">Present</button>
+      </div>
+    </header>
+    <main>
+      <section id="gallery" class="gallery"></section>
+      <section id="viewer" class="viewer">
+        <div class="viewer-main">
+          <div class="viewer-meta">
+            <strong id="viewerLabel"></strong>
+            <div class="viewer-actions">
+              <button id="prevBtn">Prev</button>
+              <button id="nextBtn">Next</button>
+            </div>
+          </div>
+          <object id="viewerObject" type="image/svg+xml"></object>
+        </div>
+        <div>
+          <div class="thumbs" id="thumbs"></div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const slides = {{SLIDES_JSON}};
+      const gallery = document.getElementById("gallery");
+      const viewer = document.getElementById("viewer");
+      const viewerObject = document.getElementById("viewerObject");
+      const viewerLabel = document.getElementById("viewerLabel");
+      const thumbs = document.getElementById("thumbs");
+      const galleryMode = document.getElementById("galleryMode");
+      const viewerMode = document.getElementById("viewerMode");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      let currentIndex = 0;
+
+      function renderGallery() {
+        gallery.innerHTML = "";
+        slides.forEach((slide, index) => {
+          const card = document.createElement("article");
+          card.className = "slide-card";
+          card.innerHTML = `
+            <h3>${index + 1}. ${slide.label}</h3>
+            <object type="image/svg+xml" data="${slide.file}"></object>
+          `;
+          card.addEventListener("click", () => {
+            currentIndex = index;
+            showViewer();
+            renderViewer();
+          });
+          gallery.appendChild(card);
+        });
+      }
+
+      function renderThumbs() {
+        thumbs.innerHTML = "";
+        slides.forEach((slide, index) => {
+          const thumb = document.createElement("div");
+          thumb.className = "thumb";
+          thumb.innerHTML = `<button>${index + 1}. ${slide.label}</button>`;
+          thumb.addEventListener("click", () => {
+            currentIndex = index;
+            renderViewer();
+          });
+          thumbs.appendChild(thumb);
+        });
+      }
+
+      function renderViewer() {
+        const slide = slides[currentIndex];
+        viewerObject.data = slide.file;
+        viewerLabel.textContent = `${currentIndex + 1}. ${slide.label}`;
+      }
+
+      function showGallery() {
+        gallery.classList.remove("hidden");
+        viewer.classList.remove("active");
+        galleryMode.classList.add("active");
+        viewerMode.classList.remove("active");
+      }
+
+      function showViewer() {
+        gallery.classList.add("hidden");
+        viewer.classList.add("active");
+        galleryMode.classList.remove("active");
+        viewerMode.classList.add("active");
+      }
+
+      galleryMode.addEventListener("click", showGallery);
+      viewerMode.addEventListener("click", () => {
+        showViewer();
+        renderViewer();
+      });
+      prevBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        renderViewer();
+      });
+      nextBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        renderViewer();
+      });
+
+      renderGallery();
+      renderThumbs();
+      renderViewer();
+    </script>
+  </body>
+</html>

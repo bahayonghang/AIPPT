@@ -1,0 +1,137 @@
+{
+  "skill_name": "aippt",
+  "evals": [
+    {
+      "id": "workflow-01-company-intro",
+      "category": "positive",
+      "prompt": "帮我做一套新的企业介绍 PPT，主题是“Dify 企业版介绍”，受众是潜在客户。需要 12 页左右，风格偏商务科技。可以参考官网和最近的产品更新。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "brand_profile",
+        "brief_summary",
+        "research_dossier",
+        "outline",
+        "slide_spec",
+        "page_plan",
+        "style_profile",
+        "delivery_manifest"
+      ],
+      "notes": "验证企业介绍场景下的标准新建 deck 工作流。"
+    },
+    {
+      "id": "workflow-02-investor-pitch",
+      "category": "positive",
+      "prompt": "请从零开始做一套 Seed 轮融资路演 deck。产品是 AI 客服 SaaS，我有官网、logo 和一份产品白皮书。目标受众是投资人，想突出市场机会、增长数据和团队能力。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "brand_profile",
+        "research_dossier",
+        "outline",
+        "slide_spec",
+        "page_plan",
+        "style_profile"
+      ],
+      "notes": "验证品牌素材和数据型 slide spec。"
+    },
+    {
+      "id": "workflow-03-product-launch",
+      "category": "positive",
+      "prompt": "帮我做一套新品发布会 slides，主题是“智能随身翻译耳机”。我想要偏 Apple 风格，但要保持自家品牌色。请从主题和官网资料开始规划。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "brand_profile",
+        "outline",
+        "slide_spec",
+        "page_plan",
+        "style_profile"
+      ],
+      "notes": "验证品牌约束优先于模仿竞争品牌。"
+    },
+    {
+      "id": "workflow-04-teaching-deck",
+      "category": "positive",
+      "prompt": "我要一套 45 分钟的教学课件，主题是“Transformer 基础入门”。受众是大三学生，希望讲清概念、流程和案例，风格简洁学术。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "brief_summary",
+        "research_dossier",
+        "outline",
+        "slide_spec",
+        "page_plan",
+        "style_profile"
+      ],
+      "notes": "验证教学课件的时长和认知负载控制。"
+    },
+    {
+      "id": "workflow-05-board-report",
+      "category": "positive",
+      "prompt": "把这份市场研究和财务数据整理成一套新的行业汇报 PPT，给董事会看。需要高密度信息，但不能乱，要保留来源。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "research_dossier",
+        "outline",
+        "slide_spec",
+        "page_plan",
+        "delivery_manifest"
+      ],
+      "notes": "验证数据密集型场景下的 citation 和 layout 规划。"
+    },
+    {
+      "id": "workflow-06-policy-briefing",
+      "category": "positive",
+      "prompt": "帮我做一套新的政策解读演示，主题是“2026 年 AI 合规要求变化”。受众是企业内部法务和产品团队，需要明确时间线、风险点和行动建议。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "research_dossier",
+        "outline",
+        "slide_spec",
+        "page_plan"
+      ],
+      "notes": "验证时间线和行动建议结构。"
+    },
+    {
+      "id": "workflow-07-offline-source-pack",
+      "category": "positive",
+      "prompt": "我没有联网需求，只用我上传的白皮书和会议纪要做一套产品战略 deck。请从这些材料里完成研究、提纲和页面规划。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "brief_summary",
+        "research_dossier",
+        "outline",
+        "slide_spec",
+        "page_plan"
+      ],
+      "notes": "验证无网络模式下工作流不缺阶段。"
+    },
+    {
+      "id": "workflow-08-annual-review",
+      "category": "positive",
+      "prompt": "请帮我做一套 2025 年度经营复盘 deck，受众是管理层。重点是增长、盈利、团队效率和 2026 年计划，控制在 15 页以内。",
+      "should_trigger": true,
+      "expected_artifacts": [
+        "research_dossier",
+        "outline",
+        "slide_spec",
+        "page_plan",
+        "style_profile"
+      ],
+      "notes": "验证复盘类 deck 的叙事和 KPI 页规划。"
+    },
+    {
+      "id": "workflow-09-edit-existing-pptx",
+      "category": "negative",
+      "prompt": "帮我改一下这个现有 PPTX 的第 7 页，把排版调得更高级一点，标题短一点，其他内容别动。",
+      "should_trigger": false,
+      "expected_artifacts": [],
+      "notes": "现有 PPTX 编辑不应该触发 aippt。"
+    },
+    {
+      "id": "workflow-10-review-existing-deck",
+      "category": "negative",
+      "prompt": "看看这套现成的路演 deck 有哪些逻辑问题，给我改进建议，不需要重做整套。",
+      "should_trigger": false,
+      "expected_artifacts": [],
+      "notes": "现有 deck 评审不应该触发 aippt。"
+    }
+  ]
+}

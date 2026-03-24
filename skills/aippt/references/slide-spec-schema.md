@@ -1,8 +1,8 @@
 # Slide Spec Schema
 
-Use this file in **Stage 3B** after the deck `outline` is approved or mostly stable.
+Use this file in **Stage 4** after the deck `outline` is approved.
 
-The goal of `slide_spec` is to convert a story outline into an execution contract that later stages can plan and render without guessing.
+The goal of `slide_spec` is to convert a story outline into a slide-by-slide execution contract that later stages can plan, render, and review without guessing.
 
 ## Required structure
 
@@ -30,6 +30,11 @@ Wrap the result with `[SLIDE_SPEC]` and `[/SLIDE_SPEC]`.
         },
         "layout_candidates": ["cover"],
         "preferred_layout": "cover",
+        "story_role": "anchor",
+        "review_focus": [
+          "hierarchy",
+          "readability"
+        ],
         "visual_priority": {
           "primary": "主标题",
           "secondary": "副标题",
@@ -52,33 +57,35 @@ Wrap the result with `[SLIDE_SPEC]` and `[/SLIDE_SPEC]`.
 
 ## Field definitions
 
-- `slide_id`: must map one-to-one to the outline order
-- `page_type`: use a meaningful value like `cover`, `contents`, `comparison`, `process`, `timeline`, `kpi`, `case-study`, `mixed-media`, `closing`, or `generic`
+- `slide_id`: must map one-to-one to the approved outline order
+- `page_type`: values such as `cover`, `contents`, `comparison`, `process`, `timeline`, `kpi`, `case-study`, `mixed-media`, `closing`, or `generic`
 - `page_goal`: one sentence, singular
 - `audience_takeaway`: one sentence describing the memory anchor
-- `evidence_refs`: source IDs like `R1`, `R3`; use an empty array only for pure transition pages
-- `content_budget`: guardrails that force the page to stay readable
+- `evidence_refs`: source IDs like `R1`, `R3`
+- `content_budget`: guardrails that force the slide to stay readable
 - `layout_candidates`: 2-3 valid choices from `bento-grid-system.md`
 - `preferred_layout`: the best-fit choice before detailed page planning
-- `visual_priority`: what must dominate, what can be secondary, what is optional
-- `asset_needs`: exact image/chart/logo/icon requirements
+- `story_role`: use `anchor`, `proof`, `bridge`, `breathing`, or `closing`
+- `review_focus`: one or more of `layout_balance`, `readability`, `density`, `contrast`, `chart_legibility`, `citation_visibility`, `hierarchy`
+- `asset_needs`: exact image, chart, logo, or icon requirements
 - `citations_mode`: `none`, `card-local`, or `page-footer`
 
 ## Content-budget guidance
 
 Use budgets to stop slide bloat before it happens:
 
-- simple cover / closing pages: `max_cards = 1`
+- simple cover / breathing / closing pages: `max_cards = 1`
 - comparison / process / KPI pages: usually `max_cards = 2-4`
 - if a page needs more than 5 cards or more than 90 body chars per card, split it
 
 ## Slide-spec rules
 
 1. Every slide must have a single `page_goal`.
-2. Every fact-heavy page must carry `evidence_refs`.
+2. Every fact-heavy slide must carry `evidence_refs`.
 3. `layout_candidates` must be valid layout names from `bento-grid-system.md`.
 4. `preferred_layout` must be one of the candidates.
-5. `citations_mode` must align with fact density:
-   - `none` for pure transition or cover/closing pages
+5. `review_focus` must reflect the slide's main quality risk.
+6. `citations_mode` must align with fact density:
+   - `none` for pure transition or cover / closing pages
    - `card-local` for 1-2 localized facts
    - `page-footer` for metric-heavy or evidence-dense pages

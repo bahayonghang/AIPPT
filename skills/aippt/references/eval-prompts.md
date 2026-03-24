@@ -2,6 +2,11 @@
 
 Use this file to regression-test trigger quality and workflow quality.
 
+For machine-readable eval sets, use:
+
+- `evals/evals.json`
+- `evals/trigger-evals.json`
+
 ## How to score
 
 For each prompt, check:
@@ -9,8 +14,9 @@ For each prompt, check:
 1. Did `aippt` trigger or stay silent correctly?
 2. Did the workflow collect brand + brief context where appropriate?
 3. Did it produce source-backed research and keep source IDs visible?
-4. Did it generate both `outline` and `slide_spec`?
-5. Did it choose a sensible layout family and a correct output mode?
+4. Did it generate `outline`, `slide_spec`, `page_plan`, and `style_profile`?
+5. Did it enforce the `outline.approved` gate before rendering?
+6. Did it choose a sensible layout family and a correct delivery mode?
 
 ## Positive trigger cases
 
@@ -39,7 +45,7 @@ For each prompt, check:
 **Expected**
 
 - `aippt` should trigger
-- should intake logo/brand/white paper
+- should intake logo / brand / white paper
 - should create KPI-capable slide specs and research-backed evidence refs
 
 ### Case 03: 产品发布会
@@ -110,7 +116,7 @@ For each prompt, check:
 
 - `aippt` should trigger
 - should prioritize official regulator / policy sources
-- should use timeline + risk/action structure
+- should use timeline + risk / action structure
 
 ### Case 08: 无网络但有材料
 

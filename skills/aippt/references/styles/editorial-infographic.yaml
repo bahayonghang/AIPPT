@@ -1,0 +1,39 @@
+id: editorial-infographic
+name: Editorial Infographic
+mood: Data-rich, magazine-grade, directional.
+color_scheme:
+  primary: "#0F172A"
+  secondary: "#334155"
+  accent: "#F97316"
+  background: "#FFFDF8"
+  surface: "#FFFFFF"
+  text: "#0F172A"
+  muted: "#64748B"
+  chart_colors:
+    - "#F97316"
+    - "#0F172A"
+    - "#14B8A6"
+    - "#8B5CF6"
+    - "#E11D48"
+typography:
+  heading_font: "Sora, Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  body_font: "Inter, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  cjk_font: "'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif"
+  heading_weight: 700
+  body_scale: 1.0
+card_style:
+  border_radius: 14
+  gap: 20
+  padding: 24
+  border: "#E2E8F0"
+  shadow: "0 10px 26px rgba(15, 23, 42, 0.08)"
+layout_bias:
+  preferred:
+    - mixed-grid
+    - two-by-two-dashboard
+    - asymmetric-two-column
+slide_type_overrides:
+  kpi:
+    accent_usage: "high"
+  comparison:
+    accent_usage: "high"
