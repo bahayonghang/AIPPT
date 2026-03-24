@@ -1,0 +1,18 @@
+{
+  "name": "aippt-docs",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Documentation site and helper scripts for the AIPPT Claude Code skill.",
+  "scripts": {
+    "docs:dev": "vitepress dev .",
+    "docs:build": "vitepress build .",
+    "docs:preview": "vitepress preview .",
+    "aippt:build-prompts": "node ../skills/aippt/scripts/build-prompt-bundle.mjs",
+    "aippt:validate-artifacts": "node ../skills/aippt/scripts/validate-artifacts.mjs",
+    "aippt:validate-svg": "node ../skills/aippt/scripts/validate-svg.mjs",
+    "aippt:build-preview": "node ../skills/aippt/scripts/build-preview.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  }
+}
