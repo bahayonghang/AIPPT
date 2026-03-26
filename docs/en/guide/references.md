@@ -1,137 +1,90 @@
 # References and Resource Layer
 
-Current AIPPT behavior is defined by [SKILL.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/SKILL.md), `references/`, `styles/`, `scripts/`, `assets/`, and `evals/`.
+AIPPT behavior is defined by:
 
-## Core definition
+- `skills/aippt/SKILL.md`
+- `skills/aippt/references/`
+- `skills/aippt/scripts/`
+- `skills/aippt/evals/`
 
-### `skills/aippt/SKILL.md`
+Canonical index: `skills/aippt/references/resource-registry.md`
 
-The main skill file defines:
+## Stage-mapped references
 
-- scope and non-goals
-- the staged workflow
-- the artifact contract
-- output modes
-- Office compatibility notes
-- review and verification rules
-- regression-testing entry points
+### Stage 0 / 6
 
-## References
+- `brand-intake.md`
+- `style-vocabulary.md`
 
-### `references/brand-intake.md`
+### Stage 2
 
-Used in Stage 0. Defines the intake checklist, brand signal priority, intake questions, and the `brand_profile` template.
+- `research-protocol.md`
 
-### `references/research-protocol.md`
+### Stage 3
 
-Used in Stage 2. Defines source priority, source entry templates, research dossier structure, and anti-fabrication rules.
+- `argument-architecture.md`
+- `ghost-deck-playbook.md`
+- `outline-prompt.md`
+- `narrative-rhythm.md`
+- `cognitive-design-principles.md`
 
-### `references/cognitive-design-principles.md`
+### Stage 4
 
-Used in Stages 3 and 8. Defines working-memory guidance, hierarchy checks, and density limits tied to `story_role`.
+- `slide-spec-schema.md`
+- `exhibit-intent-taxonomy.md`
+- `resource-menu.md`
 
-### `references/outline-prompt.md`
+### Stage 5
 
-Used in Stage 3. Defines the outline prompt, sticky-note preview requirements, and the `approved` hard-stop gate.
+- `bento-grid-system.md`
+- `page-plan-schema.md`
+- `resource-menu.md`
 
-### `references/slide-spec-schema.md`
+### Stage 7
 
-Used in Stage 4. Defines the `slide_spec` structure, content budgets, `story_role`, and `review_focus`.
+- `design-prompt.md`
 
-### `references/bento-grid-system.md`
+### Stage 8
 
-Used in Stage 5. Defines canonical layout names, coordinates, card sizes, spacing rules, special page prototypes, and anti-patterns.
+- `review-taxonomy.md`
+- `svg-quality-checklist.md`
+- `narrative-rhythm.md`
 
-### `references/page-plan-schema.md`
+## Style resources
 
-Used in Stage 5. Defines `page_plan`, including `final_layout`, `card_map`, `citations_placement`, and `overflow_strategy`.
+- `styles/index.json` (registry)
+- `styles/*.yaml` (preset token definitions)
 
-### `references/design-prompt.md`
+The output contract should expose style tokens (`palette_roles`, `typography_roles`) rather than only preset IDs.
 
-Used in Stage 7. Converts `slide_spec + page_plan + style_profile` into a render-ready SVG prompt and includes review-driven fix placeholders.
+## Script layer
 
-### `references/review-taxonomy.md`
-
-Used in Stage 8. Defines the portable typed review system:
-
-- `attribute_change`
-- `layout_restructure`
-- `full_rethink`
-- `content_reduction`
-- `deck_coordination`
-
-### `references/svg-quality-checklist.md`
-
-Used in Stage 8. Defines both hard-rule validation and typed refinement.
-
-### `references/eval-prompts.md`
-
-Human-readable regression prompts for routing quality and workflow completeness.
-
-## Style registry
-
-### `references/styles/index.json`
-
-The style registry currently includes:
-
-- `business`
-- `tech`
-- `minimal`
-- `scientific`
-- `editorial-infographic`
-- `creative`
-
-### `references/styles/*.yaml`
-
-Each preset defines:
-
-- palette
-- typography
-- card style
-- chart colors
-- layout bias
-- slide-type overrides
-
-## Scripts
-
-### `scripts/build-prompt-bundle.mjs`
-
-Builds per-slide prompt bundles from `slide_spec + page_plan + style_profile + brand_profile`.
-
-### `scripts/validate-artifacts.mjs`
-
-Validates one-to-one mapping and contract consistency across `outline`, `slide_spec`, `page_plan`, and `delivery_manifest`.
-
-### `scripts/validate-svg.mjs`
-
-Validates SVG hard rules such as viewBox, font floor, safe-zone issues, and footer citations.
-
-### `scripts/build-preview.mjs`
-
-Builds a static HTML preview from a directory of SVG files.
-
-## Assets
-
-### `assets/preview-template.html`
-
-Static preview template used by `build-preview.mjs`.
+- `build-prompt-bundle.mjs`
+  - builds page prompts + enriched delivery manifest
+  - enforces claim/question/intent consistency
+- `validate-artifacts.mjs`
+  - validates argument + production contracts
+  - includes rhythm checks
+  - supports `--allow-legacy=true`
+- `validate-svg.mjs`
+  - validates SVG hard rules
+  - optional source-ref checks with `--page-plan` / `--manifest`
+- `build-preview.mjs`
+  - builds static preview HTML
 
 ## Evals
 
-### `evals/evals.json`
+- `evals/evals.json` (workflow + contract quality)
+- `evals/trigger-evals.json` (trigger boundaries + near misses)
+- `references/eval-prompts.md` (human-readable set)
 
-Machine-readable workflow eval set covering positive and negative cases.
+## Maintenance order
 
-### `evals/trigger-evals.json`
+When workflow changes, update in this order:
 
-Machine-readable trigger eval set for later description optimization.
-
-## Maintenance recommendation
-
-When the workflow changes, keep these artifacts aligned:
-
-- `SKILL.md`
-- reference templates and schemas
-- style registry and preset files
-- script input and output contracts
-- the VitePress documentation site under `docs/`
+1. `resource-registry.md`
+2. `SKILL.md`
+3. schema references
+4. scripts
+5. evals
+6. docs pages

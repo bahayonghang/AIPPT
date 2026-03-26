@@ -1,6 +1,6 @@
 # AIPPT
 
-## 推荐安装方式
+## 安装
 
 请优先使用以下命令安装：
 
@@ -8,124 +8,172 @@
 npx skills add bahayonghang/AIPPT
 ```
 
-AIPPT 是一个用于 **从零创建全新演示文稿 / PPT / slide deck** 的 Claude Code Skill。
+AIPPT 是一个用于 **从零创建全新演示文稿 / PPT / slide deck** 的 Claude Code Skill，强调研究驱动和中间工件可验证。
 
-它可以把主题、需求简报、官网、白皮书、笔记或品牌素材，转化为一套完整的演示工作流，包括品牌素材收集、证据化研究、提纲生成、逐页 slide spec、页面规划，以及最终交付产物。
+它会把主题、brief、官网、白皮书、PDF、笔记或品牌素材，转化为一套完整的 deck 合同，包括：
 
-## 特性
+- brand intake
+- brief 对齐
+- 证据化研究
+- sticky-note 大纲审批
+- slide spec
+- page plan
+- style profile
+- delivery manifest
 
-- 面向 **新建 deck**，不是修改现有 PPTX。
-- 可从主题、brief、网站、PDF、笔记或品牌素材启动。
-- 强制采用阶段化流程：品牌 intake → brief 对齐 → 研究 → outline → slide spec → 页面规划 → 交付 → 验证。
-- 支持三种交付模式：
-  - `prompt_bundle_only`
-  - `svg_pages`
-  - `brand_ready_assets`
-- 所有重要事实都要求可追溯到 research dossier 与 source ID。
-- 使用 Bento Grid 规范中的标准页面布局。
-- 通过 SVG 质量检查清单做最终验收。
+## AIPPT 适合什么
 
-## 项目结构
+以下场景适合使用 AIPPT：
 
-```text
-skills/aippt/
-├── SKILL.md
-└── references/
-    ├── bento-grid-system.md
-    ├── brand-intake.md
-    ├── design-prompt.md
-    ├── eval-prompts.md
-    ├── outline-prompt.md
-    ├── research-protocol.md
-    ├── slide-spec-schema.md
-    └── svg-quality-checklist.md
-```
+- 新的企业介绍 deck
+- 新的融资路演 deck
+- 产品发布会或 keynote deck
+- 教学课件
+- 年度复盘或董事会汇报
+- 政策解读或行业 briefing
+- 需要完整 deck 工作流，而不是临时做几页 slides
 
-## 快速开始
+即使用户只是说“帮我做个 PPT”“把这些材料做成演示”，只要意图是 **新建整套 deck**，而不是编辑现有文件，就应该触发。
 
-### 1. 阅读核心技能定义
-
-核心文件位于：
-
-```text
-skills/aippt/SKILL.md
-```
-
-### 2. 在“新建 deck”场景中触发
-
-典型触发示例：
-
-```text
-帮我从零做一套新的企业介绍 PPT。
-请做一套 AI SaaS 产品的融资路演 deck。
-我要一套 45 分钟的 Transformer 入门教学课件。
-```
-
-### 3. 按工作流执行
-
-AIPPT 的标准流程包括：
-
-1. 品牌与素材 intake
-2. 简报对齐
-3. 研究协议
-4. 提纲与 slide spec
-5. 页面规划
-6. 输出模式执行
-7. 验证
-
-## 适用场景
-
-以下情况适合使用 AIPPT：
-
-- 需要创建一套 **全新的** 演示文稿
-- 需要从主题、资料或品牌约束出发构建 deck
-- 需要生成有研究依据的结构化演示内容
-- 需要 SVG-ready prompt 或面向设计/排版交接的资产包
-
-## 不适用场景
+## AIPPT 不适合什么
 
 以下情况 **不应该** 使用 AIPPT：
 
 - 修改现有 `.pptx`、`.ppt`、`.key` 或 Google Slides 文件
-- 审校、润色一套已经完成的 deck
-- 仅修改已有模板中的单页
-- 在没有 Office 自动化能力时承诺原生 Office 导出
+- 审校、点评或润色已完成的 deck
+- 在现有模板里只改几页
+- 只润色文案
+- 只做一张封面页
+- 只要一个轻量大纲，不需要后续完整 deck 规划
+
+## 工作流
+
+AIPPT 采用严格的 8-stage 流程：
+
+1. Stage 0: Brand and asset intake
+2. Stage 1: Brief alignment hard stop
+3. Stage 2: Research dossier
+4. Stage 3: Sticky-note outline hard stop
+5. Stage 4: Slide spec
+6. Stage 5: Page plan
+7. Stage 6: Style profile and delivery mode
+8. Stage 7: Delivery execution
+9. Stage 8: Verification and review
+
+关键门槛：
+
+- `outline.approved` 在大纲评审前必须保持为 `false`
+- `slide_spec` 和 `page_plan` 是两个独立合同，渲染前都必须存在
+- SVG 只有通过硬规则校验后，才算可交付
+
+## 工件合同
+
+计划完成态必须有：
+
+- `brand_profile`
+- `brief_summary`
+- `research_dossier`
+- `outline`
+- `slide_spec`
+- `page_plan`
+- `style_profile`
+
+交付完成态还必须有：
+
+- `delivery_manifest`
+- `review_report`，当验证或 refinement 发现问题时
 
 ## 交付模式
 
-### `prompt_bundle_only`
-输出可移植的逐页 prompt、品牌摘要、outline、slide spec 和渲染注意事项。
+当前支持三种交付模式：
 
-### `svg_pages`
-在运行环境支持安全生成 SVG 时，输出逐页 prompt 与对应 SVG 页面。
+- `prompt_bundle_only`
+- `svg_pages`
+- `brand_ready_assets`
 
-### `brand_ready_assets`
-输出面向设计师或 PPT 操作人员的交接包，包括品牌规范、页面家族规则、使用规则、prompt bundle，以及按需附加的 SVG 页面。
+如果用户没有明确要求，默认保守选择 `prompt_bundle_only`。
 
-## 参考文档
+## 推荐输出树
 
-Skill 的具体行为由以下参考文件约束：
+当文件系统可用时，AIPPT 应将产物写到：
+
+```text
+output/
+├── briefing/
+├── specs/
+├── prompts/
+├── svg/
+└── preview/
+```
+
+模式差异：
+
+- `prompt_bundle_only`：`briefing/`、`specs/`、`prompts/`
+- `svg_pages`：在上面基础上增加 `svg/`，可选 `preview/`
+- `brand_ready_assets`：至少包含 `prompt_bundle_only` 的产物，并补 handoff guidance，SVG 视需求提供
+
+## References 与资源层
+
+Skill 主定义位于：
+
+- `skills/aippt/SKILL.md`
+
+核心 references 包括：
 
 - `skills/aippt/references/brand-intake.md`
 - `skills/aippt/references/research-protocol.md`
 - `skills/aippt/references/outline-prompt.md`
+- `skills/aippt/references/narrative-rhythm.md`
 - `skills/aippt/references/slide-spec-schema.md`
+- `skills/aippt/references/resource-menu.md`
 - `skills/aippt/references/bento-grid-system.md`
+- `skills/aippt/references/page-plan-schema.md`
 - `skills/aippt/references/design-prompt.md`
+- `skills/aippt/references/review-taxonomy.md`
 - `skills/aippt/references/svg-quality-checklist.md`
-- `skills/aippt/references/eval-prompts.md`
+- `skills/aippt/references/resource-registry.md`
+
+## 脚本
+
+可用辅助脚本：
+
+- `build-prompt-bundle.mjs`
+- `validate-artifacts.mjs`
+- `validate-svg.mjs`
+- `build-preview.mjs`
+
+请在 `docs/` 目录中带参数执行，例如：
+
+```bash
+cd docs
+npm run aippt:validate-artifacts -- \
+  --outline ../output/specs/outline.json \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --style-profile ../output/specs/style-profile.json \
+  --delivery-manifest ../output/prompts/delivery-manifest.json
+```
+
+## 评估
+
+AIPPT 内置：
+
+- 人工可读 eval 提示集：`skills/aippt/references/eval-prompts.md`
+- workflow eval：`skills/aippt/evals/evals.json`
+- trigger-boundary eval：`skills/aippt/evals/trigger-evals.json`
+
+覆盖范围包括：
+
+- 新建整套 deck 的正向触发
+- 现有 deck 编辑与点评的负向触发
+- 只要大纲、只改模板、只做单页等 near-miss 场景
 
 ## 文档
 
 - 英文 README：`README.md`
-- 中文 README：`README_CN.md`
-- VitePress 文档站：`docs/`
+- VitePress 文档：`docs/`
 
-## 文档开发
-
-项目已包含最小可用的 VitePress 文档配置。
-
-安装依赖并启动本地文档站：
+启动文档站：
 
 ```bash
 cd docs
@@ -133,30 +181,22 @@ npm install
 npm run docs:dev
 ```
 
-构建静态文档：
+构建文档：
 
 ```bash
 cd docs
 npm run docs:build
 ```
 
-预览构建结果：
-
-```bash
-cd docs
-npm run docs:preview
-```
-
 ## 贡献建议
 
-请始终以 `skills/aippt/SKILL.md` 与 `skills/aippt/references/` 中的实际内容为准。
+只要 workflow 有变化，就要同步检查：
 
-如果修改了 skill 工作流，也应同步更新：
-
+- `skills/aippt/SKILL.md`
+- `skills/aippt/references/`
+- `skills/aippt/scripts/`
 - `README.md`
 - `README_CN.md`
-- `docs/` 下的文档
+- `docs/`
 
-## License
-
-TODO：如果后续需要公开分发，请补充许可证文件。
+请把 `skills/aippt/references/resource-registry.md` 当作当前资源层的唯一映射入口。

@@ -1,6 +1,6 @@
 # AIPPT
 
-## Recommended Installation
+## Installation
 
 Install the skill with:
 
@@ -8,122 +8,172 @@ Install the skill with:
 npx skills add bahayonghang/AIPPT
 ```
 
-AIPPT is a Claude Code skill for creating brand-aware, research-backed presentation decks from scratch.
+AIPPT is a Claude Code skill for building a **new presentation deck from scratch** with a research-driven workflow.
 
-It turns a topic, brief, website, white paper, notes, or brand assets into a complete deck workflow with brand intake, evidence-based research, outline generation, slide specifications, page planning, and final delivery artifacts.
+It turns a topic, brief, website, white paper, PDF, notes, or brand asset pack into a complete deck contract with:
 
-## Features
+- brand intake
+- brief alignment
+- evidence-backed research
+- sticky-note outline approval
+- slide spec
+- page plan
+- style profile
+- delivery manifest
 
-- Build a **new deck from scratch** instead of editing an existing PPTX.
-- Start from a topic, brief, website, PDF, notes, or brand assets.
-- Enforce a staged workflow: brand intake → brief alignment → research → outline → slide spec → page planning → delivery → verification.
-- Support three delivery modes:
-  - `prompt_bundle_only`
-  - `svg_pages`
-  - `brand_ready_assets`
-- Keep claims traceable with source IDs and research dossiers.
-- Use canonical slide layouts defined by the Bento grid system.
-- Validate deliverables with an SVG quality checklist.
+## What AIPPT is for
 
-## Project Structure
+Use AIPPT when the user wants:
 
-```text
-skills/aippt/
-├── SKILL.md
-└── references/
-    ├── bento-grid-system.md
-    ├── brand-intake.md
-    ├── design-prompt.md
-    ├── eval-prompts.md
-    ├── outline-prompt.md
-    ├── research-protocol.md
-    ├── slide-spec-schema.md
-    └── svg-quality-checklist.md
-```
+- a new company introduction deck
+- a new investor pitch deck
+- a product launch or keynote deck
+- a teaching slide deck
+- an annual review or board deck
+- a policy or market briefing deck
+- a full deck workflow rather than one-off slide drafting
 
-## Quick Start
+Trigger it even when the user says “help me make a PPT about X” or “turn these materials into a presentation”, as long as the intent is a **new deck**, not edits to an existing file.
 
-### 1. Open the skill definition
+## What AIPPT is not for
 
-Read the core skill file:
-
-```text
-skills/aippt/SKILL.md
-```
-
-### 2. Use the skill for new-deck requests
-
-Typical trigger examples:
-
-```text
-Help me create a new company introduction deck from scratch.
-Build a new investor pitch deck for an AI SaaS product.
-Create a new 45-minute teaching slide deck about Transformer basics.
-```
-
-### 3. Follow the workflow
-
-AIPPT is designed around these stages:
-
-1. Brand & asset intake
-2. Brief alignment
-3. Research protocol
-4. Outline + slide spec
-5. Page planning
-6. Output mode execution
-7. Verification
-
-## When to Use
-
-Use AIPPT when the user wants to:
-
-- create a **new** presentation deck
-- build a deck from a topic, materials, or brand constraints
-- generate research-backed slide structures and planning artifacts
-- prepare SVG-ready prompts or brand-ready handoff assets
-
-## When Not to Use
-
-Do not use AIPPT for:
+Do **not** use AIPPT for:
 
 - editing an existing `.pptx`, `.ppt`, `.key`, or Google Slides file
-- polishing or reviewing an existing finished deck
-- modifying a single slide in an existing template
-- promising native Office export when Office automation is unavailable
+- reviewing or critiquing a finished deck
+- changing a few pages inside an existing template
+- polishing copy only
+- creating only a cover page
+- returning only a lightweight outline with no downstream deck-planning workflow
 
-## Delivery Modes
+## Workflow
 
-### `prompt_bundle_only`
-Return portable page prompts, brand summary, outline, slide spec, and rendering notes.
+AIPPT keeps a strict 8-stage flow:
 
-### `svg_pages`
-Return page prompts plus per-page SVG outputs when the runtime can safely generate SVG.
+1. Stage 0: Brand and asset intake
+2. Stage 1: Brief alignment hard stop
+3. Stage 2: Research dossier
+4. Stage 3: Sticky-note outline hard stop
+5. Stage 4: Slide spec
+6. Stage 5: Page plan
+7. Stage 6: Style profile and delivery mode
+8. Stage 7: Delivery execution
+9. Stage 8: Verification and review
 
-### `brand_ready_assets`
-Return a designer/operator handoff package with brand guidance, page family rules, usage rules, prompt bundle, and optional SVG pages.
+Key gates:
 
-## Reference Documents
+- `outline.approved` must remain `false` until the outline is reviewed
+- `slide_spec` and `page_plan` are separate contracts and must both exist before rendering
+- SVG output is not considered ready until hard-rule validation passes
 
-The skill behavior is defined by these reference files:
+## Artifact contract
+
+Planned deck artifacts:
+
+- `brand_profile`
+- `brief_summary`
+- `research_dossier`
+- `outline`
+- `slide_spec`
+- `page_plan`
+- `style_profile`
+
+Delivered deck artifacts:
+
+- `delivery_manifest`
+- `review_report` when validation or refinement finds issues
+
+## Delivery modes
+
+AIPPT supports three delivery modes:
+
+- `prompt_bundle_only`
+- `svg_pages`
+- `brand_ready_assets`
+
+Default conservatively to `prompt_bundle_only` unless the user explicitly wants SVG pages or a handoff package.
+
+## Preferred output tree
+
+When filesystem access is available, AIPPT should write artifacts under:
+
+```text
+output/
+├── briefing/
+├── specs/
+├── prompts/
+├── svg/
+└── preview/
+```
+
+Mode-specific expectations:
+
+- `prompt_bundle_only`: `briefing/`, `specs/`, `prompts/`
+- `svg_pages`: everything above plus `svg/`, optionally `preview/`
+- `brand_ready_assets`: everything from `prompt_bundle_only`, plus handoff guidance and optional SVG pages
+
+## References and resource layer
+
+The skill definition lives in:
+
+- `skills/aippt/SKILL.md`
+
+Core references live in:
 
 - `skills/aippt/references/brand-intake.md`
 - `skills/aippt/references/research-protocol.md`
 - `skills/aippt/references/outline-prompt.md`
+- `skills/aippt/references/narrative-rhythm.md`
 - `skills/aippt/references/slide-spec-schema.md`
+- `skills/aippt/references/resource-menu.md`
 - `skills/aippt/references/bento-grid-system.md`
+- `skills/aippt/references/page-plan-schema.md`
 - `skills/aippt/references/design-prompt.md`
+- `skills/aippt/references/review-taxonomy.md`
 - `skills/aippt/references/svg-quality-checklist.md`
-- `skills/aippt/references/eval-prompts.md`
+- `skills/aippt/references/resource-registry.md`
+
+## Scripts
+
+Available helper scripts:
+
+- `build-prompt-bundle.mjs`
+- `validate-artifacts.mjs`
+- `validate-svg.mjs`
+- `build-preview.mjs`
+
+Run them from `docs/` with explicit arguments, for example:
+
+```bash
+cd docs
+npm run aippt:validate-artifacts -- \
+  --outline ../output/specs/outline.json \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --style-profile ../output/specs/style-profile.json \
+  --delivery-manifest ../output/prompts/delivery-manifest.json
+```
+
+## Evaluation
+
+AIPPT includes:
+
+- human-readable eval prompts: `skills/aippt/references/eval-prompts.md`
+- workflow evals: `skills/aippt/evals/evals.json`
+- trigger-boundary evals: `skills/aippt/evals/trigger-evals.json`
+
+These cover:
+
+- should-trigger new deck requests
+- should-not-trigger existing-deck edits and critiques
+- near-miss cases such as outline-only requests, template tweaks, or single-slide asks
 
 ## Documentation
 
-- English README: `README.md`
 - Chinese README: `README_CN.md`
 - VitePress docs: `docs/`
 
-## Development
-
-This repository now includes a minimal VitePress documentation setup.
+Start the docs site:
 
 ```bash
 cd docs
@@ -131,26 +181,22 @@ npm install
 npm run docs:dev
 ```
 
-Build static documentation:
+Build docs:
 
 ```bash
 cd docs
 npm run docs:build
 ```
 
-Preview the built site:
-
-```bash
-cd docs
-npm run docs:preview
-```
-
 ## Contributing
 
-Keep documentation aligned with the actual skill behavior in `skills/aippt/SKILL.md` and the files under `skills/aippt/references/`.
+Keep the following in sync whenever the workflow changes:
 
-When updating the workflow, also update the VitePress docs and both README files.
+- `skills/aippt/SKILL.md`
+- `skills/aippt/references/`
+- `skills/aippt/scripts/`
+- `README.md`
+- `README_CN.md`
+- `docs/`
 
-## License
-
-TODO: Add a project license if you want to publish or distribute this skill repository.
+Use `skills/aippt/references/resource-registry.md` as the canonical map of the current resource layer.

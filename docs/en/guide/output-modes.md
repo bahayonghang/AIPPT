@@ -1,18 +1,12 @@
 # Output Modes
 
-AIPPT currently supports three delivery modes. They are defined in [SKILL.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/SKILL.md) and work together with `design-prompt.md`, `svg-quality-checklist.md`, and the script layer.
+AIPPT supports three delivery modes. Default: `prompt_bundle_only`.
 
-## 1. `prompt_bundle_only`
+## `prompt_bundle_only` (default)
 
-This is the most conservative and portable mode, and it is the default.
+Use when portability and contract completeness are the priority.
 
-Use it when:
-
-- the user wants to render elsewhere
-- the runtime should not generate SVG directly
-- portability matters more than final visual output
-
-Deliverables:
+Must deliver:
 
 - `brand_profile`
 - `brief_summary`
@@ -21,65 +15,60 @@ Deliverables:
 - `slide_spec`
 - `page_plan`
 - `style_profile`
-- per-page prompt bundle
+- per-slide prompt bundle
 - `delivery_manifest`
 
-## 2. `svg_pages`
+## `svg_pages`
 
-Use this when the runtime can safely generate SVG.
+Use when runtime can safely generate and validate SVG.
 
-Deliverables:
+Must deliver:
 
-- everything from `prompt_bundle_only`
-- per-page `.svg`
-- notes for slides simplified for readability or fit
-- optional static HTML preview
+- everything in `prompt_bundle_only`
+- per-slide `.svg`
 
-Notes:
+Recommended:
 
-- SVG should not be considered ready until it passes hard-rule validation
-- do not fabricate screenshots, logos, or chart data
-- missing assets must become explicit placeholders
-- produce a `review_report` when review findings exist
+- static preview HTML
 
-## 3. `brand_ready_assets`
+Hard rule: SVG is not ready until `validate-svg` passes.
 
-Use this for a designer or PowerPoint operator handoff.
+## `brand_ready_assets`
 
-Deliverables:
+Use for designer/operator handoff.
 
-- everything from `prompt_bundle_only`
-- preset-selection rationale
-- brand or theme guidance
-- recommended page families
-- chart and icon usage rules
-- optional SVG pages when explicitly requested
+Must deliver:
+
+- everything in `prompt_bundle_only`
+- style/brand override notes
+- layout/chart/citation usage guidance
+
+SVG is optional unless explicitly requested.
 
 ## Shared rules
 
-All modes must follow these rules:
+All modes require:
 
-- every page prompt must be self-contained
-- citation refs stay visible when the slide uses external facts
-- `research_dossier`, `slide_spec`, and `page_plan` must not be skipped
-- `outline.approved` must already be `true`
-- if filesystem is available, artifacts should be written under `output/`
-- the result should include a `delivery_manifest`
+- self-contained per-page prompts
+- visible citation refs for external facts
+- no skipping of `slide_spec` and `page_plan`
+- `outline.approved = true` before render-delivery
+- `delivery_manifest` in final outputs
 
-## Script support
+## Manifest minimum (v2)
 
-These scripts are provided by `docs/package.json` and should be run from the `docs/` directory:
+`delivery_manifest` should include:
 
-- `npm run aippt:build-prompts`
-- `npm run aippt:validate-artifacts`
-- `npm run aippt:validate-svg`
-- `npm run aippt:build-preview`
+- `schema_version`
+- `contract_version`
+- `mode`
+- `input_files`
+- `outputs`
+- per-slide: `slide_id`, `title`, `story_role`, `argument_claim`, `proof_question`, `exhibit_intent`, `prompt_file`
 
 ## Office compatibility note
 
-SVG compatibility is treated conservatively:
+SVG support is treated conservatively:
 
-- high confidence: Microsoft 365, PowerPoint 2024, 2021, 2019
-- local validation required: PowerPoint 2016
-
-If the target is PowerPoint 2016, the workflow should explicitly note that local validation is still required.
+- high confidence: Microsoft 365 / PowerPoint 2024/2021/2019
+- local verification required: PowerPoint 2016

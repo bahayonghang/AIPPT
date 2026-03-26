@@ -4,7 +4,7 @@ layout: home
 hero:
   name: AIPPT
   text: 从零创建新演示文稿的研究驱动型 Skill
-  tagline: 让 deck 生成从“直接排版”升级为“品牌 intake + 证据研究 + sticky-note 大纲 + page plan + 可验证交付”。
+  tagline: "用“论证合同 + 生产合同”替代“先排版后补逻辑”，让每页结论、证据与版面都可追溯、可校验。"
   actions:
     - theme: brand
       text: 快速开始
@@ -17,45 +17,45 @@ hero:
       link: https://github.com/bahayonghang/AIPPT
 
 features:
-  - title: 只做新 deck，不碰旧稿编辑
-    details: "面向全新 deck 创建场景，避免把“编辑已有 PPTX”与“从零策划新 deck”混在一起。"
-  - title: 先研究，再写结论
-    details: "所有重要事实、数字、时间线都要求能回溯到 `research_dossier` 与 source ID。"
+  - title: 只做新 deck
+    details: "面向从主题、资料和品牌约束出发的新建 deck，不吞掉现有 deck 编辑与点评场景。"
+  - title: 研究先于结论
+    details: "所有关键事实、数字和时间线都必须能回溯到 `research_dossier` 与 source ID。"
   - title: 大纲有 Hard Stop
-    details: "`outline.approved` 是执行门槛，在 sticky-note 大纲确认之前不能进入渲染阶段。"
-  - title: Slide Spec + Page Plan 双合同
-    details: "先用 `slide_spec` 锁叙事与预算，再用 `page_plan` 锁布局、卡片和引用位置。"
-  - title: Style Profile 可配置
-    details: "内置 style registry，可根据品牌显式选择或保守 fallback 到 neutral preset。"
-  - title: 交付可验证
-    details: "支持 `prompt_bundle_only`、`svg_pages`、`brand_ready_assets`，并提供 artifact / SVG 校验与静态 preview 工具。"
+    details: "`outline.approved` 是执行门槛，在 sticky-note 大纲确认前不能进入渲染阶段。"
+  - title: 双合同规划
+    details: "outline 锁 `governing_thought/pillar/proof`，`slide_spec + page_plan` 锁 WHAT/HOW，避免中途拍脑袋决策。"
+  - title: 资源层可控
+    details: "通过 `resource-registry`、`resource-menu` 和 `narrative-rhythm` 管理轻量资源层，而不是回到超重型模板库。"
+  - title: 脚本与交付可验证
+    details: "支持 prompt bundle、SVG、preview 与 delivery manifest；`validate-artifacts` / `validate-svg` 可做硬规则校验。"
 ---
 
-## 为什么需要新版 AIPPT
+## 为什么新版 AIPPT 要强调“中间工件”
 
-很多“帮我做一套 PPT”请求，本质上同时包含：
+很多“帮我做一套 PPT”请求，其实同时包含：
 
 - 需求澄清
-- 品牌与素材约束
-- 研究取证
-- 信息架构
+- 品牌约束
+- 资料研究
+- 叙事设计
 - 页面规划
-- 渲染交付
-- 最终验收
+- 交付模式选择
+- 最终验证
 
-如果这些步骤没有拆开，结果通常会退化成：
+如果这些步骤混在一起，结果通常会退化成：
 
-- 先画版式，后补内容
+- 先做版式，后补内容
 - 没证据链的“像真的”数字
 - 品牌元素被随意猜测
-- 一页塞太多内容，最后靠缩字体硬撑
-- 明明导出了文件，却不知道是否真的可交付
+- 页面过密，靠缩字体硬撑
+- 虽然导出了文件，但不知道是否真的可交付
 
-新版 AIPPT 把这些步骤明确拆成 staged workflow，并给每一阶段定义产物和验证边界。
+AIPPT 把这些步骤拆成 staged workflow，并为每一步定义输入、输出和 hard stop。
 
-## 你会得到什么
+## 核心工件
 
-基于 `skills/aippt/SKILL.md` 的当前定义，AIPPT 的核心工件包括：
+AIPPT 当前的核心工件包括：
 
 - `brand_profile`
 - `brief_summary`
@@ -64,31 +64,16 @@ features:
 - `slide_spec`
 - `page_plan`
 - `style_profile`
-- `review_report`
 - `delivery_manifest`
-
-## 适合什么场景
-
-- 企业介绍
-- 融资路演
-- 产品发布会 slides
-- 教学课件
-- 管理层经营复盘
-- 政策与行业解读型演示
-- 董事会或高密度行业汇报
-
-## 不适合什么场景
-
-- 修改现有 `.pptx` / `.ppt` / `.key` / Google Slides
-- 审校一套现成 deck
-- 只润色单页标题、文案或排版
-- 只要一张图或一个封面页，不需要完整 deck workflow
+- `review_report`
 
 ## 文档入口
 
 - [快速开始](/guide/getting-started)
 - [完整工作流](/guide/workflow)
+- [工件与输出树](/guide/artifacts)
 - [输出模式](/guide/output-modes)
+- [脚本说明](/guide/scripts)
 - [参考文件与资源层](/guide/references)
 - [评估、脚本与回归测试](/guide/evaluation)
 - [English Documentation](/en/)

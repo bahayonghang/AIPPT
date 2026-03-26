@@ -1,87 +1,78 @@
 # Evaluation, Scripts, and Regression
 
-AIPPT now ships with:
+AIPPT evaluation has three layers:
 
-- human-readable evaluation prompts: `skills/aippt/references/eval-prompts.md`
-- machine-readable workflow evals: `skills/aippt/evals/evals.json`
-- machine-readable trigger evals: `skills/aippt/evals/trigger-evals.json`
+- human-readable prompts: `skills/aippt/references/eval-prompts.md`
+- workflow evals: `skills/aippt/evals/evals.json`
+- trigger-boundary evals: `skills/aippt/evals/trigger-evals.json`
 
-Together they validate **trigger quality**, **workflow completeness**, and **tooling contract consistency**.
+## v2 evaluation focus
 
-## What to evaluate
+Beyond trigger accuracy, verify dual-contract integrity:
 
-Each test case should check:
+1. outline includes governing thought + pillars + transitions
+2. each slide carries `argument_claim` + `proof_question`
+3. slide spec includes `exhibit_intent` + `evidence_layer` + `fit_risk`
+4. page plan includes `proof_trace` + `exhibit_blueprint` + `rhythm_slot`
+5. cross-contract consistency is preserved
+6. evidence refs stay traceable
 
-1. whether `aippt` triggered or stayed silent correctly
-2. whether brand and brief context were collected where needed
-3. whether source-backed research outputs kept source IDs visible
-4. whether `outline`, `slide_spec`, `page_plan`, and `style_profile` were all produced
-5. whether rendering was blocked before `outline.approved = true`
-6. whether the chosen layout family and delivery mode made sense
-7. whether `delivery_manifest` and `review_report` were available when needed
+## Case classes
 
-## Positive trigger cases
+Positive:
 
-These requests should trigger AIPPT:
-
-- company introduction deck
-- investor pitch deck
-- product launch slides
+- new company deck
+- investor pitch
+- board evidence-heavy deck
+- policy briefing
 - teaching deck
-- annual business review deck
-- dense board or market report deck
-- policy interpretation deck
-- offline-material-only deck creation
+- offline-material full deck
 
-Shared condition:
+Negative / near-miss:
 
-> the user wants to create a new presentation deck from scratch.
+- existing deck edits
+- critique-only requests
+- outline-only requests
+- single-page requests
+- copy-polish-only requests
 
-## Negative trigger cases
-
-These requests should not trigger AIPPT:
-
-- editing a specific slide in an existing PPTX
-- reviewing or critiquing an already finished deck
-- tweaking one page layout or title
-- creating only a cover image or one-off slide asset
-
-Those tasks belong to editing, review, or single-slide creation workflows, not to AIPPT's new-deck workflow.
-
-## Recommended regression checks
-
-After updating these files, rerun evaluation:
-
-- `skills/aippt/SKILL.md`
-- `skills/aippt/references/outline-prompt.md`
-- `skills/aippt/references/slide-spec-schema.md`
-- `skills/aippt/references/page-plan-schema.md`
-- `skills/aippt/references/design-prompt.md`
-- `skills/aippt/references/review-taxonomy.md`
-- `skills/aippt/references/styles/*.yaml`
-
-## Script validation layer
-
-In addition to prompt regression, run:
+## Script-level checks
 
 ```bash
 cd docs
-npm run aippt:validate-artifacts
-npm run aippt:validate-svg
+npm run aippt:validate-artifacts -- \
+  --outline ../output/specs/outline.json \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --style-profile ../output/specs/style-profile.json \
+  --delivery-manifest ../output/prompts/delivery-manifest.json
 ```
 
-These validate:
+Legacy compatibility mode:
 
-- one-to-one mapping across `outline`, `slide_spec`, `page_plan`, and `delivery_manifest`
-- SVG hard rules such as viewBox, font floor, safe-zone placement, and footer citations
+```bash
+cd docs
+npm run aippt:validate-artifacts -- \
+  --outline ../output/specs/outline.json \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --allow-legacy=true
+```
+
+SVG checks:
+
+```bash
+cd docs
+npm run aippt:validate-svg -- \
+  --input ../output/svg \
+  --page-plan ../output/specs/page-plan.json \
+  --manifest ../output/prompts/delivery-manifest.json
+```
 
 ## Success criteria
 
-A healthy current AIPPT should:
-
-- reliably recognize new-deck requests
-- avoid swallowing existing-deck edit requests
-- consistently produce `brand_profile`, `brief_summary`, and `research_dossier`
-- consistently produce `outline`, `slide_spec`, `page_plan`, and `style_profile`
-- block rendering when `outline.approved = false`
-- keep planning outputs and delivery outputs verifiable
+- full new-deck requests trigger reliably
+- edit/review/single-page requests do not trigger
+- `validate-artifacts` passes without blocking errors
+- `svg_pages` outputs pass `validate-svg`
+- delivery manifest accurately describes produced assets

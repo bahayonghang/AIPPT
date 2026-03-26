@@ -27,9 +27,7 @@ export default defineConfig({
     search: {
       provider: 'local'
     },
-    socialLinks: [
-      { icon: 'github', link: repo }
-    ],
+    socialLinks: [{ icon: 'github', link: repo }],
     editLink: {
       pattern: 'https://github.com/bahayonghang/AIPPT/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页'
@@ -57,7 +55,9 @@ export default defineConfig({
           { text: '首页', link: '/' },
           { text: '快速开始', link: '/guide/getting-started' },
           { text: '工作流', link: '/guide/workflow' },
+          { text: '工件与输出', link: '/guide/artifacts' },
           { text: '输出模式', link: '/guide/output-modes' },
+          { text: '脚本', link: '/guide/scripts' },
           { text: '参考文件', link: '/guide/references' },
           { text: '评估用例', link: '/guide/evaluation' },
           { text: 'English', link: '/en/' }
@@ -69,7 +69,9 @@ export default defineConfig({
               { text: '概览', link: '/' },
               { text: '快速开始', link: '/guide/getting-started' },
               { text: '工作流', link: '/guide/workflow' },
+              { text: '工件与输出', link: '/guide/artifacts' },
               { text: '输出模式', link: '/guide/output-modes' },
+              { text: '脚本', link: '/guide/scripts' },
               { text: '参考文件', link: '/guide/references' },
               { text: '评估用例', link: '/guide/evaluation' }
             ]
@@ -88,7 +90,9 @@ export default defineConfig({
           { text: 'Home', link: '/en/' },
           { text: 'Getting Started', link: '/en/guide/getting-started' },
           { text: 'Workflow', link: '/en/guide/workflow' },
+          { text: 'Artifacts', link: '/en/guide/artifacts' },
           { text: 'Output Modes', link: '/en/guide/output-modes' },
+          { text: 'Scripts', link: '/en/guide/scripts' },
           { text: 'References', link: '/en/guide/references' },
           { text: 'Evaluation', link: '/en/guide/evaluation' },
           { text: '简体中文', link: '/' }
@@ -100,7 +104,9 @@ export default defineConfig({
               { text: 'Overview', link: '/en/' },
               { text: 'Getting Started', link: '/en/guide/getting-started' },
               { text: 'Workflow', link: '/en/guide/workflow' },
+              { text: 'Artifacts', link: '/en/guide/artifacts' },
               { text: 'Output Modes', link: '/en/guide/output-modes' },
+              { text: 'Scripts', link: '/en/guide/scripts' },
               { text: 'References', link: '/en/guide/references' },
               { text: 'Evaluation', link: '/en/guide/evaluation' }
             ]
@@ -122,4 +128,3 @@ export default defineConfig({
     }
   }
 })
-

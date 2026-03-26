@@ -1,98 +1,99 @@
 # Getting Started
 
-## 1. Understand the scope first
+## 1. Confirm this is an AIPPT request
 
-AIPPT is only for creating a **new deck from scratch**.
+AIPPT is for **building a full new deck from scratch**.
 
-If the user already has a `.pptx`, `.ppt`, `.key`, or Google Slides file and only wants edits, review, polishing, or single-slide changes, that request should not go through the AIPPT workflow.
+Good fit:
 
-Core behavior is defined in [SKILL.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/SKILL.md).
+- full new-deck workflow from topic/materials/brand inputs
+- requires research, argument structure, page planning, and delivery contracts
 
-## 2. Gather the right inputs
+Not a fit:
 
-Recommended inputs include:
+- editing existing deck files
+- critique-only requests
+- single-slide requests
+- outline-only requests
 
-- topic or project name
-- target audience
-- presentation purpose
-- desired audience action after the presentation
+## 2. Prepare inputs
+
+Recommended:
+
+- topic/project
+- audience
+- purpose
+- desired action
 - page budget
 - language
-- source materials such as websites, white papers, reports, PDFs, or notes
-- brand assets such as logo, color system, typography, icon style, and forbidden elements
+- source materials (websites, reports, PDFs, notes)
+- brand constraints (logo, color, typography, forbidden elements)
 
-If brand assets are incomplete, AIPPT can infer them only from official sources and must explicitly mark inferred items.
+## 3. Understand dual contracts
 
-## 3. Follow the staged workflow
+AIPPT outputs two layers:
 
-The current AIPPT flow is:
+- argument layer: governing thought, pillars, claims, proof questions
+- production layer: slide spec, page plan, style profile, delivery manifest
 
-1. Stage 0: Brand and asset intake
-2. Stage 1: Brief alignment hard stop
-3. Stage 2: Research dossier
-4. Stage 3: Sticky-note outline hard stop
-5. Stage 4: Slide spec
-6. Stage 5: Page plan
-7. Stage 6: Style profile and delivery mode
-8. Stage 7: Delivery execution
-9. Stage 8: Verification and review
+Critical gate:
 
-Important changes from the earlier workflow:
+- first outline must be `approved=false`
+- no rendering before explicit approval
 
-- `outline.approved` is now a hard execution gate
-- `slide_spec` and `page_plan` are separate contracts
-- `style_profile` is a first-class artifact
-- `review_report` and `delivery_manifest` are part of the formal delivery surface
+## 4. Choose delivery mode
 
-## 4. Choose a delivery mode
+Default is `prompt_bundle_only`.
 
-If the user does not specify one, the skill should conservatively default to `prompt_bundle_only`.
+Optional:
 
-Available modes:
-
-- `prompt_bundle_only`
 - `svg_pages`
 - `brand_ready_assets`
 
-## 5. Use the script layer
+## 5. Preferred output tree
 
-These npm scripts are now exposed by `docs/package.json`. Enter the `docs/` directory before running them.
-
-```bash
-cd docs
-npm run aippt:build-prompts
-npm run aippt:validate-artifacts
-npm run aippt:validate-svg
-npm run aippt:build-preview
+```text
+output/
+├── briefing/
+├── specs/
+├── prompts/
+├── svg/
+└── preview/
 ```
 
-These map to:
+## 6. Common scripts
 
-- [build-prompt-bundle.mjs](D:/Documents/Code/Agents/AIPPT/skills/aippt/scripts/build-prompt-bundle.mjs)
-- [validate-artifacts.mjs](D:/Documents/Code/Agents/AIPPT/skills/aippt/scripts/validate-artifacts.mjs)
-- [validate-svg.mjs](D:/Documents/Code/Agents/AIPPT/skills/aippt/scripts/validate-svg.mjs)
-- [build-preview.mjs](D:/Documents/Code/Agents/AIPPT/skills/aippt/scripts/build-preview.mjs)
-
-## 6. Run the documentation site
-
-Start the local documentation site:
+Build prompt bundle:
 
 ```bash
 cd docs
-npm install
-npm run docs:dev
+npm run aippt:build-prompts -- \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --brand-profile ../output/briefing/brand-profile.md \
+  --style-profile ../output/specs/style-profile.json \
+  --output-dir ../output/prompts \
+  --delivery-mode prompt_bundle_only
 ```
 
-Build the static site:
+Validate contracts:
 
 ```bash
 cd docs
-npm run docs:build
+npm run aippt:validate-artifacts -- \
+  --outline ../output/specs/outline.json \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --style-profile ../output/specs/style-profile.json \
+  --delivery-manifest ../output/prompts/delivery-manifest.json
 ```
 
-Preview the build:
+Validate SVG (optional):
 
 ```bash
 cd docs
-npm run docs:preview
+npm run aippt:validate-svg -- \
+  --input ../output/svg \
+  --page-plan ../output/specs/page-plan.json \
+  --manifest ../output/prompts/delivery-manifest.json
 ```

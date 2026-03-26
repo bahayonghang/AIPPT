@@ -1,212 +1,224 @@
 # 工作流
 
-本页根据 [SKILL.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/SKILL.md) 与 `skills/aippt/references/` 中的当前定义整理 AIPPT 的完整执行流程。
+本页对应当前 `skills/aippt/SKILL.md` 的执行规范。  
+新版 AIPPT 采用“双层合同”：
+
+- 论证合同（argument contract）：结论、支柱、证明问题、证据链
+- 生产合同（production contract）：逐页规格、版面规划、样式词汇、交付清单
 
 ## 总览
 
-AIPPT 的核心原则是：
+核心原则：
 
-- Content first, styling second
-- Research before claims
-- Outline before rendering
-- Planning before SVG
-- Brand constraints before decoration
-- Verification before claiming readiness
+- Argument first, visuals second
+- Evidence or no claim
+- Outline before production
+- Explicit layout contracts over implicit style guesses
+- Verification before readiness
 
-当前完整阶段：
+阶段序列：
 
 1. Stage 0: Brand and asset intake
 2. Stage 1: Brief alignment hard stop
 3. Stage 2: Research dossier
-4. Stage 3: Sticky-note outline hard stop
-5. Stage 4: Slide spec
-6. Stage 5: Page plan
+4. Stage 3: Argument architecture + outline hard stop
+5. Stage 4: Slide spec (WHAT to prove)
+6. Stage 5: Page plan (HOW to present)
 7. Stage 6: Style profile and delivery mode
 8. Stage 7: Delivery execution
 9. Stage 8: Verification and review
 
-可以压缩表达，但不能跳过阶段。
-
 ## Stage 0：品牌与素材 intake
 
-对应参考文件：[brand-intake.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/brand-intake.md)
+参考：
 
-需要收集或推断：
+- `skills/aippt/references/brand-intake.md`
+- `skills/aippt/references/style-vocabulary.md`
 
-- 组织 / 产品 / 项目名称
-- 官网与官方资料
-- logo 与 logo 限制
-- 品牌颜色、字体、图标风格
-- 照片 / 插画方向
-- 图表风格与数字格式规则
-- 语气风格
-- 禁止元素
-- 法务 / 合规说明
-- style preset 候选
+目标：
 
-这一阶段输出一个紧凑的 `brand_profile`。
+- 锁定官方来源、品牌约束、禁用元素、推断边界
+- 产出可下游复用的视觉词汇线索（不是最终视觉稿）
 
-## Stage 1：简报对齐 Hard Stop
+出口工件：`brand_profile`
 
-在进入重研究之前，先锁定简报范围。
+## Stage 1：Brief 对齐 Hard Stop
 
-至少要确认：
+必须锁定：
 
 - audience
 - purpose
-- desired audience action
-- presenter context
-- speaking duration
+- desired action
+- presenter/use context
+- time budget / reading mode
 - page budget
 - language
 - must-have sections
 - success criteria
 
-这一阶段输出 `brief_summary`。
+出口工件：`brief_summary`
 
 ## Stage 2：研究 dossier
 
-对应参考文件：[research-protocol.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/research-protocol.md)
+参考：
 
-研究规则：
+- `skills/aippt/references/research-protocol.md`
 
-- 优先官方与第一手来源
-- 搜索仅用于发现，不等于证据
-- 时间敏感信息必须带日期
-- 没有来源的数字、时间线、结论不能进入 slide 内容
-- 若证据冲突，必须记录冲突，不可平滑处理
+目标：
 
-输出包括：
+- 形成 3-6 个 research themes
+- 建立稳定 source IDs（`R1`, `R2`, ...）
+- 按章节准备 evidence packets
 
-- human-readable research summary
-- structured `research_dossier`
+硬规则：
 
-## Stage 3：Sticky-note Outline Hard Stop
+- 搜索是 discovery，不等于 proof
+- 时间敏感事实必须带日期
+- 未入 source registry 的事实不能进入后续合同
 
-对应参考文件：
+出口工件：`research_dossier`
 
-- [outline-prompt.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/outline-prompt.md)
-- [cognitive-design-principles.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/cognitive-design-principles.md)
+## Stage 3：论证架构 + Outline Hard Stop
 
-这一阶段产出：
+参考：
 
-- `outline`
-- sticky-note 风格预览
+- `skills/aippt/references/argument-architecture.md`
+- `skills/aippt/references/ghost-deck-playbook.md`
+- `skills/aippt/references/outline-prompt.md`
+- `skills/aippt/references/narrative-rhythm.md`
 
-关键规则：
+目标：
 
-- 初次生成时 `outline.approved = false`
-- 每页只承担一个主要沟通任务
-- 页标题必须有信息量
-- 只能使用 research dossier 中有证据支持的事实
+- 先形成可辩护的 deck 论证链，再进入页面规划
 
-Hard Stop：
+`outline` 关键字段：
 
-- 在 outline 获批前，不能进入 `slide_spec`、`page_plan`、prompt bundle 或 SVG 执行
+- `governing_thought`
+- `engagement_archetype`
+- `pillar_map[]`
+- `transition_map[]`
+- `quality_gates`
+- `slides[].argument_claim`
+- `slides[].proof_question`
 
-## Stage 4：Slide Spec
+Hard stop：
 
-对应参考文件：[slide-spec-schema.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/slide-spec-schema.md)
+- 首次产出必须 `outline.approved = false`
+- 未批准前，禁止进入 `slide_spec` / `page_plan` / prompt bundle / SVG
 
-`slide_spec` 是逐页执行合同。当前关键字段包括：
+质量闸门：
 
-- `slide_id`
-- `page_type`
-- `page_goal`
-- `audience_takeaway`
-- `evidence_refs`
-- `content_budget`
-- `layout_candidates`
-- `preferred_layout`
-- `story_role`
-- `review_focus`
-- `visual_priority`
-- `asset_needs`
-- `citations_mode`
+- helicopter test
+- dead-slide test
+- rising-stakes test
 
-新增点：
+## Stage 4：Slide Spec（WHAT）
 
-- `story_role` 区分 `anchor / proof / bridge / breathing / closing`
-- `review_focus` 明确这页后续重点看什么，如 `layout_balance`、`density`、`citation_visibility`
+参考：
 
-## Stage 5：Page Plan
+- `skills/aippt/references/slide-spec-schema.md`
+- `skills/aippt/references/exhibit-intent-taxonomy.md`
+- `skills/aippt/references/resource-menu.md`
 
-对应参考文件：
+目标：
 
-- [bento-grid-system.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/bento-grid-system.md)
-- [page-plan-schema.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/page-plan-schema.md)
+- 给每页定义“要证明什么”，并锁定证据与展示意图
 
-目标是把 `slide_spec` 变成真正可执行的页面规划合同。
+新增关键字段：
 
-每页都要明确：
+- `argument_claim`
+- `proof_question`
+- `exhibit_intent`
+- `evidence_layer`
+- `data_requirements[]`
+- `fit_risk`
 
-- `final_layout`
-- `layout_rationale`
-- `card_map`
-- `citations_placement`
-- `visual_emphasis_order`
-- `overflow_strategy`
-- unresolved asset placeholders
+## Stage 5：Page Plan（HOW）
 
-重要约束：
+参考：
 
-- 使用标准布局名称
-- 不要发明脱离规范的卡片宽度
-- 内容超预算时优先拆页，而不是压缩字体
-- 窄卡片不能塞长段落
+- `skills/aippt/references/page-plan-schema.md`
+- `skills/aippt/references/bento-grid-system.md`
+- `skills/aippt/references/resource-menu.md`
+
+目标：
+
+- 把 Stage 4 的证明合同落成可执行版面合同
+
+新增关键字段：
+
+- `proof_trace`
+- `exhibit_blueprint`
+- `rhythm_slot`
+- `adjacency_check`
+- `overflow_decision`
+
+规则：
+
+- 仅使用 canonical layouts
+- `proof_trace` 必须对齐 `slide_spec` 的 claim/question
+- 出现密度风险时优先拆页，不用缩字硬撑
 
 ## Stage 6：Style Profile 与交付模式
 
-对应资源：
+参考：
 
-- [references/styles/index.json](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/styles/index.json)
-- `references/styles/*.yaml`
+- `skills/aippt/references/styles/index.json`
+- `skills/aippt/references/styles/*.yaml`
+- `skills/aippt/references/style-vocabulary.md`
+- `skills/aippt/references/resource-registry.md`
 
-这一阶段要确定：
+`style_profile` 必须包含：
 
-- 使用哪个 style preset
-- 是否来自显式品牌、品牌推断，还是 neutral fallback
-- 交付模式是 `prompt_bundle_only`、`svg_pages` 还是 `brand_ready_assets`
+- `style_direction`
+- `palette_roles`
+- `typography_roles`
+- `brand_override_rules`
 
-输出 `style_profile`。
+交付模式：
+
+- `prompt_bundle_only`（默认）
+- `svg_pages`
+- `brand_ready_assets`
 
 ## Stage 7：交付执行
 
-对应参考文件：[design-prompt.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/design-prompt.md)
+参考：
 
-这一阶段根据交付模式产出：
+- `skills/aippt/references/design-prompt.md`
+- `skills/aippt/references/resource-registry.md`
 
-- briefing
-- specs
-- prompts
-- svg
-- preview
+脚本：
 
-共享规则：
+- `build-prompt-bundle.mjs`
+- `validate-artifacts.mjs`
+- `validate-svg.mjs`
+- `build-preview.mjs`
 
-- 每页 prompt 必须自包含
-- 有外部事实的页面必须保留 citation refs
-- 不能跳过 `slide_spec` 与 `page_plan`
+要求：
+
+- 每页 prompt 自包含
+- 引用可见
+- 缺失资产只能显式占位，不能杜撰
+- `delivery_manifest` 必须与实际产物一致
 
 ## Stage 8：验证与 Review
 
-对应参考文件：
+参考：
 
-- [svg-quality-checklist.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/svg-quality-checklist.md)
-- [review-taxonomy.md](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/review-taxonomy.md)
+- `skills/aippt/references/review-taxonomy.md`
+- `skills/aippt/references/svg-quality-checklist.md`
+- `skills/aippt/references/narrative-rhythm.md`
 
-执行顺序：
+顺序：
 
-1. 先做 deterministic hard-rule validation
-2. 再做 typed review / refinement
+1. deterministic validation
+2. typed refinement
 
-至少要确认：
+至少验证：
 
 - `outline.approved = true`
-- `outline`、`slide_spec`、`page_plan` 一一映射
-- citations 在需要时可见
-- 布局、尺寸、间距一致
-- 无文字溢出与安全区越界
-- 字体 fallback 合理
-- 交付模式确实产出了对应文件
-- 必要时返回 `review_report`
+- outline/spec/plan 一一映射
+- claim-question-intent 三链一致
+- 节奏与布局重复风险受控
+- SVG 通过 root/viewBox/safe-zone/placeholder/font-floor 检查
