@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { naturalSort, parseArgs } from "./_shared.mjs";
+import { naturalSort, parseArgs, readWrappedJson } from "./_shared.mjs";
 
 const args = parseArgs(process.argv);
 const inputPath = args.input;
@@ -11,11 +11,13 @@ function fail(message) {
 }
 
 if (!inputPath) {
-  fail("Required argument: --input <svg-file-or-directory>");
+  fail("Required argument: --input <svg-file-or-directory> [--page-plan] [--manifest]");
 }
 
 const minFontSize = Number(args["min-font"] ?? 12);
 const softBodyFloor = Number(args["body-floor"] ?? 14);
+const pagePlanPath = args["page-plan"];
+const manifestPath = args.manifest;
 
 function collectSvgFiles(targetPath) {
   const resolved = path.resolve(targetPath);
@@ -46,8 +48,32 @@ function parseNumericAttribute(attributes, name) {
   return styleMatch ? Number(styleMatch[1]) : null;
 }
 
+function inferSlideIdFromFile(filePath) {
+  const baseName = path.basename(filePath, ".svg");
+  const match = baseName.match(/(s\d{1,4})/i);
+  return match ? match[1].toUpperCase() : null;
+}
+
 const files = collectSvgFiles(inputPath);
 const results = [];
+
+const pagePlanDocument = pagePlanPath
+  ? readWrappedJson(pagePlanPath, ["PAGE_PLAN"])
+  : null;
+const pagePlan = pagePlanDocument?.page_plan ?? pagePlanDocument;
+const pagePlanBySlideId = new Map((pagePlan?.slides ?? []).map((slide) => [slide.slide_id, slide]));
+
+const manifestDocument = manifestPath
+  ? readWrappedJson(manifestPath, ["DELIVERY_MANIFEST"])
+  : null;
+const manifest = manifestDocument?.delivery_manifest ?? manifestDocument;
+const manifestFileToSlide = new Map();
+
+for (const slide of manifest?.slides ?? []) {
+  if (slide.svg_file) {
+    manifestFileToSlide.set(path.basename(slide.svg_file), slide.slide_id);
+  }
+}
 
 for (const file of files) {
   const raw = fs.readFileSync(file, "utf8");
@@ -62,12 +88,28 @@ for (const file of files) {
     errors.push("Missing closing </svg> tag.");
   }
 
+  if (!raw.includes('xmlns="http://www.w3.org/2000/svg"')) {
+    errors.push('Missing required SVG namespace xmlns="http://www.w3.org/2000/svg".');
+  }
+
   if (!raw.includes('viewBox="0 0 1280 720"')) {
     errors.push('Missing required viewBox="0 0 1280 720".');
   }
 
   if (!raw.includes("<text")) {
     warnings.push("No <text> elements found.");
+  }
+
+  if (!/font-family\s*=|font-family\s*:/i.test(raw)) {
+    warnings.push("No explicit font-family found.");
+  }
+
+  if (/\{\{.+?\}\}/.test(raw)) {
+    errors.push("Found unresolved template placeholders like {{...}}.");
+  }
+
+  if (/\b(?:TODO|TBD)\b/i.test(raw)) {
+    errors.push("Found unresolved TODO/TBD markers.");
   }
 
   const fontSizes = [];
@@ -112,6 +154,40 @@ for (const file of files) {
     }
   }
 
+  if (pagePlanBySlideId.size > 0) {
+    const baseName = path.basename(file);
+    const slideId =
+      manifestFileToSlide.get(baseName) ??
+      inferSlideIdFromFile(file);
+
+    if (!slideId) {
+      warnings.push("Could not infer slide_id for source-ref consistency check.");
+    } else {
+      const planSlide = pagePlanBySlideId.get(slideId);
+
+      if (!planSlide) {
+        warnings.push(`No page_plan entry found for inferred slide_id ${slideId}.`);
+      } else {
+        const refs = new Set([
+          ...(planSlide.proof_trace?.evidence_refs ?? []),
+          ...((planSlide.card_map ?? []).flatMap((card) => card.source_refs ?? []))
+        ]);
+
+        if (planSlide.citations_placement !== "none" && refs.size > 0) {
+          for (const ref of refs) {
+            if (!raw.includes(ref)) {
+              errors.push(`Missing source ref "${ref}" required by page_plan for ${slideId}.`);
+            }
+          }
+        }
+
+        if (planSlide.citations_placement === "none" && /^sources?:/im.test(raw)) {
+          warnings.push(`Slide ${slideId} declares citations_placement=none but contains source line.`);
+        }
+      }
+    }
+  }
+
   results.push({
     file,
     passed: errors.length === 0,
@@ -123,6 +199,8 @@ for (const file of files) {
 const summary = {
   checked_files: files.length,
   passed_files: results.filter((item) => item.passed).length,
+  page_plan_checked: pagePlanBySlideId.size > 0,
+  manifest_checked: Boolean(manifest),
   results
 };
 

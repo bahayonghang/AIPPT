@@ -30,7 +30,7 @@ if (args.manifest) {
   const manifest = manifestDocument.delivery_manifest ?? manifestDocument;
 
   slides = (manifest.slides ?? []).map((slide) => ({
-    file: slide.svg_file ?? slide.prompt_file ?? slide.file ?? `${slide.slide_id}.svg`,
+    file: slide.svg_file ?? slide.file ?? `${slide.slide_id}.svg`,
     label: slide.title ?? slide.slide_id
   }));
 }
