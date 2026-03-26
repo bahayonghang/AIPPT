@@ -1,68 +1,79 @@
 # Review Taxonomy
 
-Use this file in **Stage 8** after hard-rule validation.
+Use this file in **Stage 8** after deterministic validation.
 
-The purpose of this taxonomy is to turn vague design feedback into portable, actionable review output. It does not depend on Gemini, Task APIs, or a specific host.
+The goal is to convert vague feedback into typed, actionable revisions.
 
 ## Review layers
 
-1. **Deterministic validation**
-   Check structural and technical rules first.
-2. **Typed refinement**
-   If issues remain, classify them using the issue types below.
+1. Deterministic validation (`validate-artifacts`, `validate-svg`)
+2. Typed refinement on remaining quality issues
 
 ## Issue types
 
 ### 1. `attribute_change`
 
-Use when a precise property should change without rethinking the layout.
+Precise property tweaks with no layout rethink.
 
 Examples:
 
 - font size too small
-- accent color too weak
-- card shadow too heavy
+- accent contrast too weak
 - citation chip opacity too low
 
 ### 2. `layout_restructure`
 
-Use when the grid choice or card arrangement is wrong, but the slide concept is still valid.
+Layout choice is wrong but slide concept remains valid.
 
 Examples:
 
-- the slide needs hero + sidebar instead of three equal columns
-- the current hierarchy hides the main message
-- the supporting metrics should move into a sidebar stack
+- main claim hidden in a secondary card
+- evidence should move to hero+sidebar instead of equal columns
 
 ### 3. `full_rethink`
 
-Use when the slide approach itself is wrong and patching will not fix it.
+Slide concept itself fails and patching is not enough.
 
 Examples:
 
-- dense table should become a visual comparison
-- a content wall should be split into a different narrative device
-- the slide tells no clear story
+- wrong proof shape for the question
+- impossible density for one page
 
 ### 4. `content_reduction`
 
-Use when clarity is blocked by too much content.
+Clarity blocked by excess content.
 
 Examples:
 
-- too many bullets
-- too many info units for the page type
-- long paragraphs where concise claims are needed
+- too many bullets/cards
+- long paragraphs in narrow slots
 
 ### 5. `deck_coordination`
 
-Use when the issue spans multiple slides.
+Cross-slide pacing and consistency issues.
 
 Examples:
 
-- too many slides in a row use the same layout
-- accent color is overused across the deck
-- the deck lacks breathing slides
+- repeated layout families across adjacent slides
+- no breathing slide in dense proof cluster
+
+### 6. `evidence_repair`
+
+Source traceability or evidence display issues.
+
+Examples:
+
+- source refs missing from render
+- proof claim unsupported by cited evidence
+
+### 7. `argument_consistency`
+
+Argument chain mismatch between contracts.
+
+Examples:
+
+- `outline.argument_claim` and `slide_spec.argument_claim` diverge unexpectedly
+- `page_plan.proof_trace` does not match `slide_spec.proof_question`
 
 ## Priority levels
 
@@ -70,9 +81,7 @@ Examples:
 - `2`: should fix
 - `3`: nice to have
 
-## Review report structure
-
-Return review output in this shape when structured output is possible:
+## Review report shape
 
 ```text
 [REVIEW_REPORT]
@@ -87,12 +96,12 @@ Return review output in this shape when structured output is possible:
     },
     "issues": [
       {
-        "type": "layout_restructure",
+        "type": "argument_consistency",
         "priority": 1,
         "slide_id": "S05",
-        "review_focus": "layout_balance",
-        "description": "Current three-column split hides the main chart",
-        "action": "Move chart into hero card and stack metrics in the sidebar"
+        "review_focus": "hierarchy",
+        "description": "proof_trace.question does not match slide proof_question",
+        "action": "Align page_plan proof_trace with slide_spec and re-generate prompt"
       }
     ],
     "next_step": "render | revise_page_plan | revise_slide_spec | split_slide"
@@ -103,11 +112,10 @@ Return review output in this shape when structured output is possible:
 
 ## Mapping guidance
 
-- If the issue is about factual visibility, use `review_focus = citation_visibility`
-- If the issue is mainly about clutter, use `review_focus = density`
-- If the issue is mainly about reading order, use `review_focus = hierarchy` or `layout_balance`
-- If the issue is mainly about charts, use `review_focus = chart_legibility`
+- factual visibility issues -> `evidence_repair`
+- clutter/density issues -> `content_reduction`
+- reading-order issues -> `layout_restructure` or `attribute_change`
+- cross-slide pacing issues -> `deck_coordination`
+- contract mismatch issues -> `argument_consistency`
 
-## Rule
-
-Prefer the smallest issue type that actually solves the problem. Do not escalate to `full_rethink` unless the slide concept itself fails.
+Prefer the smallest issue type that resolves the failure.

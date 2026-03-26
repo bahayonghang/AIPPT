@@ -1,11 +1,14 @@
 ---
 name: aippt
 description: >
-  从零创建全新 PPT / slide deck 的研究驱动型工作流技能。用户只要是想基于主题、官网、白皮书、
-  笔记、品牌素材或业务目标，完整产出一套新的企业介绍、融资路演、产品发布会、教学课件、年度复盘、
-  政策解读、董事会汇报或行业研究 deck，就应该使用此技能。它会执行品牌 intake、brief 对齐、
-  证据化研究、sticky-note 大纲、slide spec、page plan、style profile、prompt bundle /
-  SVG 交付与验证。不要用于修改现有 PPTX、审校已有 deck、只润色单页、套现成模板或只改文案。
+  Decision-complete workflow skill for creating a brand-aware presentation deck from scratch.
+  Use this whenever the user wants a new PPT, slide deck, presentation, pitch deck, launch deck,
+  board deck, teaching deck, annual review, policy briefing, or market-research deck starting from
+  a topic, brief, website, white paper, PDF, notes, or brand assets and expects end-to-end deck
+  planning instead of ad-hoc slide drafting. Trigger even when the user only says "help me make a PPT",
+  "build me a deck", or "turn these materials into slides" if the request implies a full new deck.
+  Do not use this skill for editing or critiquing existing slide files, template tweaks, single-page
+  design tasks, or outline-only requests.
 compatibility:
   optional:
     - web_search_or_fetch
@@ -16,44 +19,49 @@ compatibility:
 
 # AIPPT
 
-## Scope
+## Scope and routing boundary
 
-Use this skill to build a **new deck from scratch**.
+This skill orchestrates a **new deck** from brief to delivery contract.
 
-The workflow is content-first and evidence-first. The output is not just a pretty prompt. It is a planning system that turns a topic or source pack into a complete deck contract with reviewable intermediate artifacts.
+Use AIPPT when the user wants:
 
-## Non-goals
+- a brand-new slide deck with narrative, evidence, and page planning
+- an end-to-end workflow artifact set (`brand_profile` through `delivery_manifest`)
+- a reusable prompt bundle and optional SVG pages
 
-Do **not** use this skill for:
+Do not use AIPPT when the user wants:
 
-- editing an existing `.pptx`, `.ppt`, `.key`, or Google Slides file
-- reviewing or polishing an already finished deck
-- modifying one page inside an existing template
-- promising native Office export when the runtime cannot automate Office
+- edits to existing `.pptx` / `.ppt` / `.key` / Google Slides
+- review or critique of finished decks
+- one-page design output only
+- a lightweight outline with no downstream planning contract
 
-If the user already has a deck and wants edits, review, or PPTX-native operations, route to the platform's PPTX or document-editing workflow instead.
+If the request is existing-deck editing or critique, route to PPTX editing or review skills.
 
-## Capability-driven compatibility
+## Integration stance
 
-This skill is portable. It should preserve the same staged workflow even when the host runtime is weaker.
+AIPPT integrates the presentation stack at the **strategy layer**, not runtime chaining:
 
-- **Web search / fetch**: preferred for research; if unavailable, research only from user-provided files and say so explicitly
-- **Filesystem**: preferred for saving artifacts under `output/`; if unavailable, return the same artifacts inline
-- **Structured output**: preferred for wrappers such as `[PPT_OUTLINE]`, `[SLIDE_SPEC]`, `[PAGE_PLAN]`, `[STYLE_PROFILE]`, `[REVIEW_REPORT]`, `[DELIVERY_MANIFEST]`
-- **Image/PDF input**: useful for white papers, annual reports, screenshots, logos, and sample decks, but not required
+- adopts consultant-style argument architecture (governing thought, pillars, proof chain)
+- adopts ghost-deck planning quality gates (helicopter test, dead-slide test, pacing)
+- adopts brand-system vocabulary (palette roles, typography roles, style direction)
+- keeps AIPPT as the orchestrator and contract producer
+
+This skill does not automatically invoke `consultant`, `brand-system`, `deck-design-ppt`, or `deck-design-pdf`.
 
 ## Core principles
 
-- Content first, styling second.
-- Research before claims.
-- Outline before rendering.
-- Planning before SVG.
-- Brand constraints before decoration.
-- Verification before claiming readiness.
+- Argument first, visuals second.
+- Every slide proves one claim.
+- Evidence is traceable or it is not used.
+- Outline is gated (`approved=false`) before production contracts.
+- Layout is explicit, not implied.
+- Default delivery is conservative (`prompt_bundle_only`).
+- Deterministic checks run before claiming readiness.
 
 ## Artifact contract
 
-The deck is considered planned only when these artifacts exist:
+### Planned deck (required)
 
 - `brand_profile`
 - `brief_summary`
@@ -63,14 +71,15 @@ The deck is considered planned only when these artifacts exist:
 - `page_plan`
 - `style_profile`
 
-The deck is considered delivered only when these artifacts also exist:
+### Delivered deck (required)
 
-- `review_report` when verification finds issues or when an optional aesthetic review is requested
 - `delivery_manifest`
+- `review_report` when validation or refinement finds issues
 
-Use these wrapper tags whenever the runtime supports structured output:
+### Wrapper tags
 
 ```text
+[RESEARCH_DOSSIER]...[/RESEARCH_DOSSIER]
 [PPT_OUTLINE]...[/PPT_OUTLINE]
 [SLIDE_SPEC]...[/SLIDE_SPEC]
 [PAGE_PLAN]...[/PAGE_PLAN]
@@ -79,233 +88,234 @@ Use these wrapper tags whenever the runtime supports structured output:
 [DELIVERY_MANIFEST]...[/DELIVERY_MANIFEST]
 ```
 
-## Workflow overview
+## Output tree
+
+```text
+output/
+├── briefing/
+│   ├── brand-profile.md
+│   ├── brief-summary.md
+│   └── research-dossier.md
+├── specs/
+│   ├── outline.json
+│   ├── slide-spec.json
+│   ├── page-plan.json
+│   ├── style-profile.json
+│   └── review-report.json
+├── prompts/
+│   ├── 01-s01-title.md
+│   ├── 02-s02-title.md
+│   └── delivery-manifest.json
+├── svg/
+└── preview/
+    └── index.html
+```
+
+## Workflow
 
 1. Stage 0: Brand and asset intake
 2. Stage 1: Brief alignment hard stop
 3. Stage 2: Research dossier
-4. Stage 3: Sticky-note outline hard stop
-5. Stage 4: Slide spec
-6. Stage 5: Page plan
+4. Stage 3: Argument architecture + outline hard stop
+5. Stage 4: Slide spec (WHAT to prove)
+6. Stage 5: Page plan (HOW to present)
 7. Stage 6: Style profile and delivery mode
 8. Stage 7: Delivery execution
 9. Stage 8: Verification and review
 
-You may compress wording for speed, but do **not** skip the stages.
+Do not skip stages. You may compress wording, but keep the gates.
 
 ## Stage 0: Brand and asset intake
 
-Read `references/brand-intake.md`.
+Read:
 
-Collect or infer:
+- `references/brand-intake.md`
+- `references/style-vocabulary.md`
 
-- organization / product / project name
-- official website and trusted source materials
-- logo status and placement restrictions
-- brand colors, fonts, icon style, chart style
-- photo / illustration direction
-- tone of voice
-- compliance notes, legal disclaimers, forbidden elements
-- preferred or inferred style preset candidates
+Required output: `brand_profile` with:
 
-Return a compact `brand_profile` before deep research. If the user provides weak or no brand material, infer only from official sources and mark each inferred item clearly.
+- confirmed vs inferred brand signals
+- official source list
+- forbidden elements and compliance notes
+- candidate style directions
+- palette role constraints when known
 
 ## Stage 1: Brief alignment hard stop
 
-Lock the presentation brief before heavy execution.
+Lock decision context before deep execution.
 
-At minimum, capture:
+Required brief fields:
 
 - audience
-- presentation purpose
-- desired audience action after the deck
-- presenter context
-- speaking duration
+- purpose
+- desired action
+- context (presenter/use case)
+- time budget / reading mode
 - page budget
 - language
 - must-have sections
 - success criteria
 
-Return `brief_summary`.
-
-Do not start outline generation until the brief is stable enough that the narrative target is clear.
+Required output: `brief_summary`
 
 ## Stage 2: Research dossier
 
-Read `references/research-protocol.md`.
+Read:
 
-Produce both:
+- `references/research-protocol.md`
 
-- a readable research summary
-- a structured `research_dossier`
+Required behavior:
 
-Rules:
+- derive 3-6 research themes
+- collect stable refs (`R1`, `R2`, ...)
+- separate discovery from proof
+- keep dates visible for time-sensitive facts
+- build section evidence packets for downstream proof
 
-- prioritize official and first-party sources
-- keep dates visible for time-sensitive claims
-- assign stable source IDs such as `R1`, `R2`, `R3`
-- never move a fact into `outline`, `slide_spec`, or `page_plan` unless it is traceable to a source entry
-- if evidence is weak or conflicting, preserve that uncertainty
+Required output: `research_dossier`
 
-## Stage 3: Sticky-note outline hard stop
+## Stage 3: Argument architecture + outline hard stop
 
 Read:
 
+- `references/argument-architecture.md`
+- `references/ghost-deck-playbook.md`
 - `references/outline-prompt.md`
-- `references/cognitive-design-principles.md`
+- `references/narrative-rhythm.md`
 
-Produce two linked outputs:
+Required output: `outline` including:
 
-1. `outline`
-2. a sticky-note style preview for human review
-
-Requirements:
-
-- `outline.approved` must be `false` when first generated
-- every slide must have one clear `page_goal`
-- section flow must be story-first, not topic dumping
-- titles must carry information, not generic placeholders
-- use cognitive-load and hierarchy rules to keep the deck explainable
+- `governing_thought`
+- `engagement_archetype`
+- `pillar_map[]`
+- `transition_map[]`
+- `quality_gates`
+- ordered slide list with `argument_claim`, `proof_question`, `story_role`, `evidence_refs`
 
 Hard stop:
 
-- Do **not** generate `slide_spec`, `page_plan`, prompt bundle, or SVG pages until the outline is explicitly approved
-- only after confirmation should `outline.approved` become `true`
+- first outline must set `approved=false`
+- do not produce `slide_spec`, `page_plan`, prompt bundle, or SVG before explicit approval
 
-## Stage 4: Slide spec
+Quality gates before approval:
 
-Read `references/slide-spec-schema.md`.
+- helicopter test: action titles read as a coherent argument
+- dead-slide test: no removable slide without breaking logic
+- rising-stakes test: narrative escalates toward decision
 
-Produce `slide_spec` as the execution contract for each page.
-
-Every slide must include:
-
-- `slide_id`
-- `page_type`
-- `page_goal`
-- `audience_takeaway`
-- `evidence_refs`
-- `content_budget`
-- `layout_candidates`
-- `preferred_layout`
-- `story_role`
-- `review_focus`
-- `asset_needs`
-- `citations_mode`
-
-Rules:
-
-- `preferred_layout` must be one of the candidates
-- `story_role` must explain the narrative function of the slide
-- `review_focus` must tell later reviewers what quality dimension matters most
-- metric-heavy slides must not hide citations
-
-## Stage 5: Page plan
+## Stage 4: Slide spec (WHAT to prove)
 
 Read:
 
-- `references/bento-grid-system.md`
-- `references/page-plan-schema.md`
+- `references/slide-spec-schema.md`
+- `references/exhibit-intent-taxonomy.md`
+- `references/resource-menu.md`
 
-Turn each `slide_spec` item into a structured `page_plan`.
+Required output: `slide_spec` where each slide includes:
 
-For every slide, define:
-
-- `final_layout`
-- `layout_rationale`
-- `card_map` with exact slots and real content allocation
-- `citations_placement`
-- `visual_emphasis_order`
-- `overflow_strategy`
-- unresolved asset placeholders when necessary
+- core identity: `slide_id`, `page_type`, `title`
+- argument: `page_goal`, `audience_takeaway`, `story_role`, `pillar_id`, `argument_claim`, `proof_question`
+- evidence: `evidence_refs`, `exhibit_intent`, `evidence_layer`, `data_requirements`
+- composition envelope: `content_budget`, `layout_candidates`, `preferred_layout`
+- risk and review: `review_focus`, `fit_risk`, `citations_mode`, `asset_needs`
 
 Rules:
 
-- use one canonical layout name from the Bento system
-- use real planned content, not “put text here”
-- if the page is too dense, split it instead of shrinking it into unreadability
-- if a fact appears in the page plan, it must already exist in the research dossier
+- `preferred_layout` must be in candidates
+- `exhibit_intent` must map to a valid proof shape
+- fact-backed slides cannot hide citations
+
+## Stage 5: Page plan (HOW to present)
+
+Read:
+
+- `references/page-plan-schema.md`
+- `references/bento-grid-system.md`
+- `references/resource-menu.md`
+- `references/narrative-rhythm.md`
+
+Required output: `page_plan` where each slide includes:
+
+- `final_layout` + `layout_rationale`
+- `proof_trace` (claim, question, evidence refs)
+- `exhibit_blueprint` (primary intent, visual strategy, encoding notes)
+- `card_map` with real slot coordinates and owned content
+- `citations_placement`
+- `visual_emphasis_order`
+- `rhythm_slot`
+- `adjacency_check`
+- `overflow_decision`
+- `unresolved_assets`
+
+Rules:
+
+- no guessed coordinates outside canonical layouts
+- no text-wall fallback in narrow cards
+- split slides instead of shrinking below readable size
 
 ## Stage 6: Style profile and delivery mode
 
-Read the style registry:
+Read:
 
 - `references/styles/index.json`
-- the single most relevant preset under `references/styles/*.yaml`
+- one selected `references/styles/*.yaml`
+- `references/style-vocabulary.md`
+- `references/resource-registry.md`
 
-Choose or infer a `style_profile`.
+Required output: `style_profile` including:
 
-Return it in this form when structured output is possible:
+- `preset_id`
+- `selection_reason`
+- `source`
+- `style_file`
+- `style_direction`
+- `palette_roles`
+- `typography_roles`
+- `brand_override_rules`
+- optional `overrides`
 
-```text
-[STYLE_PROFILE]
-{
-  "style_profile": {
-    "preset_id": "business",
-    "selection_reason": "Matches enterprise buyers and official navy brand tones",
-    "source": "explicit_brand | inferred_brand | neutral_fallback",
-    "style_file": "references/styles/business.yaml",
-    "overrides": []
-  }
-}
-[/STYLE_PROFILE]
-```
+Delivery mode options:
 
-Supported delivery modes:
-
-- `prompt_bundle_only`
+- `prompt_bundle_only` (default)
 - `svg_pages`
 - `brand_ready_assets`
 
-Default conservatively to `prompt_bundle_only` unless the user explicitly wants SVG pages or a handoff package.
+Default remains `prompt_bundle_only` unless user explicitly asks for SVG pages or handoff package.
 
 ## Stage 7: Delivery execution
 
-Read `references/design-prompt.md`.
+Read:
 
-If filesystem is available, prefer this output layout:
+- `references/design-prompt.md`
+- `references/resource-registry.md`
 
-```text
-output/
-├── briefing/
-├── specs/
-├── prompts/
-├── svg/
-└── preview/
-```
+Scripts:
 
-### `prompt_bundle_only`
+- `scripts/build-prompt-bundle.mjs`
+- `scripts/validate-artifacts.mjs`
+- `scripts/validate-svg.mjs`
+- `scripts/build-preview.mjs`
 
-Deliver:
+### Mode outputs
 
-- `brand_profile`
-- `brief_summary`
-- `research_dossier`
-- `outline`
-- `slide_spec`
-- `page_plan`
-- `style_profile`
-- per-slide prompt bundle
+#### `prompt_bundle_only`
+
+- all planned artifacts
+- per-slide prompt files
 - `delivery_manifest`
 
-### `svg_pages`
+#### `svg_pages`
 
-Deliver:
-
-- everything from `prompt_bundle_only`
+- everything in `prompt_bundle_only`
 - per-slide `.svg`
-- notes about simplifications, placeholders, or unresolved assets
-- optional HTML preview if the runtime can build one safely
+- optional preview HTML
+- unresolved asset notes where needed
 
-### `brand_ready_assets`
+#### `brand_ready_assets`
 
-Deliver:
-
-- everything from `prompt_bundle_only`
-- style preset selection and override notes
-- page-family guidance for cover / section / KPI / comparison / case-study / closing pages
-- chart, icon, and citation usage rules
-- optional SVG pages if explicitly requested
+- everything in `prompt_bundle_only`
+- style and handoff guidance
+- optional SVG pages when requested
 
 ## Stage 8: Verification and review
 
@@ -313,50 +323,44 @@ Read:
 
 - `references/review-taxonomy.md`
 - `references/svg-quality-checklist.md`
+- `references/narrative-rhythm.md`
 
-Run deterministic hard-rule checks first. Use aesthetic review only after the hard rules pass or when the user explicitly asks for a design critique.
+Run deterministic checks first:
 
-At minimum verify:
+- `outline.approved=true` before render validation
+- one-to-one mapping across `outline`, `slide_spec`, `page_plan`
+- argument chain consistency (`argument_claim` ↔ `proof_trace`)
+- evidence refs preserved and visible
+- rhythm checks (no uncontrolled layout repetition, no proof-wall segments)
+- SVG hard rules (root, viewBox, safe zone, unresolved placeholders, font floors)
+- delivery manifest matches produced files
 
-- `outline.approved = true` before rendering
-- one-to-one mapping across `outline`, `slide_spec`, and `page_plan`
-- citations remain visible anywhere facts are used
-- layout sizes and spacing stay on the canonical grid
-- no text overflow or unsafe-zone spill
-- SVG root, viewBox, and font fallbacks are sane
-- the chosen delivery mode actually produced the promised files
+If issues exist, emit typed `review_report`.
 
-When issues are found, return a typed `review_report` that uses the taxonomy in `references/review-taxonomy.md`. Prefer actionable findings over vague “make it prettier” feedback.
+## Resource loading discipline
 
-## Office compatibility note
+- `resource-registry.md` is the source-of-truth index.
+- Load only stage-relevant references.
+- During Stage 4/5, use `resource-menu.md` to avoid repetitive layout decisions.
+- During Stage 3/8, use `narrative-rhythm.md` to balance dense evidence and breathing slides.
 
-Treat SVG compatibility conservatively:
+## Compatibility note
 
-- High-confidence workflows: Microsoft 365, PowerPoint 2024, 2021, 2019
-- Needs local validation: PowerPoint 2016
+Treat SVG import/edit compatibility conservatively:
 
-Do not promise identical SVG import or editing behavior on PowerPoint 2016.
-
-## Resource guidance
-
-Load only the resources you need:
-
-- use one style preset file at a time
-- use `cognitive-design-principles.md` during outline and review stages
-- use `page-plan-schema.md` only after `slide_spec` exists
-- use the scripts under `scripts/` when you need deterministic prompt bundling, artifact validation, SVG validation, or preview generation
+- high confidence: Microsoft 365 / PowerPoint 2024 / 2021 / 2019
+- local validation required: PowerPoint 2016
 
 ## Regression testing
 
 Use:
 
 - `evals/evals.json` for workflow regression
-- `evals/trigger-evals.json` for trigger-boundary regression
-- `references/eval-prompts.md` for the human-readable test catalog
+- `evals/trigger-evals.json` for trigger boundaries
+- `references/eval-prompts.md` for human-readable review
 
-Success means:
+Success criteria:
 
-- new-deck requests reliably trigger this skill
-- existing-deck edit or critique requests do not
-- the workflow emits `brand_profile`, `brief_summary`, `research_dossier`, `outline`, `slide_spec`, `page_plan`, `style_profile`, and `delivery_manifest`
-- any SVG output passes the hard-rule checks before being described as ready
+- new-deck intents trigger this skill
+- existing-deck edit/review/single-page/outline-only intents do not
+- produced contracts are decision-complete and validator-clean

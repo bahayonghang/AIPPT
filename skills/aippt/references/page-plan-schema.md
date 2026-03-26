@@ -1,12 +1,12 @@
 # Page Plan Schema
 
-Use this file in **Stage 5** after `slide_spec` is approved and the outline is locked.
+Use this file in **Stage 5** after `slide_spec` is approved.
 
-The purpose of `page_plan` is to turn narrative intent into an explicit per-slide layout contract with no guesswork left for prompt generation or SVG rendering.
+`page_plan` defines HOW each slide will realize the proof contract.
 
 ## Required structure
 
-Wrap the result with `[PAGE_PLAN]` and `[/PAGE_PLAN]`.
+Wrap output with `[PAGE_PLAN]` and `[/PAGE_PLAN]`.
 
 ```text
 [PAGE_PLAN]
@@ -17,34 +17,40 @@ Wrap the result with `[PAGE_PLAN]` and `[/PAGE_PLAN]`.
       {
         "slide_id": "S03",
         "final_layout": "asymmetric-two-column",
-        "layout_rationale": "One dominant narrative block with a KPI evidence sidebar",
+        "layout_rationale": "主论点占大区，证据占侧栏",
+        "proof_trace": {
+          "claim": "这一页要成立的论断",
+          "question": "这一页要回答的证明问题",
+          "evidence_refs": ["R3", "R7"]
+        },
+        "exhibit_blueprint": {
+          "primary_intent": "comparison",
+          "secondary_intents": [],
+          "visual_strategy": "左图右证据注释",
+          "encoding_notes": "统一口径、同比优先、强调关键差值"
+        },
         "card_map": [
           {
             "card_id": "A",
-            "slot": {
-              "x": 40,
-              "y": 100,
-              "w": 780,
-              "h": 580
-            },
-            "purpose": "主叙事",
-            "content_items": [
-              "一句主张",
-              "2-3 条 supporting bullets"
-            ],
-            "asset_slots": [],
-            "source_refs": ["R3"],
-            "overflow_strategy": "reduce_copy_then_split"
+            "slot": { "x": 40, "y": 100, "w": 780, "h": 580 },
+            "purpose": "主比较图",
+            "content_items": ["结论句", "图表要点", "限制条件"],
+            "asset_slots": ["benchmark-bars"],
+            "source_refs": ["R3", "R7"],
+            "overflow_strategy": "reduce_bullets_then_split"
           }
         ],
         "citations_placement": "page-footer",
-        "visual_emphasis_order": [
-          "headline claim",
-          "hero metric",
-          "supporting explanation"
-        ],
+        "visual_emphasis_order": ["headline claim", "hero evidence", "supporting context"],
+        "rhythm_slot": "proof-cluster",
+        "adjacency_check": {
+          "previous_layout": "hero-plus-two",
+          "next_layout": "single-focus",
+          "has_three_in_row_risk": false
+        },
+        "overflow_decision": "keep_single_page",
         "unresolved_assets": [],
-        "notes": "Footer citations required because 3 external facts are present"
+        "notes": "如数据更新，优先替换主图"
       }
     ]
   }
@@ -54,31 +60,31 @@ Wrap the result with `[PAGE_PLAN]` and `[/PAGE_PLAN]`.
 
 ## Field rules
 
-- `final_layout` must be one canonical layout name from `bento-grid-system.md`
-- `card_map` must use real slot geometry, not vague prose
-- `content_items` must contain actual planned content, not placeholders
-- `source_refs` must be a subset of the slide's `evidence_refs`
-- `citations_placement` must be `none`, `card-local`, or `page-footer`
-- `visual_emphasis_order` must list the actual reading sequence
-- `overflow_strategy` should explain what to do before text gets crushed
+- `final_layout` must be a canonical layout from `bento-grid-system.md`.
+- `proof_trace.claim` must align with `slide_spec.argument_claim`.
+- `proof_trace.question` must align with `slide_spec.proof_question`.
+- `exhibit_blueprint.primary_intent` must match `slide_spec.exhibit_intent`.
+- `card_map.source_refs` must be a subset of `proof_trace.evidence_refs`.
+- `citations_placement` must be `none`, `card-local`, or `page-footer`.
+- `rhythm_slot` should be one of `anchor`, `proof-cluster`, `bridge`, `breathing`, `closing`.
 
-## Overflow strategy guidance
+## Overflow decisions
 
-Use one of these patterns:
+Use one of:
 
+- `keep_single_page`
 - `trim_secondary_copy`
-- `convert_to_metric_stack`
 - `move_to_sidebar`
+- `convert_to_metric_stack`
 - `split_slide`
-- `replace_chart_with_kpi_card`
-- `reduce_bullets_then_split`
 
-Prefer `split_slide` over shrinking body text below the allowed floor.
+Prefer `split_slide` over shrinking below readability.
 
 ## Planning rules
 
-1. Each slide gets one `final_layout`.
-2. Each card must have a specific purpose.
-3. Narrow cards should carry short content, metrics, refs, or support blocks, not long paragraphs.
-4. If the page needs more than 5 cards or more than one hero message, split it.
-5. If a real image or chart is unavailable, use a clearly named placeholder slot.
+1. One slide has one `final_layout`.
+2. `card_map` uses real coordinates, not prose placeholders.
+3. Every card has explicit purpose and owned content.
+4. If the slide needs more than 5 cards, split it.
+5. If a required asset is missing, list it in `unresolved_assets` clearly.
+6. `adjacency_check.has_three_in_row_risk=true` requires layout/rhythm revision.

@@ -1,8 +1,8 @@
 # Bento Grid Layout System
 
-Use this file in **Stage 4**.
+Use this file in **Stage 5** while converting `slide_spec` into `page_plan`.
 
-The purpose of this file is to provide a **canonical layout library** so later prompts do not invent conflicting coordinates.
+The purpose of this file is to provide a **canonical layout library** so later prompts do not invent conflicting coordinates or degrade into arbitrary grids.
 
 ## Global canvas rules
 
@@ -107,8 +107,8 @@ Use for case studies, screenshot-driven explanations, or image-led storytelling.
 Do not use a dense card grid.
 
 - full-canvas background or restrained backdrop
-- title block dominant
-- optional subtitle, logo, or proof line
+- dominant title block
+- optional subtitle, proof line, logo, or presenter metadata
 - minimal copy only
 
 ### `contents`
@@ -119,52 +119,6 @@ Use a clean list-based structure.
 - 3-6 section titles vertically stacked
 - optional accent panel or simple geometry on the opposite side
 
-### `comparison`
-
-Preferred layouts:
-
-- `symmetric-two-column`
-- `three-column`
-
-### `process`
-
-Preferred layouts:
-
-- `hero-plus-three`
-- `hero-plus-four`
-
-### `timeline`
-
-Preferred layouts:
-
-- `hero-plus-three`
-- `single-focus`
-
-Use a clear chronological reading order.
-
-### `kpi`
-
-Preferred layouts:
-
-- `asymmetric-two-column`
-- `two-by-two-dashboard`
-- `mixed-grid`
-
-### `case-study`
-
-Preferred layouts:
-
-- `media-text`
-- `hero-plus-two`
-- `asymmetric-two-column`
-
-### `mixed-media`
-
-Preferred layouts:
-
-- `media-text`
-- `mixed-grid`
-
 ### `closing`
 
 Do not use a dense grid.
@@ -173,14 +127,47 @@ Do not use a dense grid.
 - optional CTA or contact block
 - minimal secondary content
 
+## Page type to layout mapping
+
+Use these as defaults before making local exceptions:
+
+- `cover` -> `cover`
+- `contents` -> `contents`
+- `comparison` -> `symmetric-two-column`, `three-column`
+- `process` -> `hero-plus-three`, `hero-plus-four`
+- `timeline` -> `single-focus`, `hero-plus-three`
+- `kpi` -> `asymmetric-two-column`, `two-by-two-dashboard`, `mixed-grid`
+- `case-study` -> `media-text`, `hero-plus-two`, `asymmetric-two-column`
+- `mixed-media` -> `media-text`, `mixed-grid`
+- `closing` -> `closing`, `single-focus`
+
+## Story-role layout bias
+
+Use `story_role` to keep page families varied:
+
+- `anchor` -> `cover`, `single-focus`, `hero-plus-two`
+- `proof` -> `asymmetric-two-column`, `two-by-two-dashboard`, `mixed-grid`, `media-text`
+- `bridge` -> `hero-plus-two`, `hero-plus-three`, `three-column`
+- `breathing` -> `single-focus`, `media-text`, `hero-plus-two`
+- `closing` -> `closing`, `single-focus`, `hero-plus-two`
+
 ## Selection rules
 
 - Use **one** canonical layout name per slide.
 - Do not invent widths like `390`, `380`, `800`, or any ad hoc card sizes when a canonical layout exists.
-- If the slide needs more than 5 cards or more than 1 hero message, split it.
 - Put the most important idea into the largest card.
-- Narrow cards should hold short lists, stats, citations, or concise support copy, not wall-of-text paragraphs.
+- Narrow cards should hold short lists, metrics, citations, or concise support copy, not wall-of-text paragraphs.
 - If the slide contains 3 or more source-backed facts, prefer `page-footer` citations in the slide spec.
+
+## Split-slide rules
+
+Split the slide instead of compressing it if any of these are true:
+
+- the slide needs more than 5 cards
+- the slide needs more than one hero message
+- long paragraphs would land in narrow cards
+- citations begin to compete with the main message
+- the reading order is not obvious within 3 seconds
 
 ## Anti-patterns
 
@@ -189,4 +176,5 @@ Avoid these mistakes:
 - shrinking everything until the slide is unreadable
 - putting dense paragraphs in 285px or 386px cards
 - mixing unrelated alignments on one page
-- using a generic "beautiful layout" with no relation to content density
+- using a generic “beautiful layout” with no relation to content density
+- repeating the same layout on 3 adjacent content slides without a strong reason

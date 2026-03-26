@@ -1,12 +1,12 @@
 # Slide Spec Schema
 
-Use this file in **Stage 4** after the deck `outline` is approved.
+Use this file in **Stage 4** after outline is approved.
 
-The goal of `slide_spec` is to convert a story outline into a slide-by-slide execution contract that later stages can plan, render, and review without guessing.
+`slide_spec` defines WHAT each slide must prove and what data/layout envelope it may use.
 
 ## Required structure
 
-Wrap the result with `[SLIDE_SPEC]` and `[/SLIDE_SPEC]`.
+Wrap output with `[SLIDE_SPEC]` and `[/SLIDE_SPEC]`.
 
 ```text
 [SLIDE_SPEC]
@@ -16,38 +16,40 @@ Wrap the result with `[SLIDE_SPEC]` and `[/SLIDE_SPEC]`.
     "language": "zh-CN",
     "slides": [
       {
-        "slide_id": "S01",
-        "page_type": "cover",
+        "slide_id": "S03",
+        "page_type": "comparison",
         "title": "页面标题",
-        "page_goal": "这一页承担的唯一主要任务",
-        "audience_takeaway": "观众看完这一页后应该记住什么",
-        "evidence_refs": [],
+        "page_goal": "这一页承担的唯一任务",
+        "audience_takeaway": "观众看完后应记住什么",
+        "story_role": "proof",
+        "pillar_id": "P2",
+        "argument_claim": "这一页要成立的论断",
+        "proof_question": "这页必须回答的证明问题",
+        "exhibit_intent": "comparison",
+        "evidence_layer": "L2",
+        "evidence_refs": ["R3", "R7"],
+        "data_requirements": [
+          "至少2个可比对象",
+          "至少1个统一口径指标"
+        ],
         "content_budget": {
-          "max_cards": 1,
+          "max_cards": 3,
           "max_bullets_per_card": 4,
           "max_body_chars_per_card": 90,
-          "max_stats": 1
+          "max_stats": 4
         },
-        "layout_candidates": ["cover"],
-        "preferred_layout": "cover",
-        "story_role": "anchor",
-        "review_focus": [
-          "hierarchy",
-          "readability"
-        ],
-        "visual_priority": {
-          "primary": "主标题",
-          "secondary": "副标题",
-          "tertiary": "品牌或 CTA"
-        },
+        "layout_candidates": ["symmetric-two-column", "three-column"],
+        "preferred_layout": "symmetric-two-column",
+        "review_focus": ["layout_balance", "citation_visibility"],
+        "fit_risk": "low",
         "asset_needs": {
           "logos": [],
-          "charts": [],
+          "charts": ["benchmark-bars"],
           "images": [],
           "icons": []
         },
-        "citations_mode": "none",
-        "notes": "任何额外提醒"
+        "citations_mode": "page-footer",
+        "notes": "可补一条 caveat"
       }
     ]
   }
@@ -57,35 +59,37 @@ Wrap the result with `[SLIDE_SPEC]` and `[/SLIDE_SPEC]`.
 
 ## Field definitions
 
-- `slide_id`: must map one-to-one to the approved outline order
-- `page_type`: values such as `cover`, `contents`, `comparison`, `process`, `timeline`, `kpi`, `case-study`, `mixed-media`, `closing`, or `generic`
-- `page_goal`: one sentence, singular
-- `audience_takeaway`: one sentence describing the memory anchor
-- `evidence_refs`: source IDs like `R1`, `R3`
-- `content_budget`: guardrails that force the slide to stay readable
-- `layout_candidates`: 2-3 valid choices from `bento-grid-system.md`
-- `preferred_layout`: the best-fit choice before detailed page planning
-- `story_role`: use `anchor`, `proof`, `bridge`, `breathing`, or `closing`
-- `review_focus`: one or more of `layout_balance`, `readability`, `density`, `contrast`, `chart_legibility`, `citation_visibility`, `hierarchy`
-- `asset_needs`: exact image, chart, logo, or icon requirements
-- `citations_mode`: `none`, `card-local`, or `page-footer`
+- `slide_id`: must map one-to-one to approved outline order.
+- `page_type`: `cover`, `contents`, `comparison`, `process`, `timeline`, `kpi`, `case-study`, `mixed-media`, `closing`, `generic`.
+- `story_role`: `anchor`, `proof`, `bridge`, `breathing`, `closing`.
+- `argument_claim`: slide-level conclusion.
+- `proof_question`: single question this slide must answer.
+- `exhibit_intent`: `none`, `comparison`, `trend`, `composition`, `distribution`, `process`, `timeline`, `matrix`, `decision`, `relationship`.
+- `evidence_layer`: `L1`, `L2`, or `L3`.
+- `fit_risk`: `low`, `medium`, or `high`.
+- `citations_mode`: `none`, `card-local`, `page-footer`.
+
+## Rules
+
+1. Every slide must include `argument_claim` and `proof_question`.
+2. Fact-backed slides must include `evidence_refs`.
+3. `preferred_layout` must be one of `layout_candidates`.
+4. `exhibit_intent` must match the proof question shape.
+5. `fit_risk=high` should trigger split/reframe consideration in Stage 5.
+6. `review_focus` must contain at least one quality risk.
+7. If `evidence_refs` is non-empty, `citations_mode` cannot be `none`.
 
 ## Content-budget guidance
 
-Use budgets to stop slide bloat before it happens:
+- cover/bridge/breathing slides: usually `max_cards=1-2`
+- proof slides: usually `max_cards=2-4`
+- if `max_cards > 5`, split the slide instead
 
-- simple cover / breathing / closing pages: `max_cards = 1`
-- comparison / process / KPI pages: usually `max_cards = 2-4`
-- if a page needs more than 5 cards or more than 90 body chars per card, split it
+## Intent/data sanity checks
 
-## Slide-spec rules
+- `comparison` without comparables is invalid.
+- `trend` without ordered time points is invalid.
+- `composition` without total+parts is invalid.
+- `decision` without options+criteria is invalid.
 
-1. Every slide must have a single `page_goal`.
-2. Every fact-heavy slide must carry `evidence_refs`.
-3. `layout_candidates` must be valid layout names from `bento-grid-system.md`.
-4. `preferred_layout` must be one of the candidates.
-5. `review_focus` must reflect the slide's main quality risk.
-6. `citations_mode` must align with fact density:
-   - `none` for pure transition or cover / closing pages
-   - `card-local` for 1-2 localized facts
-   - `page-footer` for metric-heavy or evidence-dense pages
+Use these checks before moving to page planning.

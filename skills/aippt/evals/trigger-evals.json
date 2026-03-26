@@ -8,75 +8,59 @@
     "should_trigger": true
   },
   {
-    "query": "要做一个新品发布会演示，智能翻译耳机，风格想偏科技发布会，但必须保留我们自己的品牌色和 logo 规范。",
+    "query": "下周董事会汇报需要一套全新presentation，重点是增长、利润和明年计划，你帮我把研究、论证结构和页面合同都做齐。",
     "should_trigger": true
   },
   {
-    "query": "请用我上传的年报和市场材料，做一套给董事会看的新汇报 deck，控制在 14 页内，重点看增长和盈利。",
+    "query": "我有一堆白皮书和会议纪要，不能联网，帮我做整套新deck规划，最后给逐页prompt bundle。",
     "should_trigger": true
   },
   {
-    "query": "我要一套 45 分钟的 Transformer 入门教学 slides，给大三学生，最好带流程页、案例页和总结页。",
+    "query": "我要做一套教学 slides，不只是提纲，要完整到每页目标、证据和布局合同。",
     "should_trigger": true
   },
   {
-    "query": "帮我规划一套政策解读演示，主题是 2026 年 AI 合规变化，给企业法务和产品团队用，要明确时间线和行动建议。",
+    "query": "请从零规划新品发布会演示，保留我方品牌规范，并给我后续可渲染SVG的交付结构。",
     "should_trigger": true
   },
   {
-    "query": "我没有联网，只能用上传的白皮书和会议纪要，你帮我把研究、提纲、slide spec 和页面规划都做出来。",
+    "query": "我已经有现成 PPTX，只改第7页排版，别动其他页。",
+    "should_trigger": false
+  },
+  {
+    "query": "帮我评审这套现成deck逻辑是否成立，不要重做。",
+    "should_trigger": false
+  },
+  {
+    "query": "先给我一个十页大纲就行，后面我自己做页面细化。",
+    "should_trigger": false
+  },
+  {
+    "query": "我有模板，只想替换其中两页布局，文案不用改。",
+    "should_trigger": false
+  },
+  {
+    "query": "帮我做一张封面页，要酷一点，不需要整套。",
+    "should_trigger": false
+  },
+  {
+    "query": "把这份演讲稿润色成更有感染力的口播稿，不用做PPT。",
+    "should_trigger": false
+  },
+  {
+    "query": "把现有pptx导出pdf并检查错别字。",
+    "should_trigger": false
+  },
+  {
+    "query": "我只需要你点评一下这个Google Slides哪里看起来不专业。",
+    "should_trigger": false
+  },
+  {
+    "query": "帮我做市场分析报告的结构化幻灯片方案，要从research到page plan一条龙。",
     "should_trigger": true
   },
   {
-    "query": "请做一套新的年度经营复盘 deck，受众是管理层，重点是增长、利润、团队效率和下一年计划。",
+    "query": "我要一套从主题到交付manifest都完整的政策解读deck，不是改旧稿。",
     "should_trigger": true
-  },
-  {
-    "query": "我有一个产品官网和一堆素材，想搞一套完整 slide deck 去参加行业峰会演讲，先把故事线和页面结构规划出来。",
-    "should_trigger": true
-  },
-  {
-    "query": "帮我从一个主题和官网出发做整套 deck，不是改现有稿子，是全新规划，最后给我可渲染的 prompt bundle。",
-    "should_trigger": true
-  },
-  {
-    "query": "帮我改一下这个现有 PPTX 第 7 页，排版高级一点，其他内容别动。",
-    "should_trigger": false
-  },
-  {
-    "query": "看看这份已经做好的路演 deck 逻辑顺不顺，给我点评一下，不需要重做。",
-    "should_trigger": false
-  },
-  {
-    "query": "把现有 Google Slides 里的几页颜色统一一下，再帮我把标题润色得简洁一点。",
-    "should_trigger": false
-  },
-  {
-    "query": "我就要一张封面页，做得酷一点，别给我整套方案。",
-    "should_trigger": false
-  },
-  {
-    "query": "你帮我把这段文案整理成一个 PPT 大纲，我自己之后再做版式。",
-    "should_trigger": false
-  },
-  {
-    "query": "能不能看一下这个现成 deck 哪些地方太啰嗦，然后给删减建议？",
-    "should_trigger": false
-  },
-  {
-    "query": "我已经有模板了，只是想把第 3 页和第 4 页换个布局。",
-    "should_trigger": false
-  },
-  {
-    "query": "把这份 pptx 转成 pdf，再帮我检查有没有错别字。",
-    "should_trigger": false
-  },
-  {
-    "query": "帮我做个 keynote 风格封面图，别管内容结构。",
-    "should_trigger": false
-  },
-  {
-    "query": "我只想要你润色这个演讲稿，不需要做 deck。",
-    "should_trigger": false
   }
 ]

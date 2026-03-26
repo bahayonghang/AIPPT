@@ -1,8 +1,8 @@
 # SVG Design Prompt Template
 
-Use this file in **Stage 7** after `page_plan` and `style_profile` are stable.
+Use this file in **Stage 7** after `slide_spec`, `page_plan`, and `style_profile` are stable.
 
-This template converts one page-planning brief into a render-ready SVG prompt.
+This template turns one page-planning contract into a render-ready SVG prompt.
 
 ## Required inputs
 
@@ -15,40 +15,52 @@ This template converts one page-planning brief into a render-ready SVG prompt.
 ## Prompt template
 
 ```text
-你是一名精通信息架构与 SVG 编码的演示设计师。请把以下页面规划转成一页可读、可编辑、结构清晰、具有高级感但不过度装饰的 SVG 演示文稿页面。
+你是一名信息架构与 SVG 制图专家。请基于以下合同生成一页可读、可编辑、可验证的 SVG 演示页面。
+
+## Goal
+输出一张通过硬规则校验、证据可追溯、且与论证链一致的页面。
 
 ## Canvas and safety
-1. SVG root 必须以 `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">` 开头。
-2. 主内容必须保持在安全区 `x=40..1240`, `y=40..680`。
-3. 页面标题位于 `y=40..90`。
-4. 如果该页使用 `page-footer` citations，主内容底线必须高于 `y=664`，引用页脚放在 `y=690..710`。
+1. SVG 根必须为 `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">`。
+2. 主内容必须在安全区 `x=40..1240`, `y=40..680`。
+3. 标题位于 `y=40..90`。
+4. 若 `citations_placement = page-footer`，来源信息必须位于 `y=690..710`。
+
+## Contract alignment
+1. 页面必须服务于 `argument_claim`，不能偏离 `proof_question`。
+2. 视觉表达必须对应 `exhibit_blueprint.primary_intent`。
+3. `proof_trace.evidence_refs` 必须在页面中保持可见（页脚或卡片本地 source chip）。
+4. 不得新增合同外事实、数字或结论。
 
 ## Layout discipline
-1. 严格遵循页面规划中给出的 `final_layout` 与 `card_map.slot` 坐标。
-2. 不要自创新的卡片尺寸。
-3. 卡片圆角、间距、边框、阴影、字体和图表色都从 style profile 中读取。
-4. 每张卡片必须服务于其 `purpose`，不要加入无关装饰卡片。
-5. 视觉重心必须遵循 `visual_emphasis_order`。
+1. 严格遵循 `final_layout` 与 `card_map.slot` 坐标。
+2. 不得自定义新的卡片尺寸和网格。
+3. 卡片优先级遵循 `visual_emphasis_order`。
+4. 若 `adjacency_check.has_three_in_row_risk = true`，保持本页视觉重心与相邻页明显区分。
 
-## Typography
-1. 标题、卡片标题、正文、辅助信息分别使用 style profile 中的层级与字体链。
-2. 页面标题建议 `28-36px`，卡片标题建议 `18-22px`，正文建议 `14-16px`，辅助说明与页脚建议 `10-12px`。
-3. 不要把正文压缩到 `12px` 以下；如果放不下，请按 `overflow_strategy` 精简或拆页。
+## Typography and readability
+1. 标题、正文、注释按 style profile 的 typography roles。
+2. 标题建议 28-36px，正文建议 14-16px，辅助说明 10-12px。
+3. 正文不得低于 12px；放不下时按 `overflow_decision` 处理，不要硬压缩。
+4. 文字使用 `<text>` / `<tspan>`，不得转轮廓。
+
+## Brand and style handling
+1. 显式品牌约束高于 preset 默认值。
+2. 若品牌色与 preset 冲突，优先品牌色并调整中性色与强调色。
+3. `palette_roles` 与 `typography_roles` 是样式唯一依据，不要随意引入额外体系。
 
 ## Content integrity
-1. 只使用 slide spec 与 page plan 中已经确认的内容。
-2. 仅在页面规划明确提供数字时绘制图表。
-3. 不要伪造产品截图、人物照片、客户 logo、地图细节或不存在的数据图。
-4. 如果图片或图表资源不存在，使用清楚标注用途的占位区域。
+1. 仅使用 `slide_spec` 与 `page_plan` 中确认内容。
+2. 若 `unresolved_assets` 非空，使用明确占位而非杜撰资源。
+3. 不伪造截图、客户 logo、地图细节或不存在的数据点。
 
 ## Citation rules
-1. 如果 `citations_mode = none`，不要生成页脚引用。
-2. 如果 `citations_mode = card-local`，在对应卡片内显示紧凑 source chip，例如 `Source: R3`。
-3. 如果 `citations_mode = page-footer`，在页脚区域生成紧凑来源行，例如 `Sources: R1 2025 Annual Report; R3 IDC 2025`。
-4. 来源编号必须与 slide spec 和 page plan 中的 source refs 一致。
+1. `citations_placement = none` 时不得生成来源行。
+2. `card-local` 时在对应卡片展示紧凑 source chip（如 `Source: R3`）。
+3. `page-footer` 时页脚集中展示来源（如 `Sources: R1; R3; R7`）。
+4. 来源编号必须与 `proof_trace.evidence_refs` 一致。
 
 ## Review-driven fixes
-如果提供了 review notes，请把它们视为当前这轮设计的修正方向：
 {{REVIEW_NOTES}}
 
 ## Brand profile
@@ -64,13 +76,11 @@ This template converts one page-planning brief into a render-ready SVG prompt.
 {{PAGE_PLAN}}
 
 ## Output requirements
-1. 只输出完整 SVG 代码，不要附带解释。
-2. 所有可编辑文字使用 `<text>` / `<tspan>`。
-3. 用 `<rect>`、简单几何图形、线条和图表组件表达布局。
-4. 如果存在 unresolved assets，使用明确占位而不是杜撰内容。
-5. 保持专业感与可读性优先，所有事实仍然必须可追溯。
+1. 仅输出完整 SVG 代码，不要附加解释。
+2. 不得留下 `{{...}}`、`TODO`、`TBD`。
+3. 页面必须可被后续硬规则脚本校验通过。
 ```
 
 ## Implementation note
 
-If you are generating prompt bundles programmatically, the scripts under `skills/aippt/scripts/` use this template and replace the five placeholders directly.
+If prompt bundles are generated programmatically, `scripts/build-prompt-bundle.mjs` replaces placeholders directly.
