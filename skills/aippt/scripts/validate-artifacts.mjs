@@ -1,5 +1,11 @@
 import path from "node:path";
-import { naturalSort, parseArgs, readWrappedJson } from "./_shared.mjs";
+import {
+  naturalSort,
+  loadScenePack,
+  parseArgs,
+  readWrappedJson,
+  resolveScenePackPath
+} from "./_shared.mjs";
 
 const args = parseArgs(process.argv);
 
@@ -23,16 +29,41 @@ function sameText(left, right) {
   return normalizeText(left) === normalizeText(right);
 }
 
+function normalizedIncludes(haystack, needle) {
+  return normalizeText(haystack).toLowerCase().includes(normalizeText(needle).toLowerCase());
+}
+
+function storyArcSatisfied(requiredArc, slides) {
+  if (!Array.isArray(requiredArc) || requiredArc.length === 0) {
+    return true;
+  }
+
+  const roles = slides.map((slide) => slide.story_role);
+  let pointer = 0;
+
+  for (const role of roles) {
+    if (role === requiredArc[pointer]) {
+      pointer += 1;
+      if (pointer === requiredArc.length) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 const outlinePath = args.outline;
 const slideSpecPath = args["slide-spec"];
 const pagePlanPath = args["page-plan"];
 const styleProfilePath = args["style-profile"];
 const deliveryManifestPath = args["delivery-manifest"];
+const scenePackArg = args["scene-pack"];
 const allowLegacy = toBoolean(args["allow-legacy"], false);
 
 if (!outlinePath || !slideSpecPath || !pagePlanPath) {
   fail(
-    "Required arguments: --outline --slide-spec --page-plan [--style-profile] [--delivery-manifest] [--allow-legacy=true]"
+    "Required arguments: --outline --slide-spec --page-plan [--style-profile] [--delivery-manifest] [--scene-pack] [--allow-legacy=true]"
   );
 }
 
@@ -45,6 +76,8 @@ const styleProfileDocument = styleProfilePath
 const deliveryManifestDocument = deliveryManifestPath
   ? readWrappedJson(deliveryManifestPath, ["DELIVERY_MANIFEST"])
   : null;
+const scenePack = scenePackArg ? loadScenePack(scenePackArg) : null;
+const scenePackPath = scenePackArg ? resolveScenePackPath(scenePackArg) : null;
 
 const outlineRaw = outlineDocument.outline ?? outlineDocument;
 const slideSpecRaw = slideSpecDocument.slide_spec ?? slideSpecDocument;
@@ -682,6 +715,92 @@ for (let index = 0; index < specSlides.length; index += 1) {
   }
 }
 
+if (scenePack) {
+  requireString(scenePack.id, "scene_pack.id");
+  requireString(scenePack.label, "scene_pack.label");
+
+  if (!Array.isArray(scenePack.trigger_phrases) || scenePack.trigger_phrases.length === 0) {
+    addError("scene_pack.trigger_phrases must be a non-empty array.");
+  }
+
+  if (!scenePack.page_budget || typeof scenePack.page_budget !== "object") {
+    addError("scene_pack.page_budget must be an object.");
+  } else {
+    for (const key of ["default", "min", "max"]) {
+      if (typeof scenePack.page_budget[key] !== "number") {
+        addError(`scene_pack.page_budget.${key} must be numeric.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(scenePack.required_sections) || scenePack.required_sections.length === 0) {
+    addError("scene_pack.required_sections must be a non-empty array.");
+  } else {
+    const outlineSearchSpace = [
+      outline.governing_thought,
+      ...outlineSlides.map((slide) => `${slide.title} ${slide.page_goal}`),
+      ...(outline.pillar_map ?? []).map((pillar) => `${pillar.title} ${pillar.key_question ?? ""}`)
+    ].join(" || ");
+
+    for (const section of scenePack.required_sections) {
+      if (!normalizedIncludes(outlineSearchSpace, section)) {
+        addError(
+          `scene_pack required section "${section}" was not reflected in outline titles, goals, or pillar map.`
+        );
+      }
+    }
+  }
+
+  if (!Array.isArray(scenePack.default_story_arc) || scenePack.default_story_arc.length === 0) {
+    addError("scene_pack.default_story_arc must be a non-empty array.");
+  } else {
+    for (const role of scenePack.default_story_arc) {
+      if (!allowedStoryRoles.has(role)) {
+        addError(`scene_pack.default_story_arc contains invalid story role "${role}".`);
+      }
+    }
+
+    if (!storyArcSatisfied(scenePack.default_story_arc, outlineSlides)) {
+      addError(
+        `scene_pack.default_story_arc (${scenePack.default_story_arc.join(" -> ")}) was not reflected in outline story roles.`
+      );
+    }
+  }
+
+  if (!Array.isArray(scenePack.review_bias) || scenePack.review_bias.length === 0) {
+    addError("scene_pack.review_bias must be a non-empty array.");
+  } else {
+    const reviewFocusUnion = new Set(specSlides.flatMap((slide) => slide.review_focus ?? []));
+    for (const focus of scenePack.review_bias) {
+      if (!allowedReviewFocus.has(focus)) {
+        addError(`scene_pack.review_bias contains invalid review focus "${focus}".`);
+        continue;
+      }
+      if (!reviewFocusUnion.has(focus)) {
+        addError(
+          `scene_pack review bias "${focus}" was not reflected in slide_spec.review_focus.`
+        );
+      }
+    }
+  }
+
+  if (scenePack.preferred_style_preset && styleProfile?.preset_id) {
+    if (scenePack.preferred_style_preset !== styleProfile.preset_id) {
+      addWarning(
+        `scene_pack preferred_style_preset (${scenePack.preferred_style_preset}) differs from style_profile.preset_id (${styleProfile.preset_id}).`
+      );
+    }
+  }
+
+  if (scenePack.delivery_default && deliveryManifest?.mode) {
+    if (scenePack.delivery_default !== deliveryManifest.mode) {
+      addWarning(
+        `scene_pack delivery_default (${scenePack.delivery_default}) differs from delivery manifest mode (${deliveryManifest.mode}).`
+      );
+    }
+  }
+}
+
 if (styleProfilePath) {
   if (!styleProfile || typeof styleProfile !== "object") {
     addError("style_profile must parse to an object.");
@@ -783,6 +902,41 @@ if (deliveryManifest) {
       );
     }
   }
+
+  if (scenePack) {
+    const manifestScene = deliveryManifest.scene_pack;
+    if (!manifestScene || typeof manifestScene !== "object") {
+      addError("delivery manifest must include scene_pack when --scene-pack is provided.");
+    } else {
+      if (manifestScene.scene_id !== scenePack.id) {
+        addError(
+          `delivery manifest scene_id (${manifestScene.scene_id}) must match scene_pack.id (${scenePack.id}).`
+        );
+      }
+
+      const manifestRequiredSections = manifestScene.required_sections ?? [];
+      const manifestReviewBias = manifestScene.review_bias ?? [];
+
+      if (JSON.stringify(manifestRequiredSections) !== JSON.stringify(scenePack.required_sections ?? [])) {
+        addError("delivery manifest required_sections must match the provided scene pack.");
+      }
+
+      if (JSON.stringify(manifestReviewBias) !== JSON.stringify(scenePack.review_bias ?? [])) {
+        addError("delivery manifest review_bias must match the provided scene pack.");
+      }
+    }
+
+    if (deliveryManifest.input_files?.scene_pack_file) {
+      const manifestScenePath = path.resolve(deliveryManifest.input_files.scene_pack_file);
+      if (manifestScenePath !== scenePackPath) {
+        addError(
+          `delivery manifest scene_pack_file (${manifestScenePath}) differs from --scene-pack (${scenePackPath}).`
+        );
+      }
+    } else {
+      addError("delivery manifest input_files.scene_pack_file is required when --scene-pack is provided.");
+    }
+  }
 }
 
 const summary = {
@@ -791,6 +945,7 @@ const summary = {
   page_plan_file: path.resolve(pagePlanPath),
   style_profile_file: styleProfilePath ? path.resolve(styleProfilePath) : null,
   delivery_manifest_file: deliveryManifestPath ? path.resolve(deliveryManifestPath) : null,
+  scene_pack_file: scenePackPath,
   legacy_mode: allowLegacy,
   legacy_notes: legacyNotes,
   errors,

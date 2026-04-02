@@ -1,0 +1,49 @@
+{
+  "id": "company-intro",
+  "label": "Company Introduction",
+  "trigger_phrases": [
+    "企业介绍",
+    "公司介绍",
+    "company intro",
+    "company introduction",
+    "corporate overview",
+    "企业版介绍"
+  ],
+  "audience_defaults": [
+    "potential customers",
+    "procurement stakeholders",
+    "channel partners"
+  ],
+  "page_budget": {
+    "default": 12,
+    "min": 8,
+    "max": 15
+  },
+  "required_sections": [
+    "company snapshot",
+    "problem framing",
+    "solution overview",
+    "proof points",
+    "deployment or service model",
+    "call to action"
+  ],
+  "default_story_arc": [
+    "anchor",
+    "proof",
+    "bridge",
+    "proof",
+    "closing"
+  ],
+  "evidence_policy": "Prefer official company materials and first-party product evidence. Use external comparisons only when dated and attributable.",
+  "preferred_style_preset": "business",
+  "delivery_default": "prompt_bundle_only",
+  "review_bias": [
+    "hierarchy",
+    "layout_balance",
+    "citation_visibility"
+  ],
+  "eval_ids": [
+    "scene-01-company-intro-positive",
+    "scene-01-company-intro-negative"
+  ]
+}

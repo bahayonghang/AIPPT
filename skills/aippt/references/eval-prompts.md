@@ -2,75 +2,87 @@
 
 Use this file for human-readable regression review.
 
-Machine-readable sets:
+Machine-readable sources:
 
 - `evals/evals.json`
 - `evals/trigger-evals.json`
+- `evals/scene-stubs/*.json`
 
-## Scoring checklist (v2)
+## Core checklist
 
-For each positive case, check:
+For positive cases, verify:
 
 1. Trigger correctness: AIPPT should trigger.
-2. Argument contract: outline includes `governing_thought`, `pillar_map`, `transition_map`, `argument_claim`, `proof_question`.
-3. Production contract: `slide_spec` includes `exhibit_intent`, `evidence_layer`, `fit_risk`; `page_plan` includes `proof_trace`, `exhibit_blueprint`, `rhythm_slot`.
-4. Evidence traceability: source refs remain consistent across research -> outline -> slide spec -> page plan.
-5. Rhythm quality: no 3 consecutive proof-wall slides and no 3 identical adjacent layouts.
-6. Validator status: `validate-artifacts` passes; if SVG mode is requested, `validate-svg` passes.
+2. Routing correctness: if a built-in scene matches, its subskill should be used before generic AIPPT.
+3. Hard gate correctness: the first outline still keeps `approved=false`.
+4. Argument contract: outline contains `governing_thought`, `pillar_map`, `argument_claim`, `proof_question`.
+5. Production contract: `slide_spec`, `page_plan`, `style_profile`, and `delivery_manifest` are present when appropriate.
+6. Scene-aware quality: `required_sections`, `default_story_arc`, and `review_bias` are reflected in downstream artifacts when `--scene-pack` is used.
+7. Validation: `validate-artifacts` passes; `validate-svg` passes when SVG output is requested.
 
-For each negative case, check:
+For negative cases, verify:
 
 1. Trigger correctness: AIPPT should not trigger.
-2. Routing quality: request is redirected to suitable edit/review/single-slide/copy flow.
+2. Routing quality: request is redirected to edit, review, single-slide, or copy workflow.
 
-## Positive samples
+## Positive scene samples
 
-### New company deck
+### Company intro
 
 ```text
-帮我做一套新的企业介绍 PPT，主题是“Dify 企业版介绍”，受众是潜在客户。需要 12 页左右，风格偏商务科技。可以参考官网和最近的产品更新。
+请从零开始做一套企业介绍 deck，给潜在客户看，重点讲公司定位、产品方案、客户证明和部署模式。
 ```
 
-### Investor pitch from scratch
+### Investor pitch
 
 ```text
-请从零开始做一套 Seed 轮融资路演 deck。产品是 AI 客服 SaaS，我有官网、logo 和一份产品白皮书。目标受众是投资人，想突出市场机会、增长数据和团队能力。
+请从零开始做一套 Seed 轮融资路演 deck，产品是 AI 客服 SaaS，要突出市场机会、增长数据、团队和融资诉求。
 ```
 
-### Board evidence-heavy pack
+### Board briefing
 
 ```text
-把这份市场研究和财务数据整理成一套新的行业汇报 PPT，给董事会看。需要高密度信息，但不能乱，要保留来源。
+下周董事会要看一套新的经营汇报，请把增长、利润、风险和下季度决策点整理成完整新 deck。
 ```
 
-### Offline source pack workflow
+### Policy briefing
 
 ```text
-我没有联网需求，只用我上传的白皮书和会议纪要做一套产品战略 deck。请从这些材料里完成研究、提纲和页面规划。
+做一套新的政策解读演示，主题是 2026 年 AI 合规要求变化，受众是法务和产品团队，要有时间线、风险点和建议动作。
+```
+
+### Teaching deck
+
+```text
+我要一套 45 分钟的教学课件，主题是 Transformer 基础入门，希望有学习目标、案例、练习和总结。
+```
+
+### Thesis defense
+
+```text
+请从零开始做一套毕业答辩 PPT，包含研究问题、文献缺口、方法、结果、贡献和未来工作。
+```
+
+## Generic positive sample
+
+```text
+帮我做一套新的 AI 产品战略 deck，从我提供的会议纪要和白皮书出发，完整输出 research、提纲、逐页规划和交付清单。
 ```
 
 ## Negative samples
 
-### Existing PPTX edit
-
 ```text
-帮我改一下这个现有 PPTX 的第 7 页，把排版调得更高级一点，标题短一点，其他内容别动。
+我已经有公司介绍 PPTX，只想改第 3 页和第 4 页的排版。
 ```
 
-### Existing deck critique
-
 ```text
-看看这套现成的路演 deck 有哪些逻辑问题，给我改进建议，不需要重做整套。
+帮我点评一下这份现成融资 deck 的逻辑漏洞，不需要重做。
 ```
 
-### Outline only
-
 ```text
-你先给我一个 10 页左右的 PPT 大纲就行，后面的页面结构和设计我自己做，不需要整套流程。
+我只要一页教学封面，不要整套课件。
 ```
 
-### Single-page request
-
 ```text
-帮我做一个 keynote 风格的封面页，主题是“AI 助手时代”，不要整套 deck，就一页。
+把这份演讲稿润色成更有感染力的口播稿，不用做 PPT。
 ```

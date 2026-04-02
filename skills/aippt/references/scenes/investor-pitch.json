@@ -1,0 +1,51 @@
+{
+  "id": "investor-pitch",
+  "label": "Investor Pitch",
+  "trigger_phrases": [
+    "融资路演",
+    "投资人 deck",
+    "investor pitch",
+    "seed deck",
+    "series a pitch",
+    "融资 deck"
+  ],
+  "audience_defaults": [
+    "seed investors",
+    "venture partners",
+    "investment committee"
+  ],
+  "page_budget": {
+    "default": 12,
+    "min": 10,
+    "max": 16
+  },
+  "required_sections": [
+    "market opportunity",
+    "product thesis",
+    "traction",
+    "business model",
+    "go-to-market",
+    "team",
+    "funding ask"
+  ],
+  "default_story_arc": [
+    "anchor",
+    "proof",
+    "proof",
+    "bridge",
+    "proof",
+    "closing"
+  ],
+  "evidence_policy": "Quantified claims should be investor-grade: dated, comparable, and tied to first-party metrics or reputable market sources.",
+  "preferred_style_preset": "tech",
+  "delivery_default": "brand_ready_assets",
+  "review_bias": [
+    "chart_legibility",
+    "citation_visibility",
+    "hierarchy"
+  ],
+  "eval_ids": [
+    "scene-02-investor-pitch-positive",
+    "scene-02-investor-pitch-negative"
+  ]
+}

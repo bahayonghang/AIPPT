@@ -1,0 +1,48 @@
+{
+  "id": "thesis-defense",
+  "label": "Thesis Defense",
+  "trigger_phrases": [
+    "毕业答辩",
+    "论文答辩",
+    "thesis defense",
+    "research defense",
+    "学术汇报"
+  ],
+  "audience_defaults": [
+    "committee members",
+    "faculty reviewers",
+    "research audience"
+  ],
+  "page_budget": {
+    "default": 14,
+    "min": 10,
+    "max": 18
+  },
+  "required_sections": [
+    "research question",
+    "literature gap",
+    "method",
+    "results",
+    "contribution",
+    "limitations and future work"
+  ],
+  "default_story_arc": [
+    "anchor",
+    "proof",
+    "bridge",
+    "proof",
+    "closing"
+  ],
+  "evidence_policy": "Claims should stay tied to thesis data, citations, and clearly labeled contribution boundaries.",
+  "preferred_style_preset": "scientific",
+  "delivery_default": "prompt_bundle_only",
+  "review_bias": [
+    "citation_visibility",
+    "chart_legibility",
+    "readability"
+  ],
+  "eval_ids": [
+    "scene-06-thesis-defense-positive",
+    "scene-06-thesis-defense-negative"
+  ]
+}

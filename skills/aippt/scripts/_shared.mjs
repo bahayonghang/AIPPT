@@ -1,5 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+export const SCRIPTS_DIR = path.dirname(__filename);
+export const SKILL_ROOT = path.resolve(SCRIPTS_DIR, "..");
+export const REFERENCES_DIR = path.join(SKILL_ROOT, "references");
+export const STYLES_DIR = path.join(REFERENCES_DIR, "styles");
+export const SCENES_DIR = path.join(REFERENCES_DIR, "scenes");
+export const SUBSKILLS_DIR = path.join(SKILL_ROOT, "subskills");
 
 export function parseArgs(argv) {
   const args = {};
@@ -41,9 +50,18 @@ export function readText(filePath) {
   return fs.readFileSync(filePath, "utf8");
 }
 
+export function readJson(filePath) {
+  return JSON.parse(readText(filePath));
+}
+
 export function writeJson(filePath, data) {
   ensureDir(path.dirname(filePath));
   fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
+}
+
+export function writeText(filePath, data) {
+  ensureDir(path.dirname(filePath));
+  fs.writeFileSync(filePath, data, "utf8");
 }
 
 export function naturalSort(left, right) {
@@ -101,4 +119,36 @@ export function firstCodeBlock(markdown) {
   }
 
   return match[1].trim();
+}
+
+export function listJsonFiles(directoryPath) {
+  if (!fs.existsSync(directoryPath)) {
+    return [];
+  }
+
+  return fs
+    .readdirSync(directoryPath)
+    .filter((entry) => entry.toLowerCase().endsWith(".json"))
+    .sort(naturalSort);
+}
+
+export function loadStyleIndex() {
+  return readJson(path.join(STYLES_DIR, "index.json"));
+}
+
+export function loadSceneCatalog() {
+  return readJson(path.join(SCENES_DIR, "scene-catalog.json"));
+}
+
+export function loadScenePack(scenePackPathOrId) {
+  const candidatePath = scenePackPathOrId.endsWith(".json")
+    ? path.resolve(scenePackPathOrId)
+    : path.join(SCENES_DIR, `${scenePackPathOrId}.json`);
+  return readJson(candidatePath);
+}
+
+export function resolveScenePackPath(scenePackPathOrId) {
+  return scenePackPathOrId.endsWith(".json")
+    ? path.resolve(scenePackPathOrId)
+    : path.join(SCENES_DIR, `${scenePackPathOrId}.json`);
 }

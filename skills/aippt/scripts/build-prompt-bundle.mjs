@@ -4,9 +4,11 @@ import { fileURLToPath } from "node:url";
 import {
   ensureDir,
   firstCodeBlock,
+  loadScenePack,
   parseArgs,
   readText,
   readWrappedJson,
+  resolveScenePackPath,
   slugify,
   writeJson
 } from "./_shared.mjs";
@@ -36,6 +38,7 @@ const outputDir = args["output-dir"];
 const deliveryMode = args["delivery-mode"] ?? "prompt_bundle_only";
 const svgDir = args["svg-dir"] ? path.resolve(args["svg-dir"]) : null;
 const previewFile = args["preview-file"] ? path.resolve(args["preview-file"]) : null;
+const scenePackArg = args["scene-pack"];
 
 if (!slideSpecPath || !pagePlanPath || !brandProfilePath || !styleProfilePath || !outputDir) {
   fail(
@@ -74,6 +77,8 @@ const brandProfile = readText(brandProfilePath).trim();
 const styleProfile = readText(styleProfilePath).trim();
 const reviewNotes = args["review-notes"] ? readText(args["review-notes"]).trim() : "None.";
 const promptTemplate = firstCodeBlock(readText(designPromptPath));
+const scenePack = scenePackArg ? loadScenePack(scenePackArg) : null;
+const scenePackPath = scenePackArg ? resolveScenePackPath(scenePackArg) : null;
 
 const planBySlideId = new Map(pagePlan.slides.map((slide) => [slide.slide_id, slide]));
 const promptsDir = path.resolve(outputDir);
@@ -92,13 +97,24 @@ const manifest = {
       page_plan_file: path.resolve(pagePlanPath),
       style_profile_file: path.resolve(styleProfilePath),
       brand_profile_file: path.resolve(brandProfilePath),
-      review_notes_file: args["review-notes"] ? path.resolve(args["review-notes"]) : null
+      review_notes_file: args["review-notes"] ? path.resolve(args["review-notes"]) : null,
+      scene_pack_file: scenePackPath
     },
     outputs: {
       prompts_dir: promptsDir,
       svg_dir: svgDir,
       preview_file: previewFile
     },
+    scene_pack: scenePack
+      ? {
+          scene_id: scenePack.id,
+          label: scenePack.label,
+          required_sections: scenePack.required_sections ?? [],
+          review_bias: scenePack.review_bias ?? [],
+          preferred_style_preset: scenePack.preferred_style_preset ?? null,
+          delivery_default: scenePack.delivery_default ?? null
+        }
+      : null,
     slides: []
   }
 };

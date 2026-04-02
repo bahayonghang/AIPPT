@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "last_updated": "2026-04-02",
+  "scenes": [
+    {
+      "id": "board-briefing",
+      "label": "Board Briefing",
+      "file": "board-briefing.json",
+      "subskill": "subskills/board-briefing/SKILL.md"
+    },
+    {
+      "id": "company-intro",
+      "label": "Company Introduction",
+      "file": "company-intro.json",
+      "subskill": "subskills/company-intro/SKILL.md"
+    },
+    {
+      "id": "investor-pitch",
+      "label": "Investor Pitch",
+      "file": "investor-pitch.json",
+      "subskill": "subskills/investor-pitch/SKILL.md"
+    },
+    {
+      "id": "policy-briefing",
+      "label": "Policy Briefing",
+      "file": "policy-briefing.json",
+      "subskill": "subskills/policy-briefing/SKILL.md"
+    },
+    {
+      "id": "teaching-deck",
+      "label": "Teaching Deck",
+      "file": "teaching-deck.json",
+      "subskill": "subskills/teaching-deck/SKILL.md"
+    },
+    {
+      "id": "thesis-defense",
+      "label": "Thesis Defense",
+      "file": "thesis-defense.json",
+      "subskill": "subskills/thesis-defense/SKILL.md"
+    }
+  ]
+}

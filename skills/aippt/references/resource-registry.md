@@ -26,6 +26,15 @@ Load only stage-relevant files. Avoid full-library loading by default.
 | Stage 8 | `svg-quality-checklist.md` | deterministic SVG hard-rule checks |
 | Regression | `eval-prompts.md` | human-readable evaluation catalog |
 
+## Scene resources
+
+| File | Purpose |
+| --- | --- |
+| `scenes/scene-catalog.json` | scene-pack index and subskill routing map |
+| `scenes/*.json` | scene-specific defaults for sections, story arc, style bias, delivery default, review bias |
+| `subskills/<scene>/SKILL.md` | narrow workflow surface for a matched scene |
+| `subskills/<scene>/references/outline-starter.md` | default scene outline starter |
+
 ## Style resources
 
 | File | Purpose |
@@ -42,6 +51,9 @@ Load only stage-relevant files. Avoid full-library loading by default.
 
 | Script | Purpose |
 | --- | --- |
+| `scripts/list-catalog.mjs` | list scene packs, style presets, delivery modes, and validators |
+| `scripts/init-workspace.mjs` | initialize `output/` tree and `output/project.json` |
+| `scripts/create-scene-pack.mjs` | scaffold a new scene pack, subskill, outline starter, and eval stub |
 | `scripts/build-prompt-bundle.mjs` | generate per-slide prompt files + delivery manifest |
 | `scripts/validate-artifacts.mjs` | validate contract consistency and rhythm/argument checks |
 | `scripts/validate-svg.mjs` | validate SVG hard rules and optional source-ref consistency |
@@ -60,11 +72,13 @@ Load only stage-relevant files. Avoid full-library loading by default.
 | --- | --- |
 | `evals/evals.json` | workflow regression and contract-quality cases |
 | `evals/trigger-evals.json` | trigger-boundary and near-miss cases |
+| `evals/scene-stubs/*.json` | scene-pack scaffold stubs for future route coverage |
 
 ## Loading guidance
 
+- Start with `scene-catalog.json` when the request smells like a repeated deck archetype.
 - Stage 3: always load `argument-architecture.md` and `ghost-deck-playbook.md` together.
 - Stage 4: load `exhibit-intent-taxonomy.md` before finalizing `exhibit_intent`.
 - Stage 5: consult `resource-menu.md` to avoid repetitive layouts and proof walls.
 - Stage 8: use `narrative-rhythm.md` plus validator output before issuing review decisions.
-- If a reference is cited in docs, point back to this registry instead of duplicating file lists.
+- If a reference is cited in docs or README, point back to this registry or `list-catalog.mjs` instead of duplicating file lists.

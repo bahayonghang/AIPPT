@@ -1,0 +1,49 @@
+{
+  "id": "board-briefing",
+  "label": "Board Briefing",
+  "trigger_phrases": [
+    "董事会汇报",
+    "board deck",
+    "board briefing",
+    "管理层汇报",
+    "经营汇报"
+  ],
+  "audience_defaults": [
+    "board members",
+    "executive leadership",
+    "supervisory committee"
+  ],
+  "page_budget": {
+    "default": 14,
+    "min": 10,
+    "max": 18
+  },
+  "required_sections": [
+    "executive summary",
+    "performance snapshot",
+    "key drivers",
+    "risks and mitigations",
+    "decision points",
+    "next-quarter actions"
+  ],
+  "default_story_arc": [
+    "anchor",
+    "proof",
+    "proof",
+    "bridge",
+    "proof",
+    "closing"
+  ],
+  "evidence_policy": "Keep evidence dense but traceable. Prefer board-ready tables, KPI stacks, and dated sources over decorative narrative.",
+  "preferred_style_preset": "editorial-infographic",
+  "delivery_default": "prompt_bundle_only",
+  "review_bias": [
+    "density",
+    "chart_legibility",
+    "citation_visibility"
+  ],
+  "eval_ids": [
+    "scene-03-board-briefing-positive",
+    "scene-03-board-briefing-negative"
+  ]
+}

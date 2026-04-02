@@ -1,0 +1,49 @@
+{
+  "id": "teaching-deck",
+  "label": "Teaching Deck",
+  "trigger_phrases": [
+    "教学课件",
+    "教学 PPT",
+    "teaching deck",
+    "lecture slides",
+    "课堂课件",
+    "lesson slides"
+  ],
+  "audience_defaults": [
+    "students",
+    "classroom participants",
+    "training cohort"
+  ],
+  "page_budget": {
+    "default": 16,
+    "min": 10,
+    "max": 24
+  },
+  "required_sections": [
+    "learning goals",
+    "concept framing",
+    "worked example",
+    "practice or exercise",
+    "summary"
+  ],
+  "default_story_arc": [
+    "anchor",
+    "bridge",
+    "proof",
+    "breathing",
+    "proof",
+    "closing"
+  ],
+  "evidence_policy": "Optimize for comprehension first. External references are optional unless the lesson makes factual claims requiring attribution.",
+  "preferred_style_preset": "scientific",
+  "delivery_default": "prompt_bundle_only",
+  "review_bias": [
+    "readability",
+    "hierarchy",
+    "layout_balance"
+  ],
+  "eval_ids": [
+    "scene-05-teaching-deck-positive",
+    "scene-05-teaching-deck-negative"
+  ]
+}

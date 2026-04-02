@@ -1,67 +1,92 @@
 ---
 name: aippt
 description: >
-  Decision-complete workflow skill for creating a brand-aware presentation deck from scratch.
-  Use this whenever the user wants a new PPT, slide deck, presentation, pitch deck, launch deck,
-  board deck, teaching deck, annual review, policy briefing, or market-research deck starting from
-  a topic, brief, website, white paper, PDF, notes, or brand assets and expects end-to-end deck
-  planning instead of ad-hoc slide drafting. Trigger even when the user only says "help me make a PPT",
-  "build me a deck", or "turn these materials into slides" if the request implies a full new deck.
-  Do not use this skill for editing or critiquing existing slide files, template tweaks, single-page
-  design tasks, or outline-only requests.
+  Contract-first workflow skill for building a brand-new deck from topic, brief, notes, website,
+  PDF, white paper, or brand assets. Use this whenever the user wants a full new PPT, pitch deck,
+  board pack, teaching deck, policy briefing, or thesis-defense style presentation from scratch and
+  expects research, argument structure, page planning, and delivery artifacts instead of ad-hoc slide
+  drafting. Trigger even on "help me make a PPT" when the intent is a new deck. Do not use this for
+  existing deck edits, critique-only requests, template tweaks, single-slide asks, or outline-only work.
 compatibility:
   optional:
-    - web_search_or_fetch
     - filesystem
     - structured_output
+    - web_search_or_fetch
     - image_or_pdf_input
 ---
 
 # AIPPT
 
-## Scope and routing boundary
+## Positioning
 
-This skill orchestrates a **new deck** from brief to delivery contract.
+AIPPT is the strategy and contract layer for **new deck creation**.
 
-Use AIPPT when the user wants:
+Keep these strengths:
 
-- a brand-new slide deck with narrative, evidence, and page planning
-- an end-to-end workflow artifact set (`brand_profile` through `delivery_manifest`)
-- a reusable prompt bundle and optional SVG pages
+- staged artifact contract
+- argument-first workflow
+- hard stop before production
+- deterministic validation
+- portable delivery modes
 
-Do not use AIPPT when the user wants:
+Do not expand AIPPT into:
 
-- edits to existing `.pptx` / `.ppt` / `.key` / Google Slides
-- review or critique of finished decks
-- one-page design output only
-- a lightweight outline with no downstream planning contract
+- existing `.pptx/.ppt/.key/Google Slides` editing
+- `deck.json` runtime editing
+- native PPTX export tooling
+- component-level natural-language page surgery
 
-If the request is existing-deck editing or critique, route to PPTX editing or review skills.
+If the user wants those, route to a downstream editing or rendering skill.
 
-## Integration stance
+## Subskill-first routing
 
-AIPPT integrates the presentation stack at the **strategy layer**, not runtime chaining:
+Before running the generic workflow, check whether the request matches a scene pack.
 
-- adopts consultant-style argument architecture (governing thought, pillars, proof chain)
-- adopts ghost-deck planning quality gates (helicopter test, dead-slide test, pacing)
-- adopts brand-system vocabulary (palette roles, typography roles, style direction)
-- keeps AIPPT as the orchestrator and contract producer
+Scene packs live in:
 
-This skill does not automatically invoke `consultant`, `brand-system`, `deck-design-ppt`, or `deck-design-pdf`.
+- `references/scenes/scene-catalog.json`
+- `subskills/<scene>/SKILL.md`
 
-## Core principles
+Built-in scene packs:
 
-- Argument first, visuals second.
-- Every slide proves one claim.
-- Evidence is traceable or it is not used.
-- Outline is gated (`approved=false`) before production contracts.
-- Layout is explicit, not implied.
-- Default delivery is conservative (`prompt_bundle_only`).
-- Deterministic checks run before claiming readiness.
+- `company-intro`
+- `investor-pitch`
+- `board-briefing`
+- `policy-briefing`
+- `teaching-deck`
+- `thesis-defense`
+
+Routing rule:
+
+1. If the request clearly matches a scene pack, read that subskill first.
+2. Apply the scene defaults for audience bias, required sections, story arc, review bias, and preferred style.
+3. Then resume the generic AIPPT stages below.
+4. If no scene matches, stay on generic AIPPT.
+
+Scene packs **refine** the workflow. They never bypass the hard gates.
+
+## Generic workflow
+
+1. Stage 0: brand and asset intake
+2. Stage 1: brief alignment hard stop
+3. Stage 2: research dossier
+4. Stage 3: argument architecture + outline hard stop
+5. Stage 4: slide spec
+6. Stage 5: page plan
+7. Stage 6: style profile + delivery mode
+8. Stage 7: delivery execution
+9. Stage 8: verification and review
+
+## Hard gates
+
+- `outline.approved=false` on first outline pass
+- no `slide_spec`, `page_plan`, prompt bundle, or SVG delivery before explicit outline approval
+- `delivery_manifest` is only valid after deterministic checks pass
+- scene pack routing may change defaults, but not the gates
 
 ## Artifact contract
 
-### Planned deck (required)
+Planned artifacts:
 
 - `brand_profile`
 - `brief_summary`
@@ -71,296 +96,117 @@ This skill does not automatically invoke `consultant`, `brand-system`, `deck-des
 - `page_plan`
 - `style_profile`
 
-### Delivered deck (required)
+Delivered artifacts:
 
 - `delivery_manifest`
 - `review_report` when validation or refinement finds issues
 
-### Wrapper tags
+Wrapper tags stay unchanged:
 
-```text
-[RESEARCH_DOSSIER]...[/RESEARCH_DOSSIER]
-[PPT_OUTLINE]...[/PPT_OUTLINE]
-[SLIDE_SPEC]...[/SLIDE_SPEC]
-[PAGE_PLAN]...[/PAGE_PLAN]
-[STYLE_PROFILE]...[/STYLE_PROFILE]
-[REVIEW_REPORT]...[/REVIEW_REPORT]
-[DELIVERY_MANIFEST]...[/DELIVERY_MANIFEST]
-```
+- `[RESEARCH_DOSSIER]`
+- `[PPT_OUTLINE]`
+- `[SLIDE_SPEC]`
+- `[PAGE_PLAN]`
+- `[STYLE_PROFILE]`
+- `[REVIEW_REPORT]`
+- `[DELIVERY_MANIFEST]`
 
-## Output tree
+Do not introduce new top-level wrapper tags for scene or workspace metadata.
+
+## Output model
+
+Default output tree:
 
 ```text
 output/
 ├── briefing/
-│   ├── brand-profile.md
-│   ├── brief-summary.md
-│   └── research-dossier.md
 ├── specs/
-│   ├── outline.json
-│   ├── slide-spec.json
-│   ├── page-plan.json
-│   ├── style-profile.json
-│   └── review-report.json
 ├── prompts/
-│   ├── 01-s01-title.md
-│   ├── 02-s02-title.md
-│   └── delivery-manifest.json
 ├── svg/
-└── preview/
-    └── index.html
+├── preview/
+└── project.json
 ```
 
-## Workflow
-
-1. Stage 0: Brand and asset intake
-2. Stage 1: Brief alignment hard stop
-3. Stage 2: Research dossier
-4. Stage 3: Argument architecture + outline hard stop
-5. Stage 4: Slide spec (WHAT to prove)
-6. Stage 5: Page plan (HOW to present)
-7. Stage 6: Style profile and delivery mode
-8. Stage 7: Delivery execution
-9. Stage 8: Verification and review
-
-Do not skip stages. You may compress wording, but keep the gates.
-
-## Stage 0: Brand and asset intake
-
-Read:
-
-- `references/brand-intake.md`
-- `references/style-vocabulary.md`
-
-Required output: `brand_profile` with:
-
-- confirmed vs inferred brand signals
-- official source list
-- forbidden elements and compliance notes
-- candidate style directions
-- palette role constraints when known
-
-## Stage 1: Brief alignment hard stop
-
-Lock decision context before deep execution.
-
-Required brief fields:
-
-- audience
-- purpose
-- desired action
-- context (presenter/use case)
-- time budget / reading mode
-- page budget
-- language
-- must-have sections
-- success criteria
-
-Required output: `brief_summary`
-
-## Stage 2: Research dossier
-
-Read:
-
-- `references/research-protocol.md`
-
-Required behavior:
-
-- derive 3-6 research themes
-- collect stable refs (`R1`, `R2`, ...)
-- separate discovery from proof
-- keep dates visible for time-sensitive facts
-- build section evidence packets for downstream proof
-
-Required output: `research_dossier`
-
-## Stage 3: Argument architecture + outline hard stop
-
-Read:
-
-- `references/argument-architecture.md`
-- `references/ghost-deck-playbook.md`
-- `references/outline-prompt.md`
-- `references/narrative-rhythm.md`
-
-Required output: `outline` including:
-
-- `governing_thought`
-- `engagement_archetype`
-- `pillar_map[]`
-- `transition_map[]`
-- `quality_gates`
-- ordered slide list with `argument_claim`, `proof_question`, `story_role`, `evidence_refs`
-
-Hard stop:
-
-- first outline must set `approved=false`
-- do not produce `slide_spec`, `page_plan`, prompt bundle, or SVG before explicit approval
-
-Quality gates before approval:
-
-- helicopter test: action titles read as a coherent argument
-- dead-slide test: no removable slide without breaking logic
-- rising-stakes test: narrative escalates toward decision
-
-## Stage 4: Slide spec (WHAT to prove)
-
-Read:
-
-- `references/slide-spec-schema.md`
-- `references/exhibit-intent-taxonomy.md`
-- `references/resource-menu.md`
-
-Required output: `slide_spec` where each slide includes:
-
-- core identity: `slide_id`, `page_type`, `title`
-- argument: `page_goal`, `audience_takeaway`, `story_role`, `pillar_id`, `argument_claim`, `proof_question`
-- evidence: `evidence_refs`, `exhibit_intent`, `evidence_layer`, `data_requirements`
-- composition envelope: `content_budget`, `layout_candidates`, `preferred_layout`
-- risk and review: `review_focus`, `fit_risk`, `citations_mode`, `asset_needs`
-
-Rules:
-
-- `preferred_layout` must be in candidates
-- `exhibit_intent` must map to a valid proof shape
-- fact-backed slides cannot hide citations
-
-## Stage 5: Page plan (HOW to present)
-
-Read:
-
-- `references/page-plan-schema.md`
-- `references/bento-grid-system.md`
-- `references/resource-menu.md`
-- `references/narrative-rhythm.md`
-
-Required output: `page_plan` where each slide includes:
-
-- `final_layout` + `layout_rationale`
-- `proof_trace` (claim, question, evidence refs)
-- `exhibit_blueprint` (primary intent, visual strategy, encoding notes)
-- `card_map` with real slot coordinates and owned content
-- `citations_placement`
-- `visual_emphasis_order`
-- `rhythm_slot`
-- `adjacency_check`
-- `overflow_decision`
-- `unresolved_assets`
-
-Rules:
-
-- no guessed coordinates outside canonical layouts
-- no text-wall fallback in narrow cards
-- split slides instead of shrinking below readable size
-
-## Stage 6: Style profile and delivery mode
-
-Read:
-
-- `references/styles/index.json`
-- one selected `references/styles/*.yaml`
-- `references/style-vocabulary.md`
-- `references/resource-registry.md`
-
-Required output: `style_profile` including:
-
-- `preset_id`
-- `selection_reason`
-- `source`
-- `style_file`
-- `style_direction`
-- `palette_roles`
-- `typography_roles`
-- `brand_override_rules`
-- optional `overrides`
-
-Delivery mode options:
+Delivery modes:
 
 - `prompt_bundle_only` (default)
 - `svg_pages`
 - `brand_ready_assets`
 
-Default remains `prompt_bundle_only` unless user explicitly asks for SVG pages or handoff package.
+Workspace metadata lives in `output/project.json`.
+Scene metadata lives in scene-pack JSON and may be copied into `delivery_manifest`.
 
-## Stage 7: Delivery execution
+## Resource loading
 
-Read:
+Canonical map:
 
-- `references/design-prompt.md`
 - `references/resource-registry.md`
 
-Scripts:
+Use it as the source of truth for:
+
+- stage references
+- style presets
+- scene packs
+- scripts
+- eval files
+
+Do not hand-maintain long file lists in multiple places.
+
+## Scripts
+
+Catalog and setup:
+
+- `scripts/list-catalog.mjs`
+- `scripts/init-workspace.mjs`
+- `scripts/create-scene-pack.mjs`
+
+Production and validation:
 
 - `scripts/build-prompt-bundle.mjs`
 - `scripts/validate-artifacts.mjs`
 - `scripts/validate-svg.mjs`
 - `scripts/build-preview.mjs`
 
-### Mode outputs
+Scene-aware options:
 
-#### `prompt_bundle_only`
+- `build-prompt-bundle.mjs --scene-pack <scene-id-or-json>`
+- `validate-artifacts.mjs --scene-pack <scene-id-or-json>`
 
-- all planned artifacts
-- per-slide prompt files
-- `delivery_manifest`
+## What scene packs control
 
-#### `svg_pages`
+Scene packs may set:
 
-- everything in `prompt_bundle_only`
-- per-slide `.svg`
-- optional preview HTML
-- unresolved asset notes where needed
+- `required_sections`
+- `default_story_arc`
+- `evidence_policy`
+- `preferred_style_preset`
+- `delivery_default`
+- `review_bias`
 
-#### `brand_ready_assets`
+These values must appear in downstream contracts, not just in prose.
 
-- everything in `prompt_bundle_only`
-- style and handoff guidance
-- optional SVG pages when requested
+## Regression expectations
 
-## Stage 8: Verification and review
+Keep all three layers current:
 
-Read:
+- `evals/evals.json`
+- `evals/trigger-evals.json`
+- `references/eval-prompts.md`
 
-- `references/review-taxonomy.md`
-- `references/svg-quality-checklist.md`
-- `references/narrative-rhythm.md`
+Required coverage:
 
-Run deterministic checks first:
+- generic new-deck requests still trigger
+- existing-deck edits and critique-only requests still do not trigger
+- each built-in scene pack has one positive route test and one near-miss negative test
+- scene routing never bypasses `outline.approved=false`
 
-- `outline.approved=true` before render validation
-- one-to-one mapping across `outline`, `slide_spec`, `page_plan`
-- argument chain consistency (`argument_claim` ↔ `proof_trace`)
-- evidence refs preserved and visible
-- rhythm checks (no uncontrolled layout repetition, no proof-wall segments)
-- SVG hard rules (root, viewBox, safe zone, unresolved placeholders, font floors)
-- delivery manifest matches produced files
+## Maintenance rule
 
-If issues exist, emit typed `review_report`.
+When workflow behavior changes, update in this order:
 
-## Resource loading discipline
-
-- `resource-registry.md` is the source-of-truth index.
-- Load only stage-relevant references.
-- During Stage 4/5, use `resource-menu.md` to avoid repetitive layout decisions.
-- During Stage 3/8, use `narrative-rhythm.md` to balance dense evidence and breathing slides.
-
-## Compatibility note
-
-Treat SVG import/edit compatibility conservatively:
-
-- high confidence: Microsoft 365 / PowerPoint 2024 / 2021 / 2019
-- local validation required: PowerPoint 2016
-
-## Regression testing
-
-Use:
-
-- `evals/evals.json` for workflow regression
-- `evals/trigger-evals.json` for trigger boundaries
-- `references/eval-prompts.md` for human-readable review
-
-Success criteria:
-
-- new-deck intents trigger this skill
-- existing-deck edit/review/single-page/outline-only intents do not
-- produced contracts are decision-complete and validator-clean
+1. scene pack / style metadata
+2. `resource-registry.md`
+3. root `SKILL.md`
+4. scripts
+5. evals
+6. docs and README

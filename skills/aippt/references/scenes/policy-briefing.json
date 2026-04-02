@@ -1,0 +1,47 @@
+{
+  "id": "policy-briefing",
+  "label": "Policy Briefing",
+  "trigger_phrases": [
+    "政策解读",
+    "合规解读",
+    "policy briefing",
+    "regulatory update",
+    "compliance update"
+  ],
+  "audience_defaults": [
+    "legal team",
+    "policy stakeholders",
+    "product and compliance leads"
+  ],
+  "page_budget": {
+    "default": 10,
+    "min": 8,
+    "max": 14
+  },
+  "required_sections": [
+    "policy change summary",
+    "timeline",
+    "impact analysis",
+    "risk matrix",
+    "recommended actions"
+  ],
+  "default_story_arc": [
+    "anchor",
+    "proof",
+    "bridge",
+    "proof",
+    "closing"
+  ],
+  "evidence_policy": "Use primary legal or regulatory sources first. Time-sensitive rules must include explicit effective dates.",
+  "preferred_style_preset": "business",
+  "delivery_default": "prompt_bundle_only",
+  "review_bias": [
+    "citation_visibility",
+    "readability",
+    "hierarchy"
+  ],
+  "eval_ids": [
+    "scene-04-policy-briefing-positive",
+    "scene-04-policy-briefing-negative"
+  ]
+}
