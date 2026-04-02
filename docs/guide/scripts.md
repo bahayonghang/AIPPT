@@ -1,16 +1,34 @@
 # 脚本
 
-本页说明 `skills/aippt/scripts/` 的当前脚本能力（v2）。
+## Catalog / Setup
 
-## 1. `build-prompt-bundle.mjs`
+查看场景、style、交付模式、validator：
 
-用途：
+```bash
+cd docs
+npm run aippt:list-catalog
+```
 
-- 基于 `slide_spec + page_plan + style_profile + brand_profile` 生成逐页 prompt
-- 生成增强版 `delivery-manifest.json`
-- 严格检查 claim/question/intent 一致性
+初始化 workspace：
 
-示例：
+```bash
+cd docs
+npm run aippt:init-workspace -- --output-dir ../output --scene-id company-intro
+```
+
+创建新的 scene pack 脚手架：
+
+```bash
+cd docs
+npm run aippt:create-scene-pack -- \
+  --id customer-story \
+  --label "Customer Story" \
+  --description "Use first-party case proof and before/after narrative."
+```
+
+## Production
+
+生成 prompt bundle：
 
 ```bash
 cd docs
@@ -19,19 +37,11 @@ npm run aippt:build-prompts -- \
   --page-plan ../output/specs/page-plan.json \
   --brand-profile ../output/briefing/brand-profile.md \
   --style-profile ../output/specs/style-profile.json \
-  --output-dir ../output/prompts \
-  --delivery-mode prompt_bundle_only
+  --scene-pack company-intro \
+  --output-dir ../output/prompts
 ```
 
-## 2. `validate-artifacts.mjs`
-
-用途：
-
-- 校验 outline/spec/plan/style/manifest 一致性
-- 校验 argument chain 与 production chain
-- 校验节奏风险（layout 三连、proof-wall）
-
-示例：
+合同校验：
 
 ```bash
 cd docs
@@ -40,30 +50,11 @@ npm run aippt:validate-artifacts -- \
   --slide-spec ../output/specs/slide-spec.json \
   --page-plan ../output/specs/page-plan.json \
   --style-profile ../output/specs/style-profile.json \
-  --delivery-manifest ../output/prompts/delivery-manifest.json
+  --delivery-manifest ../output/prompts/delivery-manifest.json \
+  --scene-pack company-intro
 ```
 
-兼容旧合同：
-
-```bash
-cd docs
-npm run aippt:validate-artifacts -- \
-  --outline ../output/specs/outline.json \
-  --slide-spec ../output/specs/slide-spec.json \
-  --page-plan ../output/specs/page-plan.json \
-  --allow-legacy=true
-```
-
-## 3. `validate-svg.mjs`
-
-用途：
-
-- 校验 SVG root/namespace/viewBox
-- 校验字号下限与 safe-zone
-- 检查未解析占位符（double-curly 模板标记 / `TODO` / `TBD`）
-- 可选按 page_plan/manifest 校验 source refs 一致性
-
-示例：
+SVG 校验：
 
 ```bash
 cd docs
@@ -73,25 +64,18 @@ npm run aippt:validate-svg -- \
   --manifest ../output/prompts/delivery-manifest.json
 ```
 
-## 4. `build-preview.mjs`
-
-用途：
-
-- 从 SVG 页面生成静态预览 HTML
-
-示例：
+预览生成：
 
 ```bash
 cd docs
 npm run aippt:build-preview -- \
   --svg-dir ../output/svg \
   --output ../output/preview/index.html \
-  --manifest ../output/prompts/delivery-manifest.json \
-  --title "AIPPT Preview"
+  --manifest ../output/prompts/delivery-manifest.json
 ```
 
-## 调用约定
+## 原则
 
-- 先 `cd docs`
-- 使用 `npm run <script> -- <args>`
-- 失败时优先检查输入文件存在性与 wrapper tags / JSON 结构
+- scene-aware 工作流优先给 `build-prompt-bundle` 和 `validate-artifacts` 传 `--scene-pack`
+- workspace 元数据写在 `output/project.json`
+- 失败时优先检查 `resource-registry.md` 和 `scene-catalog.json`

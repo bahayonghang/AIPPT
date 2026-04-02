@@ -1,16 +1,26 @@
 # Scripts
 
-This page describes the current `skills/aippt/scripts/` behavior (v2).
+## Catalog and setup
 
-## 1. `build-prompt-bundle.mjs`
+```bash
+cd docs
+npm run aippt:list-catalog
+```
 
-Purpose:
+```bash
+cd docs
+npm run aippt:init-workspace -- --output-dir ../output --scene-id company-intro
+```
 
-- generate per-slide prompt files from `slide_spec + page_plan + style_profile + brand_profile`
-- emit enriched `delivery-manifest.json`
-- enforce claim/question/intent consistency across contracts
+```bash
+cd docs
+npm run aippt:create-scene-pack -- \
+  --id customer-story \
+  --label "Customer Story" \
+  --description "Use first-party case proof and before/after narrative."
+```
 
-Example:
+## Production and validation
 
 ```bash
 cd docs
@@ -19,19 +29,9 @@ npm run aippt:build-prompts -- \
   --page-plan ../output/specs/page-plan.json \
   --brand-profile ../output/briefing/brand-profile.md \
   --style-profile ../output/specs/style-profile.json \
-  --output-dir ../output/prompts \
-  --delivery-mode prompt_bundle_only
+  --scene-pack company-intro \
+  --output-dir ../output/prompts
 ```
-
-## 2. `validate-artifacts.mjs`
-
-Purpose:
-
-- validate outline/spec/plan/style/manifest consistency
-- validate argument-chain and production-chain alignment
-- validate rhythm risks (proof wall, repeated layouts)
-
-Example:
 
 ```bash
 cd docs
@@ -40,58 +40,6 @@ npm run aippt:validate-artifacts -- \
   --slide-spec ../output/specs/slide-spec.json \
   --page-plan ../output/specs/page-plan.json \
   --style-profile ../output/specs/style-profile.json \
-  --delivery-manifest ../output/prompts/delivery-manifest.json
+  --delivery-manifest ../output/prompts/delivery-manifest.json \
+  --scene-pack company-intro
 ```
-
-Legacy compatibility:
-
-```bash
-cd docs
-npm run aippt:validate-artifacts -- \
-  --outline ../output/specs/outline.json \
-  --slide-spec ../output/specs/slide-spec.json \
-  --page-plan ../output/specs/page-plan.json \
-  --allow-legacy=true
-```
-
-## 3. `validate-svg.mjs`
-
-Purpose:
-
-- validate SVG root/namespace/viewBox
-- validate font floors and safe zones
-- detect unresolved placeholders (double-curly template markers, `TODO`, `TBD`)
-- optional source-ref consistency checks with page plan and manifest
-
-Example:
-
-```bash
-cd docs
-npm run aippt:validate-svg -- \
-  --input ../output/svg \
-  --page-plan ../output/specs/page-plan.json \
-  --manifest ../output/prompts/delivery-manifest.json
-```
-
-## 4. `build-preview.mjs`
-
-Purpose:
-
-- generate static HTML preview from SVG pages
-
-Example:
-
-```bash
-cd docs
-npm run aippt:build-preview -- \
-  --svg-dir ../output/svg \
-  --output ../output/preview/index.html \
-  --manifest ../output/prompts/delivery-manifest.json \
-  --title "AIPPT Preview"
-```
-
-## Calling convention
-
-- run from `docs/`
-- pass runtime args via `npm run <script> -- <args>`
-- if a script fails, first verify input paths, then contract shape/wrapper tags

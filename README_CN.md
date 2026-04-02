@@ -2,100 +2,76 @@
 
 ## 安装
 
-请优先使用以下命令安装：
-
 ```bash
 npx skills add bahayonghang/AIPPT
 ```
 
-AIPPT 是一个用于 **从零创建全新演示文稿 / PPT / slide deck** 的 Claude Code Skill，强调研究驱动和中间工件可验证。
+AIPPT 是一个用于**从零创建整套新 deck** 的 Claude Code Skill，核心是 contract-first，而不是直接改现有 PPT 文件。
 
-它会把主题、brief、官网、白皮书、PDF、笔记或品牌素材，转化为一套完整的 deck 合同，包括：
+## v3 的变化
 
-- brand intake
-- brief 对齐
-- 证据化研究
-- sticky-note 大纲审批
-- slide spec
-- page plan
-- style profile
-- delivery manifest
+AIPPT 现在有两层路由：
 
-## AIPPT 适合什么
+- `generic AIPPT`：通用 staged workflow
+- `scene packs`：针对高频场景的窄子技能
 
-以下场景适合使用 AIPPT：
+内置场景：
 
-- 新的企业介绍 deck
-- 新的融资路演 deck
-- 产品发布会或 keynote deck
+- `company-intro`
+- `investor-pitch`
+- `board-briefing`
+- `policy-briefing`
+- `teaching-deck`
+- `thesis-defense`
+
+主定位不变：
+
+- 保留 staged artifact contract
+- 保留 argument-first 和 hard stop
+- 保留 validator
+- 不扩展成 `.pptx` 编辑器或 `deck.json` 运行时
+
+## 适用场景
+
+适合：
+
+- 企业介绍
+- 融资路演
+- 董事会/管理层汇报
+- 政策/合规解读
 - 教学课件
-- 年度复盘或董事会汇报
-- 政策解读或行业 briefing
-- 需要完整 deck 工作流，而不是临时做几页 slides
+- 毕业答辩 / 学术答辩
+- 从主题或资料出发，完整产出 research + outline + page planning + delivery artifacts
 
-即使用户只是说“帮我做个 PPT”“把这些材料做成演示”，只要意图是 **新建整套 deck**，而不是编辑现有文件，就应该触发。
+不适合：
 
-## AIPPT 不适合什么
+- 修改现有 `.pptx/.ppt/.key/Google Slides`
+- 只点评现有 deck
+- 只改模板页
+- 只做单页
+- 只要轻量大纲
 
-以下情况 **不应该** 使用 AIPPT：
+## 工作流模型
 
-- 修改现有 `.pptx`、`.ppt`、`.key` 或 Google Slides 文件
-- 审校、点评或润色已完成的 deck
-- 在现有模板里只改几页
-- 只润色文案
-- 只做一张封面页
-- 只要一个轻量大纲，不需要后续完整 deck 规划
+AIPPT 仍保持严格阶段：
 
-## 工作流
+1. brand intake
+2. brief alignment
+3. research dossier
+4. outline hard stop
+5. slide spec
+6. page plan
+7. style profile + delivery mode
+8. delivery execution
+9. verification and review
 
-AIPPT 采用严格的 8-stage 流程：
+硬门不变：
 
-1. Stage 0: Brand and asset intake
-2. Stage 1: Brief alignment hard stop
-3. Stage 2: Research dossier
-4. Stage 3: Sticky-note outline hard stop
-5. Stage 4: Slide spec
-6. Stage 5: Page plan
-7. Stage 6: Style profile and delivery mode
-8. Stage 7: Delivery execution
-9. Stage 8: Verification and review
+- 首次 outline 必须 `approved=false`
 
-关键门槛：
+## 输出结构
 
-- `outline.approved` 在大纲评审前必须保持为 `false`
-- `slide_spec` 和 `page_plan` 是两个独立合同，渲染前都必须存在
-- SVG 只有通过硬规则校验后，才算可交付
-
-## 工件合同
-
-计划完成态必须有：
-
-- `brand_profile`
-- `brief_summary`
-- `research_dossier`
-- `outline`
-- `slide_spec`
-- `page_plan`
-- `style_profile`
-
-交付完成态还必须有：
-
-- `delivery_manifest`
-- `review_report`，当验证或 refinement 发现问题时
-
-## 交付模式
-
-当前支持三种交付模式：
-
-- `prompt_bundle_only`
-- `svg_pages`
-- `brand_ready_assets`
-
-如果用户没有明确要求，默认保守选择 `prompt_bundle_only`。
-
-## 推荐输出树
-
-当文件系统可用时，AIPPT 应将产物写到：
+默认 workspace：
 
 ```text
 output/
@@ -103,46 +79,46 @@ output/
 ├── specs/
 ├── prompts/
 ├── svg/
-└── preview/
+├── preview/
+└── project.json
 ```
 
-模式差异：
+交付模式：
 
-- `prompt_bundle_only`：`briefing/`、`specs/`、`prompts/`
-- `svg_pages`：在上面基础上增加 `svg/`，可选 `preview/`
-- `brand_ready_assets`：至少包含 `prompt_bundle_only` 的产物，并补 handoff guidance，SVG 视需求提供
+- `prompt_bundle_only`
+- `svg_pages`
+- `brand_ready_assets`
 
-## References 与资源层
+## 常用命令
 
-Skill 主定义位于：
+查看 scene、style、delivery mode 和 validator：
 
-- `skills/aippt/SKILL.md`
+```bash
+cd docs
+npm run aippt:list-catalog
+```
 
-核心 references 包括：
+初始化 workspace：
 
-- `skills/aippt/references/brand-intake.md`
-- `skills/aippt/references/research-protocol.md`
-- `skills/aippt/references/outline-prompt.md`
-- `skills/aippt/references/narrative-rhythm.md`
-- `skills/aippt/references/slide-spec-schema.md`
-- `skills/aippt/references/resource-menu.md`
-- `skills/aippt/references/bento-grid-system.md`
-- `skills/aippt/references/page-plan-schema.md`
-- `skills/aippt/references/design-prompt.md`
-- `skills/aippt/references/review-taxonomy.md`
-- `skills/aippt/references/svg-quality-checklist.md`
-- `skills/aippt/references/resource-registry.md`
+```bash
+cd docs
+npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch
+```
 
-## 脚本
+生成 prompt bundle：
 
-可用辅助脚本：
+```bash
+cd docs
+npm run aippt:build-prompts -- \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --brand-profile ../output/briefing/brand-profile.md \
+  --style-profile ../output/specs/style-profile.json \
+  --scene-pack investor-pitch \
+  --output-dir ../output/prompts
+```
 
-- `build-prompt-bundle.mjs`
-- `validate-artifacts.mjs`
-- `validate-svg.mjs`
-- `build-preview.mjs`
-
-请在 `docs/` 目录中带参数执行，例如：
+校验合同：
 
 ```bash
 cd docs
@@ -151,52 +127,41 @@ npm run aippt:validate-artifacts -- \
   --slide-spec ../output/specs/slide-spec.json \
   --page-plan ../output/specs/page-plan.json \
   --style-profile ../output/specs/style-profile.json \
-  --delivery-manifest ../output/prompts/delivery-manifest.json
+  --delivery-manifest ../output/prompts/delivery-manifest.json \
+  --scene-pack investor-pitch
 ```
 
-## 评估
+## 唯一映射入口
 
-AIPPT 内置：
+把下面两个文件当作当前版本的唯一真相：
 
-- 人工可读 eval 提示集：`skills/aippt/references/eval-prompts.md`
-- workflow eval：`skills/aippt/evals/evals.json`
-- trigger-boundary eval：`skills/aippt/evals/trigger-evals.json`
+- [`skills/aippt/references/resource-registry.md`](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/resource-registry.md)
+- [`skills/aippt/references/scenes/scene-catalog.json`](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/scenes/scene-catalog.json)
 
-覆盖范围包括：
+不要在 README、docs、脚本注释里重复维护长文件列表。
 
-- 新建整套 deck 的正向触发
-- 现有 deck 编辑与点评的负向触发
-- 只要大纲、只改模板、只做单页等 near-miss 场景
+## 评测
+
+评测分三层：
+
+- `skills/aippt/evals/evals.json`
+- `skills/aippt/evals/trigger-evals.json`
+- `skills/aippt/references/eval-prompts.md`
+
+现在覆盖：
+
+- generic 新 deck 触发
+- scene-pack 路由
+- 现有 deck 编辑边界
+- near-miss 非触发场景
 
 ## 文档
 
 - 英文 README：`README.md`
 - VitePress 文档：`docs/`
 
-启动文档站：
-
 ```bash
 cd docs
 npm install
 npm run docs:dev
 ```
-
-构建文档：
-
-```bash
-cd docs
-npm run docs:build
-```
-
-## 贡献建议
-
-只要 workflow 有变化，就要同步检查：
-
-- `skills/aippt/SKILL.md`
-- `skills/aippt/references/`
-- `skills/aippt/scripts/`
-- `README.md`
-- `README_CN.md`
-- `docs/`
-
-请把 `skills/aippt/references/resource-registry.md` 当作当前资源层的唯一映射入口。

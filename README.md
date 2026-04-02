@@ -2,100 +2,78 @@
 
 ## Installation
 
-Install the skill with:
-
 ```bash
 npx skills add bahayonghang/AIPPT
 ```
 
-AIPPT is a Claude Code skill for building a **new presentation deck from scratch** with a research-driven workflow.
+AIPPT is a Claude Code skill for building a **new deck from scratch** with a contract-first workflow.
 
-It turns a topic, brief, website, white paper, PDF, notes, or brand asset pack into a complete deck contract with:
+It is optimized for:
 
-- brand intake
-- brief alignment
-- evidence-backed research
-- sticky-note outline approval
-- slide spec
-- page plan
-- style profile
-- delivery manifest
+- research-backed new PPT requests
+- argument architecture before layout work
+- portable production artifacts
+- deterministic validation before delivery
 
-## What AIPPT is for
+## What changed in v3
 
-Use AIPPT when the user wants:
+AIPPT now has two routing layers:
 
-- a new company introduction deck
-- a new investor pitch deck
-- a product launch or keynote deck
-- a teaching slide deck
-- an annual review or board deck
-- a policy or market briefing deck
-- a full deck workflow rather than one-off slide drafting
+- `generic AIPPT`: the main staged workflow
+- `scene packs`: narrow subskills for recurring deck types
 
-Trigger it even when the user says “help me make a PPT about X” or “turn these materials into a presentation”, as long as the intent is a **new deck**, not edits to an existing file.
+Built-in scene packs:
 
-## What AIPPT is not for
+- `company-intro`
+- `investor-pitch`
+- `board-briefing`
+- `policy-briefing`
+- `teaching-deck`
+- `thesis-defense`
 
-Do **not** use AIPPT for:
+The root skill remains the strategy and contract layer. It does **not** become a PPTX editor or `deck.json` runtime.
 
-- editing an existing `.pptx`, `.ppt`, `.key`, or Google Slides file
-- reviewing or critiquing a finished deck
-- changing a few pages inside an existing template
-- polishing copy only
-- creating only a cover page
-- returning only a lightweight outline with no downstream deck-planning workflow
+## When to use AIPPT
 
-## Workflow
+Use AIPPT when the user wants a new:
 
-AIPPT keeps a strict 8-stage flow:
+- company overview deck
+- investor pitch
+- board or executive briefing
+- policy or market briefing
+- teaching deck
+- thesis defense deck
+- full deck workflow from source material to delivery artifacts
 
-1. Stage 0: Brand and asset intake
-2. Stage 1: Brief alignment hard stop
-3. Stage 2: Research dossier
-4. Stage 3: Sticky-note outline hard stop
-5. Stage 4: Slide spec
-6. Stage 5: Page plan
-7. Stage 6: Style profile and delivery mode
-8. Stage 7: Delivery execution
-9. Stage 8: Verification and review
+Do not use AIPPT for:
 
-Key gates:
+- editing an existing `.pptx/.ppt/.key/Google Slides`
+- reviewing a finished deck only
+- template-only tweaks
+- single-slide requests
+- outline-only requests
 
-- `outline.approved` must remain `false` until the outline is reviewed
-- `slide_spec` and `page_plan` are separate contracts and must both exist before rendering
-- SVG output is not considered ready until hard-rule validation passes
+## Workflow model
 
-## Artifact contract
+AIPPT keeps a strict staged flow:
 
-Planned deck artifacts:
+1. brand intake
+2. brief alignment
+3. research dossier
+4. outline hard stop
+5. slide spec
+6. page plan
+7. style profile + delivery mode
+8. delivery execution
+9. verification and review
 
-- `brand_profile`
-- `brief_summary`
-- `research_dossier`
-- `outline`
-- `slide_spec`
-- `page_plan`
-- `style_profile`
+Non-negotiable gate:
 
-Delivered deck artifacts:
+- first outline must keep `approved=false`
 
-- `delivery_manifest`
-- `review_report` when validation or refinement finds issues
+## Output model
 
-## Delivery modes
-
-AIPPT supports three delivery modes:
-
-- `prompt_bundle_only`
-- `svg_pages`
-- `brand_ready_assets`
-
-Default conservatively to `prompt_bundle_only` unless the user explicitly wants SVG pages or a handoff package.
-
-## Preferred output tree
-
-When filesystem access is available, AIPPT should write artifacts under:
+Default workspace:
 
 ```text
 output/
@@ -103,46 +81,46 @@ output/
 ├── specs/
 ├── prompts/
 ├── svg/
-└── preview/
+├── preview/
+└── project.json
 ```
 
-Mode-specific expectations:
+Delivery modes:
 
-- `prompt_bundle_only`: `briefing/`, `specs/`, `prompts/`
-- `svg_pages`: everything above plus `svg/`, optionally `preview/`
-- `brand_ready_assets`: everything from `prompt_bundle_only`, plus handoff guidance and optional SVG pages
+- `prompt_bundle_only`
+- `svg_pages`
+- `brand_ready_assets`
 
-## References and resource layer
+## Key commands
 
-The skill definition lives in:
+List scenes, styles, delivery modes, and validators:
 
-- `skills/aippt/SKILL.md`
+```bash
+cd docs
+npm run aippt:list-catalog
+```
 
-Core references live in:
+Initialize a workspace:
 
-- `skills/aippt/references/brand-intake.md`
-- `skills/aippt/references/research-protocol.md`
-- `skills/aippt/references/outline-prompt.md`
-- `skills/aippt/references/narrative-rhythm.md`
-- `skills/aippt/references/slide-spec-schema.md`
-- `skills/aippt/references/resource-menu.md`
-- `skills/aippt/references/bento-grid-system.md`
-- `skills/aippt/references/page-plan-schema.md`
-- `skills/aippt/references/design-prompt.md`
-- `skills/aippt/references/review-taxonomy.md`
-- `skills/aippt/references/svg-quality-checklist.md`
-- `skills/aippt/references/resource-registry.md`
+```bash
+cd docs
+npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch
+```
 
-## Scripts
+Build prompt bundle:
 
-Available helper scripts:
+```bash
+cd docs
+npm run aippt:build-prompts -- \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --brand-profile ../output/briefing/brand-profile.md \
+  --style-profile ../output/specs/style-profile.json \
+  --scene-pack investor-pitch \
+  --output-dir ../output/prompts
+```
 
-- `build-prompt-bundle.mjs`
-- `validate-artifacts.mjs`
-- `validate-svg.mjs`
-- `build-preview.mjs`
-
-Run them from `docs/` with explicit arguments, for example:
+Validate contracts:
 
 ```bash
 cd docs
@@ -151,52 +129,41 @@ npm run aippt:validate-artifacts -- \
   --slide-spec ../output/specs/slide-spec.json \
   --page-plan ../output/specs/page-plan.json \
   --style-profile ../output/specs/style-profile.json \
-  --delivery-manifest ../output/prompts/delivery-manifest.json
+  --delivery-manifest ../output/prompts/delivery-manifest.json \
+  --scene-pack investor-pitch
 ```
+
+## Canonical maps
+
+Use these as the source of truth:
+
+- [`skills/aippt/references/resource-registry.md`](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/resource-registry.md)
+- [`skills/aippt/references/scenes/scene-catalog.json`](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/scenes/scene-catalog.json)
+
+Avoid duplicating long file inventories elsewhere.
 
 ## Evaluation
 
-AIPPT includes:
+AIPPT keeps three regression layers:
 
-- human-readable eval prompts: `skills/aippt/references/eval-prompts.md`
-- workflow evals: `skills/aippt/evals/evals.json`
-- trigger-boundary evals: `skills/aippt/evals/trigger-evals.json`
+- `skills/aippt/evals/evals.json`
+- `skills/aippt/evals/trigger-evals.json`
+- `skills/aippt/references/eval-prompts.md`
 
-These cover:
+These now cover:
 
-- should-trigger new deck requests
-- should-not-trigger existing-deck edits and critiques
-- near-miss cases such as outline-only requests, template tweaks, or single-slide asks
+- generic new-deck requests
+- scene-pack routing
+- existing-deck edit boundaries
+- near-miss non-trigger cases
 
-## Documentation
+## Docs
 
 - Chinese README: `README_CN.md`
 - VitePress docs: `docs/`
-
-Start the docs site:
 
 ```bash
 cd docs
 npm install
 npm run docs:dev
 ```
-
-Build docs:
-
-```bash
-cd docs
-npm run docs:build
-```
-
-## Contributing
-
-Keep the following in sync whenever the workflow changes:
-
-- `skills/aippt/SKILL.md`
-- `skills/aippt/references/`
-- `skills/aippt/scripts/`
-- `README.md`
-- `README_CN.md`
-- `docs/`
-
-Use `skills/aippt/references/resource-registry.md` as the canonical map of the current resource layer.
