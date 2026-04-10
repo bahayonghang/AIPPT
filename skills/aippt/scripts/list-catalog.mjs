@@ -1,17 +1,19 @@
 import path from "node:path";
 import {
+  DELIVERY_MODES,
   SCENES_DIR,
   STYLES_DIR,
+  getPreferenceSearchPaths,
   loadSceneCatalog,
   loadStyleIndex,
   parseArgs
 } from "./_shared.mjs";
 
-const DELIVERY_MODES = ["prompt_bundle_only", "svg_pages", "brand_ready_assets"];
 const VALIDATORS = [
   "validate-artifacts.mjs",
   "validate-svg.mjs",
-  "build-preview.mjs"
+  "build-preview.mjs",
+  "read-preferences.mjs"
 ];
 
 function printSection(title, items) {
@@ -38,7 +40,8 @@ const payload = {
   scenes: sceneCatalog.scenes ?? [],
   styles: styleIndex.presets ?? [],
   delivery_modes: DELIVERY_MODES,
-  validators: VALIDATORS
+  validators: VALIDATORS,
+  preference_search_paths: getPreferenceSearchPaths()
 };
 
 if (args.json === "true") {
@@ -52,6 +55,7 @@ console.log(`Style presets: ${(styleIndex.presets ?? []).length}`);
 printSection("Scene Packs", sceneLines);
 printSection("Style Presets", styleLines);
 printSection("Delivery Modes", DELIVERY_MODES);
+printSection("Preference Search Paths", getPreferenceSearchPaths());
 printSection(
   "Validators",
   VALIDATORS.map((item) => path.join("scripts", item))

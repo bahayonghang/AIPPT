@@ -57,11 +57,15 @@ Must include:
 - `evidence_layer`
 - `data_requirements`
 - `fit_risk`
+- `layout_hint` (optional, but recommended)
+- `layout_family` (optional, but recommended)
 
 ### `page_plan` (HOW)
 
 Must include:
 
+- `layout_hint`
+- `layout_family`
 - `proof_trace`
 - `exhibit_blueprint`
 - `rhythm_slot`
@@ -73,6 +77,8 @@ Must include:
 Must include:
 
 - `style_direction`
+- `style_dimensions`
+- `style_instruction_block`
 - `palette_roles`
 - `typography_roles`
 - `brand_override_rules`

@@ -25,6 +25,13 @@ cd docs
 npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch
 ```
 
+如果你有默认偏好，也可以先准备：
+
+- `./.aippt/EXTEND.json`
+- `~/.aippt/EXTEND.json`
+
+支持的默认值包括 scene、style preset、delivery mode、language、strict review、style dimensions。
+
 这会创建：
 
 - `briefing/`
@@ -51,3 +58,10 @@ npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch
 先 build，再 validate。
 
 如果你是 scene-aware 工作流，两个脚本都传 `--scene-pack`。
+
+如果只想停在阶段边界，可以使用 staged modes：
+
+- `outline_only`
+- `spec_only`
+
+这两个模式不会绕过 approval gate，也不会提前生成 prompt bundle。

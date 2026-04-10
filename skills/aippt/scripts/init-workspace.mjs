@@ -1,7 +1,9 @@
 import path from "node:path";
 import {
   ensureDir,
+  loadPreferences,
   parseArgs,
+  pickPreferenceValues,
   resolveScenePackPath,
   writeJson
 } from "./_shared.mjs";
@@ -9,9 +11,11 @@ import {
 const args = parseArgs(process.argv);
 const outputDir = path.resolve(args["output-dir"] ?? "output");
 const deckId = args["deck-id"] ?? path.basename(outputDir);
-const sceneId = args["scene-id"] ?? "generic";
-const language = args.language ?? "zh-CN";
-const deliveryMode = args["delivery-mode"] ?? "prompt_bundle_only";
+const preferencesResult = loadPreferences(args["preferences"]);
+const preferences = preferencesResult?.preferences ?? {};
+const sceneId = args["scene-id"] ?? preferences.default_scene ?? "generic";
+const language = args.language ?? preferences.default_language ?? "zh-CN";
+const deliveryMode = args["delivery-mode"] ?? preferences.default_delivery_mode ?? "prompt_bundle_only";
 const scenePackFile =
   sceneId !== "generic" ? resolveScenePackPath(sceneId) : null;
 
@@ -52,7 +56,9 @@ writeJson(path.join(outputDir, artifactPaths.project_file), {
   status: "initialized",
   artifact_paths: artifactPaths,
   approval_state: "outline_pending",
-  scene_pack_file: scenePackFile
+  scene_pack_file: scenePackFile,
+  preferences_file: preferencesResult?.path ?? null,
+  preferences_applied: pickPreferenceValues(preferences)
 });
 
 console.log(
@@ -61,7 +67,8 @@ console.log(
       output_dir: outputDir,
       deck_id: deckId,
       scene_id: sceneId,
-      project_file: path.join(outputDir, artifactPaths.project_file)
+      project_file: path.join(outputDir, artifactPaths.project_file),
+      preferences_file: preferencesResult?.path ?? null
     },
     null,
     2

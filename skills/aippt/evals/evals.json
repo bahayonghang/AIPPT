@@ -51,6 +51,37 @@
       "required_validations": [
         "validate-artifacts passes",
         "validate-svg passes"
+      ],
+      "route_assertions": [
+        "style_instruction_block is present in style_profile",
+        "layout_hint is reflected in slide contracts"
+      ]
+    },
+    {
+      "id": "workflow-04-preferences-and-staged-modes",
+      "category": "positive",
+      "prompt": "使用我的默认配置做一套新的产品介绍 deck，先停在 outline_only，确认风格和结构后再继续。",
+      "should_trigger": true,
+      "scene_id": "generic",
+      "should_use_subskill": false,
+      "required_artifacts": [
+        "outline"
+      ],
+      "route_assertions": [
+        "preferences are recorded in project metadata",
+        "outline_only does not bypass approval gates"
+      ]
+    },
+    {
+      "id": "workflow-05-partial-regeneration-contract",
+      "category": "positive",
+      "prompt": "这套新 deck 已经批准过 outline，请只重建 S03 和 S04 的 prompt bundle，并保留其他页不动。",
+      "should_trigger": true,
+      "scene_id": "generic",
+      "should_use_subskill": false,
+      "route_assertions": [
+        "partial regeneration stays inside generated artifacts",
+        "delivery_manifest records the regenerated slide ids"
       ]
     },
     {

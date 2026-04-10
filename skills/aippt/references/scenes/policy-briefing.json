@@ -8,11 +8,12 @@
     "regulatory update",
     "compliance update"
   ],
-  "audience_defaults": [
-    "legal team",
-    "policy stakeholders",
-    "product and compliance leads"
-  ],
+  "audience_density_bias": "balanced",
+  "layout_tendency": {
+    "opening": ["title-hero", "timeline"],
+    "middle": ["timeline", "decision-matrix", "split-screen"],
+    "closing": ["title-hero", "case-strip"]
+  },
   "page_budget": {
     "default": 10,
     "min": 8,

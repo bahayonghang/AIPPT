@@ -9,11 +9,12 @@
     "series a pitch",
     "融资 deck"
   ],
-  "audience_defaults": [
-    "seed investors",
-    "venture partners",
-    "investment committee"
-  ],
+  "audience_density_bias": "balanced",
+  "layout_tendency": {
+    "opening": ["title-hero", "split-screen"],
+    "middle": ["dashboard", "decision-matrix", "bento-summary"],
+    "closing": ["title-hero", "quote-callout"]
+  },
   "page_budget": {
     "default": 12,
     "min": 10,

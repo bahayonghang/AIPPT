@@ -9,6 +9,24 @@ export const REFERENCES_DIR = path.join(SKILL_ROOT, "references");
 export const STYLES_DIR = path.join(REFERENCES_DIR, "styles");
 export const SCENES_DIR = path.join(REFERENCES_DIR, "scenes");
 export const SUBSKILLS_DIR = path.join(SKILL_ROOT, "subskills");
+export const PROJECT_PREFERENCES_FILE = ".aippt/EXTEND.json";
+export const USER_PREFERENCES_FILE = ".aippt/EXTEND.json";
+export const DELIVERY_MODES = [
+  "outline_only",
+  "spec_only",
+  "prompt_bundle_only",
+  "svg_pages",
+  "brand_ready_assets"
+];
+export const STAGED_STOP_MODES = ["outline_only", "spec_only"];
+export const SUPPORTED_PREFERENCE_KEYS = [
+  "default_scene",
+  "default_style_preset",
+  "default_delivery_mode",
+  "default_language",
+  "strict_review",
+  "style_dimensions"
+];
 
 export function parseArgs(argv) {
   const args = {};
@@ -151,4 +169,111 @@ export function resolveScenePackPath(scenePackPathOrId) {
   return scenePackPathOrId.endsWith(".json")
     ? path.resolve(scenePackPathOrId)
     : path.join(SCENES_DIR, `${scenePackPathOrId}.json`);
+}
+
+export function getPreferenceSearchPaths(cwd = process.cwd()) {
+  const homeDir = process.env.HOME || process.env.USERPROFILE || null;
+  const paths = [path.resolve(cwd, PROJECT_PREFERENCES_FILE)];
+
+  if (homeDir) {
+    paths.push(path.resolve(homeDir, USER_PREFERENCES_FILE));
+  }
+
+  return paths;
+}
+
+export function loadPreferences(preferencesPath) {
+  const searchPaths = preferencesPath
+    ? [path.resolve(preferencesPath)]
+    : getPreferenceSearchPaths();
+
+  for (const candidate of searchPaths) {
+    if (!fs.existsSync(candidate)) {
+      continue;
+    }
+
+    return {
+      path: candidate,
+      preferences: readJson(candidate)
+    };
+  }
+
+  return null;
+}
+
+export function isStagedStopMode(mode) {
+  return STAGED_STOP_MODES.includes(mode);
+}
+
+export function isDeliveryMode(mode) {
+  return DELIVERY_MODES.includes(mode);
+}
+
+export function requiresApprovedOutline(mode) {
+  return !isStagedStopMode(mode);
+}
+
+export function writesPromptArtifacts(mode) {
+  return !isStagedStopMode(mode);
+}
+
+export function pickPreferenceValues(preferences = {}) {
+  return Object.fromEntries(
+    SUPPORTED_PREFERENCE_KEYS.map((key) => [key, preferences[key] ?? null])
+  );
+}
+
+export function buildStyleInstructions(styleProfile, slideSpec, pagePlan) {
+  const palette = styleProfile.palette_roles ?? {};
+  const typography = styleProfile.typography_roles ?? {};
+  const dimensions = styleProfile.style_dimensions ?? {};
+  const instruction = styleProfile.style_instruction_block ?? {};
+  const doRules = instruction.do_rules ?? [];
+  const dontRules = instruction.dont_rules ?? [];
+  const visualElements = instruction.visual_elements ?? [];
+  const slideIntent = slideSpec?.exhibit_intent ?? pagePlan?.exhibit_blueprint?.primary_intent ?? "none";
+  const layoutArchetype = pagePlan?.layout_hint ?? "generic";
+  const geometryChoice = pagePlan?.layout_family ?? pagePlan?.final_layout ?? "generic";
+
+  return [
+    "<STYLE_INSTRUCTIONS>",
+    `Design Direction: ${instruction.design_direction ?? styleProfile.style_direction ?? "portable-contract"}`,
+    `Style Preset: ${styleProfile.preset_id ?? "custom"}`,
+    `Texture / Mood / Typography / Density: ${dimensions.texture ?? "clean"} / ${dimensions.mood ?? "neutral"} / ${dimensions.typography ?? "geometric"} / ${dimensions.density ?? "balanced"}`,
+    `Selection Reason: ${styleProfile.selection_reason ?? "No explicit reason provided."}`,
+    "",
+    "Background Strategy:",
+    `- Canvas mood: ${instruction.background_strategy ?? "Use restrained contrast and keep whitespace intentional."}`,
+    `- Surface roles: dark=${palette.surface_dark ?? "n/a"}, base=${palette.surface ?? "n/a"}, muted=${palette.surface_muted ?? "n/a"}`,
+    "",
+    "Typography Strategy:",
+    `- Heading: ${instruction.heading_style ?? typography.heading?.font_family ?? "Heading role from style profile"}`,
+    `- Body: ${instruction.body_style ?? typography.body?.font_family ?? "Body role from style profile"}`,
+    `- Meta: ${typography.meta?.font_family ?? "Meta role from style profile"}`,
+    "",
+    "Color Roles:",
+    `- Text: ${palette.text ?? "n/a"}`,
+    `- Muted text: ${palette.text_muted ?? "n/a"}`,
+    `- Accent: ${palette.accent ?? "n/a"}`,
+    `- Positive / Warning: ${palette.positive ?? "n/a"} / ${palette.warning ?? "n/a"}`,
+    "",
+    "Visual Elements:",
+    ...visualElements.map((item) => `- ${item}`),
+    ...(visualElements.length === 0 ? ["- Favor simple geometric accents and explicit evidence grouping."] : []),
+    "",
+    "Density Rules:",
+    `- Density target: ${instruction.density_rule ?? `${dimensions.density ?? "balanced"} information load with readable spacing.`}`,
+    `- Layout archetype: ${layoutArchetype}`,
+    `- Geometry choice: ${geometryChoice}`,
+    `- Exhibit intent: ${slideIntent}`,
+    "",
+    "Do:",
+    ...doRules.map((item) => `- ${item}`),
+    ...(doRules.length === 0 ? ["- Keep the main claim visually dominant.", "- Make evidence references visible."] : []),
+    "",
+    "Don't:",
+    ...dontRules.map((item) => `- ${item}`),
+    ...(dontRules.length === 0 ? ["- Do not invent uncited facts.", "- Do not let decorative elements override the proof chain."] : []),
+    "</STYLE_INSTRUCTIONS>"
+  ].join("\n");
 }

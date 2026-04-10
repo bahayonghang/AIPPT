@@ -28,6 +28,12 @@ function sceneTemplate({
     label,
     trigger_phrases: [label, id.replaceAll("-", " ")],
     audience_defaults: ["primary stakeholders"],
+    audience_density_bias: "balanced",
+    layout_tendency: {
+      opening: ["title-hero", "split-screen"],
+      middle: ["split-screen", "dashboard"],
+      closing: ["title-hero", "quote-callout"]
+    },
     page_budget: {
       default: 12,
       min: 8,

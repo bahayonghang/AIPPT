@@ -17,8 +17,11 @@ For positive cases, verify:
 3. Hard gate correctness: the first outline still keeps `approved=false`.
 4. Argument contract: outline contains `governing_thought`, `pillar_map`, `argument_claim`, `proof_question`.
 5. Production contract: `slide_spec`, `page_plan`, `style_profile`, and `delivery_manifest` are present when appropriate.
-6. Scene-aware quality: `required_sections`, `default_story_arc`, and `review_bias` are reflected in downstream artifacts when `--scene-pack` is used.
-7. Validation: `validate-artifacts` passes; `validate-svg` passes when SVG output is requested.
+6. Scene-aware quality: `required_sections`, `default_story_arc`, `review_bias`, `audience_density_bias`, and `layout_tendency` are reflected downstream when `--scene-pack` is used.
+7. Style portability: `style_profile` contains `style_dimensions` and `style_instruction_block`.
+8. Layout portability: `layout_hint` / `layout_family` stay aligned with `final_layout`.
+9. Staged modes: `outline_only` / `spec_only` stop at the correct stage without bypassing approval.
+10. Validation: `validate-artifacts` passes; `validate-svg` passes when SVG output is requested.
 
 For negative cases, verify:
 
@@ -63,10 +66,18 @@ For negative cases, verify:
 请从零开始做一套毕业答辩 PPT，包含研究问题、文献缺口、方法、结果、贡献和未来工作。
 ```
 
-## Generic positive sample
+## Generic positive samples
 
 ```text
 帮我做一套新的 AI 产品战略 deck，从我提供的会议纪要和白皮书出发，完整输出 research、提纲、逐页规划和交付清单。
+```
+
+```text
+使用我的默认配置做一套新的产品介绍 deck，先停在 outline_only，确认风格和结构后再继续。
+```
+
+```text
+这套新 deck 已经批准过 outline，请只重建 S03 和 S04 的 prompt bundle，并保留其他页不动。
 ```
 
 ## Negative samples

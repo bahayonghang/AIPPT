@@ -12,7 +12,7 @@
     "should_use_subskill": true
   },
   {
-    "query": "下周董事会汇报需要一套全新 presentation，重点是增长、利润和明年计划，你帮我把研究、论证结构和页面合同都做齐。",
+    "query": "下周董事会汇报需要一套全新 presentation，重点是增长、利润和明年计划，你帮我把 research、论证结构、style profile 和 page plan 都做齐。",
     "should_trigger": true,
     "scene_id": "board-briefing",
     "should_use_subskill": true
@@ -24,19 +24,31 @@
     "should_use_subskill": true
   },
   {
-    "query": "我要一套教学 slides，不只是提纲，要完整到每页目标、证据和布局合同。",
+    "query": "我要一套教学 slides，不只是提纲，要完整到每页目标、证据、layout hint 和布局合同。",
     "should_trigger": true,
     "scene_id": "teaching-deck",
     "should_use_subskill": true
   },
   {
-    "query": "请从零做一套毕业答辩 PPT，最后给我完整的 page plan 和 delivery manifest。",
+    "query": "请从零做一套毕业答辩 PPT，最后给我完整的 page plan、style instructions 和 delivery manifest。",
     "should_trigger": true,
     "scene_id": "thesis-defense",
     "should_use_subskill": true
   },
   {
-    "query": "帮我做市场分析报告的结构化幻灯片方案，要从 research 到 page plan 一条龙。",
+    "query": "帮我做市场分析报告的结构化幻灯片方案，要从 research 到 page plan 一条龙，最后先停在 spec_only。",
+    "should_trigger": true,
+    "scene_id": "generic",
+    "should_use_subskill": false
+  },
+  {
+    "query": "这套 deck 先不要出图，先给我 outline_only，确认后再继续。",
+    "should_trigger": true,
+    "scene_id": "generic",
+    "should_use_subskill": false
+  },
+  {
+    "query": "默认用 tech 风格和我的偏好配置，帮我从零搭一套产品介绍 deck。",
     "should_trigger": true,
     "scene_id": "generic",
     "should_use_subskill": false

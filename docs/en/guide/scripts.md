@@ -14,6 +14,11 @@ npm run aippt:init-workspace -- --output-dir ../output --scene-id company-intro
 
 ```bash
 cd docs
+node ../skills/aippt/scripts/read-preferences.mjs
+```
+
+```bash
+cd docs
 npm run aippt:create-scene-pack -- \
   --id customer-story \
   --label "Customer Story" \
@@ -31,6 +36,17 @@ npm run aippt:build-prompts -- \
   --style-profile ../output/specs/style-profile.json \
   --scene-pack company-intro \
   --output-dir ../output/prompts
+```
+
+```bash
+cd docs
+npm run aippt:build-prompts -- \
+  --slide-spec ../output/specs/slide-spec.json \
+  --page-plan ../output/specs/page-plan.json \
+  --brand-profile ../output/briefing/brand-profile.md \
+  --style-profile ../output/specs/style-profile.json \
+  --output-dir ../output/prompts \
+  --slides S03,S04
 ```
 
 ```bash

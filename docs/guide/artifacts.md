@@ -57,11 +57,15 @@
 - `evidence_layer`
 - `data_requirements`
 - `fit_risk`
+- `layout_hint`（可选，但推荐）
+- `layout_family`（可选，但推荐）
 
 ### `page_plan`（HOW）
 
 至少包含：
 
+- `layout_hint`
+- `layout_family`
 - `proof_trace`
 - `exhibit_blueprint`
 - `rhythm_slot`
@@ -73,6 +77,8 @@
 至少包含：
 
 - `style_direction`
+- `style_dimensions`
+- `style_instruction_block`
 - `palette_roles`
 - `typography_roles`
 - `brand_override_rules`

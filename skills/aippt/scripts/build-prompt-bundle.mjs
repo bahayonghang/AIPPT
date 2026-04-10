@@ -2,15 +2,20 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  DELIVERY_MODES,
+  buildStyleInstructions,
   ensureDir,
   firstCodeBlock,
   loadScenePack,
   parseArgs,
   readText,
   readWrappedJson,
+  isDeliveryMode,
+  requiresApprovedOutline,
   resolveScenePackPath,
   slugify,
-  writeJson
+  writeJson,
+  writesPromptArtifacts
 } from "./_shared.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -34,20 +39,28 @@ const slideSpecPath = args["slide-spec"];
 const pagePlanPath = args["page-plan"];
 const brandProfilePath = args["brand-profile"];
 const styleProfilePath = args["style-profile"];
+const outlinePath = args.outline;
 const outputDir = args["output-dir"];
 const deliveryMode = args["delivery-mode"] ?? "prompt_bundle_only";
 const svgDir = args["svg-dir"] ? path.resolve(args["svg-dir"]) : null;
 const previewFile = args["preview-file"] ? path.resolve(args["preview-file"]) : null;
 const scenePackArg = args["scene-pack"];
+const onlySlides = args.slides
+  ? new Set(
+      String(args.slides)
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    )
+  : null;
 
 if (!slideSpecPath || !pagePlanPath || !brandProfilePath || !styleProfilePath || !outputDir) {
   fail(
-    "Required arguments: --slide-spec --page-plan --brand-profile --style-profile --output-dir [--delivery-mode] [--svg-dir] [--preview-file]"
+    "Required arguments: --slide-spec --page-plan --brand-profile --style-profile --output-dir [--outline] [--delivery-mode] [--svg-dir] [--preview-file] [--slides=S01,S02]"
   );
 }
 
-const allowedDeliveryModes = new Set(["prompt_bundle_only", "svg_pages", "brand_ready_assets"]);
-if (!allowedDeliveryModes.has(deliveryMode)) {
+if (!isDeliveryMode(deliveryMode)) {
   fail(`Unsupported delivery mode "${deliveryMode}".`);
 }
 
@@ -57,9 +70,11 @@ const designPromptPath =
 const slideSpecDocument = readWrappedJson(slideSpecPath, ["SLIDE_SPEC"]);
 const pagePlanDocument = readWrappedJson(pagePlanPath, ["PAGE_PLAN"]);
 const styleProfileDocument = readWrappedJson(styleProfilePath, ["STYLE_PROFILE"]);
+const outlineDocument = outlinePath ? readWrappedJson(outlinePath, ["PPT_OUTLINE"]) : null;
 const slideSpec = slideSpecDocument.slide_spec ?? slideSpecDocument;
 const pagePlan = pagePlanDocument.page_plan ?? pagePlanDocument;
 const styleProfileParsed = styleProfileDocument.style_profile ?? styleProfileDocument;
+const outline = outlineDocument?.outline ?? outlineDocument;
 
 if (!Array.isArray(slideSpec.slides) || !slideSpec.slides.length) {
   fail("slide_spec.slides must be a non-empty array.");
@@ -82,19 +97,33 @@ const scenePackPath = scenePackArg ? resolveScenePackPath(scenePackArg) : null;
 
 const planBySlideId = new Map(pagePlan.slides.map((slide) => [slide.slide_id, slide]));
 const promptsDir = path.resolve(outputDir);
+const shouldGeneratePrompts = writesPromptArtifacts(deliveryMode);
+const shouldWriteManifest = shouldGeneratePrompts;
+
+if (requiresApprovedOutline(deliveryMode)) {
+  if (!outlinePath) {
+    fail("--outline is required before generating prompt bundles or delivery manifests.");
+  }
+
+  if (!outline || outline.approved !== true) {
+    fail("outline.approved must be true before generating prompt bundles or delivery manifests.");
+  }
+}
 
 ensureDir(promptsDir);
 
 const manifest = {
   delivery_manifest: {
     skill: "aippt",
-    schema_version: "2.0.0",
+    schema_version: "2.1.0",
     contract_version: "argument-production-v2",
     mode: deliveryMode,
     generated_at: new Date().toISOString(),
+    partial_regeneration: onlySlides ? Array.from(onlySlides) : [],
     input_files: {
       slide_spec_file: path.resolve(slideSpecPath),
       page_plan_file: path.resolve(pagePlanPath),
+      outline_file: outlinePath ? path.resolve(outlinePath) : null,
       style_profile_file: path.resolve(styleProfilePath),
       brand_profile_file: path.resolve(brandProfilePath),
       review_notes_file: args["review-notes"] ? path.resolve(args["review-notes"]) : null,
@@ -112,7 +141,9 @@ const manifest = {
           required_sections: scenePack.required_sections ?? [],
           review_bias: scenePack.review_bias ?? [],
           preferred_style_preset: scenePack.preferred_style_preset ?? null,
-          delivery_default: scenePack.delivery_default ?? null
+          delivery_default: scenePack.delivery_default ?? null,
+          audience_density_bias: scenePack.audience_density_bias ?? null,
+          layout_tendency: scenePack.layout_tendency ?? null
         }
       : null,
     slides: []
@@ -120,6 +151,10 @@ const manifest = {
 };
 
 slideSpec.slides.forEach((slide, index) => {
+  if (onlySlides && !onlySlides.has(slide.slide_id)) {
+    return;
+  }
+
   const plan = planBySlideId.get(slide.slide_id);
 
   if (!plan) {
@@ -148,18 +183,24 @@ slideSpec.slides.forEach((slide, index) => {
     fail(`${slide.slide_id}: exhibit intent mismatch between slide_spec and page_plan.`);
   }
 
-  const prompt = promptTemplate
-    .replaceAll("{{STYLE_PROFILE}}", styleProfile)
-    .replaceAll("{{BRAND_PROFILE}}", brandProfile)
-    .replaceAll("{{SLIDE_SPEC}}", JSON.stringify(slide, null, 2))
-    .replaceAll("{{PAGE_PLAN}}", JSON.stringify(plan, null, 2))
-    .replaceAll("{{REVIEW_NOTES}}", reviewNotes);
+  const styleInstructions = buildStyleInstructions(styleProfileParsed, slide, plan);
+  let promptFileName = null;
 
-  const baseName = `${String(index + 1).padStart(2, "0")}-${slide.slide_id.toLowerCase()}-${slugify(slide.title)}`;
-  const promptFileName = `${baseName}.md`;
-  const filePath = path.join(promptsDir, promptFileName);
+  if (shouldGeneratePrompts) {
+    const prompt = promptTemplate
+      .replaceAll("{{STYLE_PROFILE}}", styleProfile)
+      .replaceAll("{{STYLE_INSTRUCTIONS}}", styleInstructions)
+      .replaceAll("{{BRAND_PROFILE}}", brandProfile)
+      .replaceAll("{{SLIDE_SPEC}}", JSON.stringify(slide, null, 2))
+      .replaceAll("{{PAGE_PLAN}}", JSON.stringify(plan, null, 2))
+      .replaceAll("{{REVIEW_NOTES}}", reviewNotes);
 
-  fs.writeFileSync(filePath, `${prompt}\n`, "utf8");
+    const baseName = `${String(index + 1).padStart(2, "0")}-${slide.slide_id.toLowerCase()}-${slugify(slide.title)}`;
+    promptFileName = `${baseName}.md`;
+    const filePath = path.join(promptsDir, promptFileName);
+
+    fs.writeFileSync(filePath, `${prompt}\n`, "utf8");
+  }
 
   manifest.delivery_manifest.slides.push({
     slide_id: slide.slide_id,
@@ -168,15 +209,22 @@ slideSpec.slides.forEach((slide, index) => {
     argument_claim: slide.argument_claim,
     proof_question: slide.proof_question,
     exhibit_intent: slide.exhibit_intent,
+    layout_hint: plan.layout_hint ?? null,
+    layout_family: plan.layout_family ?? null,
     evidence_refs: slide.evidence_refs ?? [],
     prompt_file: promptFileName,
+    style_instructions_embedded: shouldGeneratePrompts,
     svg_file:
       deliveryMode === "svg_pages" ? `${slide.slide_id}.svg` : null
   });
 });
 
-writeJson(path.join(promptsDir, "delivery-manifest.json"), manifest);
+if (shouldWriteManifest) {
+  writeJson(path.join(promptsDir, "delivery-manifest.json"), manifest);
+}
 
 console.log(
-  `Generated ${manifest.delivery_manifest.slides.length} prompt bundle files in ${promptsDir}`
+  shouldGeneratePrompts
+    ? `Generated ${manifest.delivery_manifest.slides.length} slide entries in ${promptsDir}`
+    : `Skipped prompt bundle generation for staged mode ${deliveryMode}`
 );

@@ -2,11 +2,13 @@
 name: aippt
 description: >
   Contract-first workflow skill for building a brand-new deck from topic, brief, notes, website,
-  PDF, white paper, or brand assets. Use this whenever the user wants a full new PPT, pitch deck,
-  board pack, teaching deck, policy briefing, or thesis-defense style presentation from scratch and
-  expects research, argument structure, page planning, and delivery artifacts instead of ad-hoc slide
-  drafting. Trigger even on "help me make a PPT" when the intent is a new deck. Do not use this for
-  existing deck edits, critique-only requests, template tweaks, single-slide asks, or outline-only work.
+  PDF, white paper, or brand assets. Use this whenever the user wants a full new PPT, slide deck,
+  pitch deck, board pack, teaching deck, policy briefing, thesis defense, or structured presentation
+  from scratch and expects research, argument structure, page planning, style direction, and delivery
+  artifacts instead of ad-hoc slide drafting. Trigger even on requests like "帮我做一套 PPT",
+  "make a presentation", or "create slides" when the intent is a brand-new deck. Do not use this
+  for existing deck edits, critique-only requests, template tweaks, single-slide asks, or export-only
+  work.
 compatibility:
   optional:
     - filesystem
@@ -38,6 +40,23 @@ Do not expand AIPPT into:
 
 If the user wants those, route to a downstream editing or rendering skill.
 
+## Natural-language trigger surface
+
+Typical requests that should trigger AIPPT:
+
+- "帮我从零做一套新的 PPT / slide deck / presentation"
+- "make me a pitch deck from our notes and website"
+- "create slides for a board meeting from scratch"
+- "做一套完整教学课件，不只是提纲，要到逐页规划"
+
+Typical requests that should **not** trigger AIPPT:
+
+- existing PPTX / Google Slides editing
+- critique-only or deck review only
+- single-slide design
+- outline only with no production contract needed
+- export or file conversion only
+
 ## Subskill-first routing
 
 Before running the generic workflow, check whether the request matches a scene pack.
@@ -59,7 +78,7 @@ Built-in scene packs:
 Routing rule:
 
 1. If the request clearly matches a scene pack, read that subskill first.
-2. Apply the scene defaults for audience bias, required sections, story arc, review bias, and preferred style.
+2. Apply the scene defaults for audience bias, required sections, story arc, review bias, preferred style, density bias, and layout tendency.
 3. Then resume the generic AIPPT stages below.
 4. If no scene matches, stay on generic AIPPT.
 
@@ -129,12 +148,35 @@ output/
 
 Delivery modes:
 
+- `outline_only`
+- `spec_only`
 - `prompt_bundle_only` (default)
 - `svg_pages`
 - `brand_ready_assets`
 
+`outline_only` and `spec_only` are staged stopping points, not shortcuts around approvals.
+
 Workspace metadata lives in `output/project.json`.
 Scene metadata lives in scene-pack JSON and may be copied into `delivery_manifest`.
+
+## Preferences
+
+Optional defaults may live in:
+
+1. `./.aippt/EXTEND.json`
+2. `~/.aippt/EXTEND.json`
+
+Supported defaults:
+
+- `default_scene`
+- `default_style_preset`
+- `default_delivery_mode`
+- `default_language`
+- `strict_review`
+- `style_dimensions`
+
+Schema: `references/config/preferences-schema.md`
+Reader: `scripts/read-preferences.mjs`
 
 ## Resource loading
 
@@ -146,6 +188,7 @@ Use it as the source of truth for:
 
 - stage references
 - style presets
+- style dimensions
 - scene packs
 - scripts
 - eval files
@@ -158,6 +201,7 @@ Catalog and setup:
 
 - `scripts/list-catalog.mjs`
 - `scripts/init-workspace.mjs`
+- `scripts/read-preferences.mjs`
 - `scripts/create-scene-pack.mjs`
 
 Production and validation:
@@ -170,6 +214,7 @@ Production and validation:
 Scene-aware options:
 
 - `build-prompt-bundle.mjs --scene-pack <scene-id-or-json>`
+- `build-prompt-bundle.mjs --slides S03,S04`
 - `validate-artifacts.mjs --scene-pack <scene-id-or-json>`
 
 ## What scene packs control
@@ -182,8 +227,44 @@ Scene packs may set:
 - `preferred_style_preset`
 - `delivery_default`
 - `review_bias`
+- `audience_density_bias`
+- `layout_tendency`
 
 These values must appear in downstream contracts, not just in prose.
+
+## Style system
+
+AIPPT now uses a dual-layer style model:
+
+- presets in `references/styles/*.yaml`
+- dimensions in `references/style-dimensions.md`
+- auto-routing heuristics in `references/style-auto-routing.md`
+- render-facing summary block in `references/style-instruction-schema.md`
+
+`style_profile` should carry:
+
+- token roles
+- style dimensions
+- style instruction block
+
+## Layout system
+
+Use both layers together:
+
+- `references/layout-gallery.md` for visual archetypes and `layout_hint`
+- `references/bento-grid-system.md` for canonical geometry and `final_layout`
+
+`page_plan` should explain the archetype first, then the geometry.
+
+## Partial regeneration rule
+
+AIPPT still does not edit existing third-party decks.
+
+However, for artifacts generated inside the AIPPT workflow, partial regeneration is allowed for named `slide_id`s when:
+
+- outline approval already happened
+- the scope stays inside `page_plan`, prompt bundle, review report, or SVG output
+- validation is rerun before claiming success
 
 ## Regression expectations
 
@@ -199,6 +280,7 @@ Required coverage:
 - existing-deck edits and critique-only requests still do not trigger
 - each built-in scene pack has one positive route test and one near-miss negative test
 - scene routing never bypasses `outline.approved=false`
+- preferences, layout hints, and style instruction blocks remain represented in downstream contracts
 
 ## Maintenance rule
 

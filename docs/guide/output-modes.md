@@ -1,6 +1,33 @@
 # 输出模式
 
-AIPPT 支持三种交付模式，默认 `prompt_bundle_only`。
+AIPPT 支持五种模式。
+
+## `outline_only`
+
+适合：
+
+- 只确认论证骨架
+- 还没准备进入 WHAT / HOW 合同
+
+规则：
+
+- 停在 outline 阶段
+- 不生成 prompt bundle
+- 不生成 `delivery_manifest`
+- 不绕过 `outline.approved=false` 首轮门禁
+
+## `spec_only`
+
+适合：
+
+- 已批准 outline，但想先确认 `slide_spec` / `page_plan`
+- 暂时不进入渲染交付
+
+规则：
+
+- 停在 production contract 阶段
+- 不生成 prompt bundle
+- 不生成 `delivery_manifest`
 
 ## `prompt_bundle_only`（默认）
 
@@ -59,13 +86,15 @@ SVG 为可选项，仅在用户明确要求时附带。
 
 ## 共享规则
 
-三种模式都必须满足：
+三种最终交付模式都必须满足：
 
 - 每页 prompt 自包含
 - 外部事实必须可见 citation refs
 - 不得跳过 `slide_spec` 与 `page_plan`
 - `outline.approved` 必须先为 `true`
 - 最终必须产出 `delivery_manifest`
+
+而 `outline_only` / `spec_only` 属于 staged stopping points，不属于最终交付完成态。
 
 ## Manifest 关键字段（v2）
 

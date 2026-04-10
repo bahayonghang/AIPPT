@@ -8,11 +8,12 @@
     "管理层汇报",
     "经营汇报"
   ],
-  "audience_defaults": [
-    "board members",
-    "executive leadership",
-    "supervisory committee"
-  ],
+  "audience_density_bias": "dense",
+  "layout_tendency": {
+    "opening": ["title-hero", "dashboard"],
+    "middle": ["dashboard", "decision-matrix", "split-screen"],
+    "closing": ["title-hero", "decision-matrix"]
+  },
   "page_budget": {
     "default": 14,
     "min": 10,

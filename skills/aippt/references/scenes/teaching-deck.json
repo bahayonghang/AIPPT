@@ -9,11 +9,12 @@
     "课堂课件",
     "lesson slides"
   ],
-  "audience_defaults": [
-    "students",
-    "classroom participants",
-    "training cohort"
-  ],
+  "audience_density_bias": "balanced",
+  "layout_tendency": {
+    "opening": ["title-hero", "split-screen"],
+    "middle": ["case-strip", "three-columns", "hub-spoke"],
+    "closing": ["quote-callout", "title-hero"]
+  },
   "page_budget": {
     "default": 16,
     "min": 10,

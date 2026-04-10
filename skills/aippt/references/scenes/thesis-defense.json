@@ -8,11 +8,12 @@
     "research defense",
     "学术汇报"
   ],
-  "audience_defaults": [
-    "committee members",
-    "faculty reviewers",
-    "research audience"
-  ],
+  "audience_density_bias": "dense",
+  "layout_tendency": {
+    "opening": ["title-hero", "split-screen"],
+    "middle": ["dashboard", "timeline", "decision-matrix"],
+    "closing": ["quote-callout", "title-hero"]
+  },
   "page_budget": {
     "default": 14,
     "min": 10,

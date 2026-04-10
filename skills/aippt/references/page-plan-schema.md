@@ -16,6 +16,8 @@ Wrap output with `[PAGE_PLAN]` and `[/PAGE_PLAN]`.
     "slides": [
       {
         "slide_id": "S03",
+        "layout_hint": "split-screen",
+        "layout_family": "comparison",
         "final_layout": "asymmetric-two-column",
         "layout_rationale": "主论点占大区，证据占侧栏",
         "proof_trace": {
@@ -60,6 +62,8 @@ Wrap output with `[PAGE_PLAN]` and `[/PAGE_PLAN]`.
 
 ## Field rules
 
+- `layout_hint` should come from `references/layout-gallery.md`.
+- `layout_family` is a human-readable grouping such as `comparison`, `dashboard`, `timeline`, `hero`, or `ecosystem`.
 - `final_layout` must be a canonical layout from `bento-grid-system.md`.
 - `proof_trace.claim` must align with `slide_spec.argument_claim`.
 - `proof_trace.question` must align with `slide_spec.proof_question`.
@@ -88,3 +92,4 @@ Prefer `split_slide` over shrinking below readability.
 4. If the slide needs more than 5 cards, split it.
 5. If a required asset is missing, list it in `unresolved_assets` clearly.
 6. `adjacency_check.has_three_in_row_risk=true` requires layout/rhythm revision.
+7. `layout_hint` should explain the visual archetype before geometry is fixed.

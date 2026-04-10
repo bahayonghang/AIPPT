@@ -1,48 +1,84 @@
 {
-  "version": "0.1.0",
-  "last_updated": "2026-03-24",
+  "version": "0.2.0",
+  "last_updated": "2026-04-09",
   "presets": [
     {
       "id": "business",
       "name": "Business Professional",
       "file": "business.yaml",
       "keywords": ["business", "corporate", "board", "enterprise", "商务"],
-      "use_cases": ["企业介绍", "管理层汇报", "融资路演"]
+      "use_cases": ["企业介绍", "管理层汇报", "融资路演"],
+      "dimensions": {
+        "texture": "clean",
+        "mood": "neutral",
+        "typography": "geometric",
+        "density": "balanced"
+      }
     },
     {
       "id": "tech",
       "name": "Tech Modern",
       "file": "tech.yaml",
       "keywords": ["tech", "product", "launch", "developer", "科技"],
-      "use_cases": ["产品发布会", "技术方案", "AI 产品介绍"]
+      "use_cases": ["产品发布会", "技术方案", "AI 产品介绍"],
+      "dimensions": {
+        "texture": "grid",
+        "mood": "cool",
+        "typography": "geometric",
+        "density": "balanced"
+      }
     },
     {
       "id": "minimal",
       "name": "Minimal Clean",
       "file": "minimal.yaml",
       "keywords": ["minimal", "clean", "executive", "simple", "极简"],
-      "use_cases": ["高管简报", "主题演讲", "简洁风课件"]
+      "use_cases": ["高管简报", "主题演讲", "简洁风课件"],
+      "dimensions": {
+        "texture": "clean",
+        "mood": "neutral",
+        "typography": "humanist",
+        "density": "minimal"
+      }
     },
     {
       "id": "scientific",
       "name": "Scientific",
       "file": "scientific.yaml",
       "keywords": ["scientific", "academic", "research", "学术"],
-      "use_cases": ["教学课件", "学术报告", "研究综述"]
+      "use_cases": ["教学课件", "学术报告", "研究综述"],
+      "dimensions": {
+        "texture": "grid",
+        "mood": "cool",
+        "typography": "technical",
+        "density": "dense"
+      }
     },
     {
       "id": "editorial-infographic",
       "name": "Editorial Infographic",
       "file": "editorial-infographic.yaml",
       "keywords": ["editorial", "infographic", "data", "信息图"],
-      "use_cases": ["行业研究", "市场分析", "数据密集型汇报"]
+      "use_cases": ["行业研究", "市场分析", "数据密集型汇报"],
+      "dimensions": {
+        "texture": "editorial",
+        "mood": "cool",
+        "typography": "editorial",
+        "density": "dense"
+      }
     },
     {
       "id": "creative",
       "name": "Creative Bold",
       "file": "creative.yaml",
       "keywords": ["creative", "brand", "campaign", "marketing", "创意"],
-      "use_cases": ["品牌发布", "营销提案", "创意类演示"]
+      "use_cases": ["品牌发布", "营销提案", "创意类演示"],
+      "dimensions": {
+        "texture": "organic",
+        "mood": "vibrant",
+        "typography": "editorial",
+        "density": "balanced"
+      }
     }
   ]
 }

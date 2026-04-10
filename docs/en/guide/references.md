@@ -17,9 +17,15 @@ Canonical maps:
 ## Resource layers
 
 - `references/scenes/*.json`
-  scene metadata for routing, required sections, story arc, review bias, and delivery defaults
+  scene metadata for routing, required sections, story arc, style bias, density bias, layout tendency, and review bias
 - `references/styles/*.yaml`
   visual token presets
+- `references/style-dimensions.md`
+  style-dimension vocabulary
+- `references/style-auto-routing.md`
+  preset recommendation heuristics
+- `references/layout-gallery.md`
+  `layout_hint` archetype vocabulary
 - `references/*.md`
   generic staged workflow rules
 - `subskills/<scene>/`

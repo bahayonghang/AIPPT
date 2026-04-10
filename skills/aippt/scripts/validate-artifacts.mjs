@@ -101,6 +101,29 @@ const allowedLayouts = new Set([
   "mixed-grid",
   "media-text"
 ]);
+const allowedLayoutHints = new Set([
+  "title-hero",
+  "split-screen",
+  "three-columns",
+  "dashboard",
+  "timeline",
+  "hub-spoke",
+  "bento-summary",
+  "case-strip",
+  "quote-callout",
+  "decision-matrix"
+]);
+const allowedLayoutFamilies = new Set([
+  "hero",
+  "comparison",
+  "dashboard",
+  "timeline",
+  "ecosystem",
+  "summary",
+  "case-study",
+  "decision",
+  "generic"
+]);
 
 const allowedPageTypes = new Set([
   "cover",
@@ -156,7 +179,7 @@ const allowedRhythmSlots = new Set([
   "closing"
 ]);
 const allowedStyleSources = new Set(["explicit_brand", "inferred_brand", "neutral_fallback"]);
-const allowedDeliveryModes = new Set(["prompt_bundle_only", "svg_pages", "brand_ready_assets"]);
+const allowedDeliveryModes = new Set(["outline_only", "spec_only", "prompt_bundle_only", "svg_pages", "brand_ready_assets"]);
 const allowedArchetypes = new Set([
   "growth",
   "profitability",
@@ -391,7 +414,6 @@ const pagePlanSlides = [...(pagePlan.slides ?? [])].sort((left, right) =>
   naturalSort(left.slide_id, right.slide_id)
 );
 
-const specById = new Map(specSlides.map((slide) => [slide.slide_id, slide]));
 const pagePlanById = new Map(pagePlanSlides.map((slide) => [slide.slide_id, slide]));
 
 if (typeof outline.approved !== "boolean") {
@@ -521,6 +543,14 @@ for (const slide of specSlides) {
     addError(`${slide.slide_id}: preferred_layout must be one of layout_candidates.`);
   }
 
+  if (slide.layout_hint && !allowedLayoutHints.has(slide.layout_hint)) {
+    addError(`${slide.slide_id}: invalid layout_hint "${slide.layout_hint}".`);
+  }
+
+  if (slide.layout_family && !allowedLayoutFamilies.has(slide.layout_family)) {
+    addError(`${slide.slide_id}: invalid layout_family "${slide.layout_family}".`);
+  }
+
   if (!Array.isArray(slide.review_focus) || slide.review_focus.length === 0) {
     addError(`${slide.slide_id}: review_focus must be a non-empty array.`);
   } else {
@@ -565,6 +595,26 @@ for (const slide of specSlides) {
 
   if (!slide.layout_candidates.includes(planSlide.final_layout)) {
     addError(`${slide.slide_id}: page_plan final_layout must stay inside layout_candidates.`);
+  }
+
+  if (planSlide.layout_hint && !allowedLayoutHints.has(planSlide.layout_hint)) {
+    addError(`${slide.slide_id}: invalid page_plan.layout_hint "${planSlide.layout_hint}".`);
+  }
+
+  if (planSlide.layout_family && !allowedLayoutFamilies.has(planSlide.layout_family)) {
+    addError(`${slide.slide_id}: invalid page_plan.layout_family "${planSlide.layout_family}".`);
+  }
+
+  if (slide.layout_hint && planSlide.layout_hint && slide.layout_hint !== planSlide.layout_hint) {
+    addWarning(
+      `${slide.slide_id}: slide_spec.layout_hint (${slide.layout_hint}) differs from page_plan.layout_hint (${planSlide.layout_hint}).`
+    );
+  }
+
+  if (slide.layout_family && planSlide.layout_family && slide.layout_family !== planSlide.layout_family) {
+    addWarning(
+      `${slide.slide_id}: slide_spec.layout_family (${slide.layout_family}) differs from page_plan.layout_family (${planSlide.layout_family}).`
+    );
   }
 
   if (!planSlide.proof_trace || typeof planSlide.proof_trace !== "object") {
@@ -784,6 +834,29 @@ if (scenePack) {
     }
   }
 
+  if (scenePack.audience_density_bias && !["minimal", "balanced", "dense"].includes(scenePack.audience_density_bias)) {
+    addError("scene_pack.audience_density_bias must be one of minimal, balanced, dense.");
+  }
+
+  if (scenePack.layout_tendency) {
+    if (typeof scenePack.layout_tendency !== "object") {
+      addError("scene_pack.layout_tendency must be an object when present.");
+    } else {
+      for (const phase of ["opening", "middle", "closing"]) {
+        const values = scenePack.layout_tendency[phase] ?? [];
+        if (!Array.isArray(values) || values.length === 0) {
+          addError(`scene_pack.layout_tendency.${phase} must be a non-empty array.`);
+          continue;
+        }
+        for (const value of values) {
+          if (!allowedLayoutHints.has(value)) {
+            addError(`scene_pack.layout_tendency.${phase} contains invalid layout hint "${value}".`);
+          }
+        }
+      }
+    }
+  }
+
   if (scenePack.preferred_style_preset && styleProfile?.preset_id) {
     if (scenePack.preferred_style_preset !== styleProfile.preset_id) {
       addWarning(
@@ -809,6 +882,38 @@ if (styleProfilePath) {
     requireString(styleProfile.selection_reason, "style_profile.selection_reason");
     requireString(styleProfile.style_file, "style_profile.style_file");
     requireString(styleProfile.style_direction, "style_profile.style_direction");
+
+    if (!styleProfile.style_dimensions || typeof styleProfile.style_dimensions !== "object") {
+      addError("style_profile.style_dimensions must be an object.");
+    } else {
+      for (const key of ["texture", "mood", "typography", "density"]) {
+        requireString(styleProfile.style_dimensions[key], `style_profile.style_dimensions.${key}`);
+      }
+    }
+
+    if (!styleProfile.style_instruction_block || typeof styleProfile.style_instruction_block !== "object") {
+      addError("style_profile.style_instruction_block must be an object.");
+    } else {
+      for (const key of [
+        "design_direction",
+        "background_strategy",
+        "heading_style",
+        "body_style",
+        "density_rule"
+      ]) {
+        requireString(styleProfile.style_instruction_block[key], `style_profile.style_instruction_block.${key}`);
+      }
+
+      if (!Array.isArray(styleProfile.style_instruction_block.visual_elements)) {
+        addError("style_profile.style_instruction_block.visual_elements must be an array.");
+      }
+      if (!Array.isArray(styleProfile.style_instruction_block.do_rules)) {
+        addError("style_profile.style_instruction_block.do_rules must be an array.");
+      }
+      if (!Array.isArray(styleProfile.style_instruction_block.dont_rules)) {
+        addError("style_profile.style_instruction_block.dont_rules must be an array.");
+      }
+    }
 
     if (!allowedStyleSources.has(styleProfile.source)) {
       addError(
@@ -866,16 +971,48 @@ if (deliveryManifest) {
     );
   }
 
-  if (manifestSlides.length !== specSlides.length) {
-    addError(
-      `delivery manifest slide count (${manifestSlides.length}) does not match slide_spec count (${specSlides.length}).`
-    );
-  }
-
   const manifestIds = new Set(manifestSlides.map((slide) => slide.slide_id));
-  for (const slide of specSlides) {
-    if (!manifestIds.has(slide.slide_id)) {
-      addError(`${slide.slide_id}: missing from delivery manifest.`);
+  const partialRegeneration = Array.isArray(deliveryManifest.partial_regeneration)
+    ? deliveryManifest.partial_regeneration
+    : [];
+  const isPartialRegeneration = partialRegeneration.length > 0;
+
+  if (!isPartialRegeneration) {
+    if (manifestSlides.length !== specSlides.length) {
+      addError(
+        `delivery manifest slide count (${manifestSlides.length}) does not match slide_spec count (${specSlides.length}).`
+      );
+    }
+
+    for (const slide of specSlides) {
+      if (!manifestIds.has(slide.slide_id)) {
+        addError(`${slide.slide_id}: missing from delivery manifest.`);
+      }
+    }
+  } else {
+    const partialSet = new Set(partialRegeneration);
+
+    if (manifestSlides.length !== partialSet.size) {
+      addError(
+        `partial regeneration manifest must contain exactly ${partialSet.size} slide(s), received ${manifestSlides.length}.`
+      );
+    }
+
+    for (const slideId of partialRegeneration) {
+      if (!manifestIds.has(slideId)) {
+        addError(`partial regeneration slide_id "${slideId}" is missing from delivery manifest.`);
+      }
+      if (!specSlides.find((slide) => slide.slide_id === slideId)) {
+        addError(`partial regeneration slide_id "${slideId}" does not exist in slide_spec.`);
+      }
+    }
+
+    for (const manifestSlide of manifestSlides) {
+      if (!partialSet.has(manifestSlide.slide_id)) {
+        addError(
+          `delivery manifest includes slide_id "${manifestSlide.slide_id}" outside partial_regeneration scope.`
+        );
+      }
     }
   }
 
@@ -883,7 +1020,7 @@ if (deliveryManifest) {
     if (!manifestSlide.slide_id || !manifestSlide.title) {
       addError("delivery manifest slide entries must include slide_id and title.");
     }
-    if (!manifestSlide.prompt_file) {
+    if (deliveryManifest.mode !== "outline_only" && deliveryManifest.mode !== "spec_only" && !manifestSlide.prompt_file) {
       addWarning(`${manifestSlide.slide_id}: delivery manifest is missing prompt_file.`);
     }
     if (deliveryManifest.mode === "svg_pages" && !manifestSlide.svg_file) {
@@ -923,6 +1060,14 @@ if (deliveryManifest) {
 
       if (JSON.stringify(manifestReviewBias) !== JSON.stringify(scenePack.review_bias ?? [])) {
         addError("delivery manifest review_bias must match the provided scene pack.");
+      }
+
+      if ((manifestScene.audience_density_bias ?? null) !== (scenePack.audience_density_bias ?? null)) {
+        addError("delivery manifest audience_density_bias must match the provided scene pack.");
+      }
+
+      if (JSON.stringify(manifestScene.layout_tendency ?? null) !== JSON.stringify(scenePack.layout_tendency ?? null)) {
+        addError("delivery manifest layout_tendency must match the provided scene pack.");
       }
     }
 

@@ -7,6 +7,7 @@ This template turns one page-planning contract into a render-ready SVG prompt.
 ## Required inputs
 
 - `{{STYLE_PROFILE}}`
+- `{{STYLE_INSTRUCTIONS}}`
 - `{{BRAND_PROFILE}}`
 - `{{SLIDE_SPEC}}`
 - `{{PAGE_PLAN}}`
@@ -34,9 +35,10 @@ This template turns one page-planning contract into a render-ready SVG prompt.
 
 ## Layout discipline
 1. 严格遵循 `final_layout` 与 `card_map.slot` 坐标。
-2. 不得自定义新的卡片尺寸和网格。
-3. 卡片优先级遵循 `visual_emphasis_order`。
-4. 若 `adjacency_check.has_three_in_row_risk = true`，保持本页视觉重心与相邻页明显区分。
+2. `layout_hint` 与 `layout_family` 用来保持页面 archetype，不要在实现时偏离其核心阅读路径。
+3. 不得自定义新的卡片尺寸和网格。
+4. 卡片优先级遵循 `visual_emphasis_order`。
+5. 若 `adjacency_check.has_three_in_row_risk = true`，保持本页视觉重心与相邻页明显区分。
 
 ## Typography and readability
 1. 标题、正文、注释按 style profile 的 typography roles。
@@ -47,7 +49,7 @@ This template turns one page-planning contract into a render-ready SVG prompt.
 ## Brand and style handling
 1. 显式品牌约束高于 preset 默认值。
 2. 若品牌色与 preset 冲突，优先品牌色并调整中性色与强调色。
-3. `palette_roles` 与 `typography_roles` 是样式唯一依据，不要随意引入额外体系。
+3. `palette_roles`、`typography_roles`、`style_dimensions` 与 `<STYLE_INSTRUCTIONS>` 是样式唯一依据，不要随意引入额外体系。
 
 ## Content integrity
 1. 仅使用 `slide_spec` 与 `page_plan` 中确认内容。
@@ -68,6 +70,9 @@ This template turns one page-planning contract into a render-ready SVG prompt.
 
 ## Style profile
 {{STYLE_PROFILE}}
+
+## Style instructions
+{{STYLE_INSTRUCTIONS}}
 
 ## Slide spec
 {{SLIDE_SPEC}}

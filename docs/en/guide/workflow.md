@@ -34,8 +34,16 @@ Still required:
 - `style_profile`
 - `delivery_manifest`
 
+New style/layout expectations:
+
+- `style_profile` should include `style_dimensions`
+- `style_profile` should include `style_instruction_block`
+- `slide_spec` / `page_plan` may declare `layout_hint` / `layout_family`
+- `page_plan.final_layout` remains the canonical geometry target
+
 Scene-aware additions:
 
 - `required_sections` should be visible in the outline
 - `default_story_arc` should appear in the story-role sequence
 - `review_bias` should appear in `slide_spec.review_focus`
+- `audience_density_bias` / `layout_tendency` should propagate into downstream contracts or manifest metadata

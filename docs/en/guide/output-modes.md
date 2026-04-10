@@ -1,6 +1,27 @@
 # Output Modes
 
-AIPPT supports three delivery modes. Default: `prompt_bundle_only`.
+AIPPT supports five modes.
+
+## `outline_only`
+
+Use when you want to confirm the argument skeleton before entering production contracts.
+
+Rules:
+
+- stop at the outline stage
+- do not generate prompt bundles
+- do not generate `delivery_manifest`
+- do not bypass the first-pass `outline.approved=false` gate
+
+## `spec_only`
+
+Use when outline is approved but you want to confirm `slide_spec` / `page_plan` before delivery packaging.
+
+Rules:
+
+- stop at the production-contract stage
+- do not generate prompt bundles
+- do not generate `delivery_manifest`
 
 ## `prompt_bundle_only` (default)
 
@@ -47,13 +68,15 @@ SVG is optional unless explicitly requested.
 
 ## Shared rules
 
-All modes require:
+All final-delivery modes require:
 
 - self-contained per-page prompts
 - visible citation refs for external facts
 - no skipping of `slide_spec` and `page_plan`
 - `outline.approved = true` before render-delivery
 - `delivery_manifest` in final outputs
+
+`outline_only` and `spec_only` are staged stopping points, not final delivery states.
 
 ## Manifest minimum (v2)
 

@@ -33,11 +33,19 @@ Hard stop：
 - `style_profile`
 - `delivery_manifest`
 
+新增 style / layout 要求：
+
+- `style_profile` 应包含 `style_dimensions`
+- `style_profile` 应包含 `style_instruction_block`
+- `slide_spec` / `page_plan` 可声明 `layout_hint` / `layout_family`
+- `page_plan.final_layout` 仍是最终几何落点
+
 新增 scene-aware 要求：
 
 - `required_sections` 要在 outline 中体现
 - `default_story_arc` 要在 `story_role` 序列中体现
 - `review_bias` 要在 `slide_spec.review_focus` 中体现
+- `audience_density_bias` / `layout_tendency` 要能传导到下游合同或 manifest
 
 ## Step 3：Validation
 

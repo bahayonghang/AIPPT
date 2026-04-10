@@ -17,9 +17,15 @@ AIPPT v3 不再鼓励在多处手写长文件清单。
 ## 资源分层
 
 - `references/scenes/*.json`
-  场景元数据：触发词、默认 sections、story arc、style bias、review bias
+  场景元数据：触发词、默认 sections、story arc、style bias、density bias、layout tendency、review bias
 - `references/styles/*.yaml`
   视觉 token 资源
+- `references/style-dimensions.md`
+  风格维度词汇层
+- `references/style-auto-routing.md`
+  style preset 自动推荐规则
+- `references/layout-gallery.md`
+  `layout_hint` 视觉 archetype 词汇层
 - `references/*.md`
   staged workflow 的通用规则
 - `subskills/<scene>/`

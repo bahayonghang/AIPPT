@@ -28,7 +28,23 @@ It is a guard against repetitive layout defaults and weak evidence shaping.
 | `mixed-media` | `media-text`, `mixed-grid` |
 | `closing` | `closing`, `single-focus` |
 
-## 3. Exhibit intent quick router
+## 3. Layout hint quick router
+
+| Content shape | Prefer `layout_hint` |
+| --- | --- |
+| opening claim with one dominant proof | `title-hero` |
+| text + proof side by side | `split-screen` |
+| 3 symmetric categories | `three-columns` |
+| KPI / metric cluster | `dashboard` |
+| dated sequence | `timeline` |
+| ecosystem / dependency graph | `hub-spoke` |
+| one big card plus support tiles | `bento-summary` |
+| case study strip | `case-strip` |
+| criteria vs options | `decision-matrix` |
+
+See `references/layout-gallery.md` for the full gallery.
+
+## 4. Exhibit intent quick router
 
 | Proof need | Prefer intent |
 | --- | --- |
@@ -42,7 +58,7 @@ It is a guard against repetitive layout defaults and weak evidence shaping.
 
 Use `none` only for orientation slides.
 
-## 4. Citation mode guidance
+## 5. Citation mode guidance
 
 | Slide condition | Prefer |
 | --- | --- |
@@ -50,7 +66,7 @@ Use `none` only for orientation slides.
 | 1-2 localized facts in one card | `card-local` |
 | multiple metrics across cards | `page-footer` |
 
-## 5. Density guardrails
+## 6. Density guardrails
 
 Split instead of squeezing when:
 
@@ -60,16 +76,16 @@ Split instead of squeezing when:
 - reading order is unclear within 3 seconds
 - citations/legend compete with main message
 
-## 6. Rhythm guardrails
+## 7. Rhythm guardrails
 
 Pause and revise if:
 
 - 3 adjacent content slides use the same `final_layout`
 - 3 adjacent slides are all `proof` role
 - a dense proof cluster has no `bridge` or `breathing` reset
-- more than 30% of deck uses one layout family
+- more than 30% of deck uses one layout family or hint
 
-## 7. Delivery mode chooser
+## 8. Delivery mode chooser
 
 | User need | Prefer |
 | --- | --- |

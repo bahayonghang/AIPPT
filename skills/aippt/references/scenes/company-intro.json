@@ -9,11 +9,12 @@
     "corporate overview",
     "企业版介绍"
   ],
-  "audience_defaults": [
-    "potential customers",
-    "procurement stakeholders",
-    "channel partners"
-  ],
+  "audience_density_bias": "balanced",
+  "layout_tendency": {
+    "opening": ["title-hero", "split-screen"],
+    "middle": ["case-strip", "dashboard", "split-screen"],
+    "closing": ["title-hero", "quote-callout"]
+  },
   "page_budget": {
     "default": 12,
     "min": 8,
