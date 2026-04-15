@@ -7,7 +7,12 @@
     "teaching deck",
     "lecture slides",
     "课堂课件",
-    "lesson slides"
+    "lesson slides",
+    "training deck",
+    "training slides",
+    "course slides",
+    "workshop deck",
+    "class slides"
   ],
   "audience_density_bias": "balanced",
   "layout_tendency": {
@@ -45,6 +50,8 @@
   ],
   "eval_ids": [
     "scene-05-teaching-deck-positive",
-    "scene-05-teaching-deck-negative"
+    "scene-05-teaching-deck-negative",
+    "scene-05-teaching-deck-positive-synonym",
+    "scene-05-teaching-deck-nearmiss-generic"
   ]
 }

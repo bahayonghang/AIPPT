@@ -6,7 +6,11 @@
     "论文答辩",
     "thesis defense",
     "research defense",
-    "学术汇报"
+    "dissertation defense",
+    "oral defense",
+    "viva",
+    "defense presentation",
+    "academic defense"
   ],
   "audience_density_bias": "dense",
   "layout_tendency": {
@@ -44,6 +48,8 @@
   ],
   "eval_ids": [
     "scene-06-thesis-defense-positive",
-    "scene-06-thesis-defense-negative"
+    "scene-06-thesis-defense-negative",
+    "scene-06-thesis-defense-positive-synonym",
+    "scene-06-thesis-defense-nearmiss-generic"
   ]
 }

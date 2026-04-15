@@ -6,7 +6,19 @@
     "should_use_subskill": true
   },
   {
+    "query": "帮我从零做一套 customer-facing company overview / corporate profile deck，给潜在合作伙伴和采购方看，要讲清 who we are、产品能力和客户证明。",
+    "should_trigger": true,
+    "scene_id": "company-intro",
+    "should_use_subskill": true
+  },
+  {
     "query": "我想做一套融资路演 deck，AI 客服 SaaS，已经有 logo、白皮书和官网，帮我从结构到页面规划全做掉。",
+    "should_trigger": true,
+    "scene_id": "investor-pitch",
+    "should_use_subskill": true
+  },
+  {
+    "query": "帮我做一套 fundraising pitch deck 给 VC 看，重点是 market size、traction、team 和 ask。",
     "should_trigger": true,
     "scene_id": "investor-pitch",
     "should_use_subskill": true
@@ -18,7 +30,19 @@
     "should_use_subskill": true
   },
   {
+    "query": "请准备一套新的 executive operating review / board update deck，给董事会和管理层看，要覆盖经营快照、关键风险和决策事项。",
+    "should_trigger": true,
+    "scene_id": "board-briefing",
+    "should_use_subskill": true
+  },
+  {
     "query": "做一套新的政策解读演示，主题是 2026 年 AI 合规要求变化，需要时间线、风险点和行动建议。",
+    "should_trigger": true,
+    "scene_id": "policy-briefing",
+    "should_use_subskill": true
+  },
+  {
+    "query": "做一套新的 regulatory change / compliance change deck，给法务和产品团队开会用，要讲 clear effective dates、影响和动作。",
     "should_trigger": true,
     "scene_id": "policy-briefing",
     "should_use_subskill": true
@@ -30,7 +54,19 @@
     "should_use_subskill": true
   },
   {
+    "query": "我要做一套新的 workshop / training deck，用来做两小时入门培训，要有 learning objectives、examples 和 exercises。",
+    "should_trigger": true,
+    "scene_id": "teaching-deck",
+    "should_use_subskill": true
+  },
+  {
     "query": "请从零做一套毕业答辩 PPT，最后给我完整的 page plan、style instructions 和 delivery manifest。",
+    "should_trigger": true,
+    "scene_id": "thesis-defense",
+    "should_use_subskill": true
+  },
+  {
+    "query": "请帮我从零做一套 dissertation defense / viva slides，给答辩委员会看，要完整覆盖研究问题、方法、结果和贡献。",
     "should_trigger": true,
     "scene_id": "thesis-defense",
     "should_use_subskill": true
@@ -42,7 +78,7 @@
     "should_use_subskill": false
   },
   {
-    "query": "这套 deck 先不要出图，先给我 outline_only，确认后再继续。",
+    "query": "这是一套全新的产品发布 deck，先不要出图，先给我 outline_only，等我确认结构后再继续到整套合同和交付。",
     "should_trigger": true,
     "scene_id": "generic",
     "should_use_subskill": false
@@ -54,6 +90,12 @@
     "should_use_subskill": false
   },
   {
+    "query": "先做一个新 board deck 的框架，但这次先停在 outline_only；如果通过，我下轮再让你补 slide_spec、page_plan 和交付文件。",
+    "should_trigger": true,
+    "scene_id": "board-briefing",
+    "should_use_subskill": true
+  },
+  {
     "query": "我已经有现成 PPTX，只改第 7 页排版，别动其他页。",
     "should_trigger": false
   },
@@ -62,7 +104,7 @@
     "should_trigger": false
   },
   {
-    "query": "先给我一个十页大纲就行，后面我自己做页面细化。",
+    "query": "先给我一个十页故事大纲就行，research、style profile、page plan、delivery manifest 这些都不要，后面我自己做页面细化。",
     "should_trigger": false
   },
   {
@@ -84,5 +126,76 @@
   {
     "query": "我只需要你点评一下这个 Google Slides 哪里看起来不专业。",
     "should_trigger": false
+  },
+  {
+    "query": "我打算做一个 AI 行业分享，你先帮我想三个叙事方向就行，不用 research，也不用任何 AIPPT artifacts。",
+    "should_trigger": false
+  },
+  {
+    "query": "官网和白皮书我都有，但这轮只想让你给我一个口头汇报提纲，不要进入 slide contract 和页面规划。",
+    "should_trigger": false
+  },
+  {
+    "query": "我要从零做一套招聘宣讲 slides，讲公司文化、岗位和成长路径，是新 deck，但不是客户介绍。",
+    "should_trigger": true,
+    "scene_id": "company-intro",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
+  },
+  {
+    "query": "我要做一套新的产品发布 keynote deck，重点是新品亮点、发布时间表和现场演示，不是企业概览或 about us 材料。",
+    "should_trigger": true,
+    "scene_id": "company-intro",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
+  },
+  {
+    "query": "我要做一套新的产品发布 keynote deck，重点是产品能力和发布节奏，不是融资材料。",
+    "should_trigger": true,
+    "scene_id": "investor-pitch",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
+  },
+  {
+    "query": "我要做一套给潜在客户看的 sales pitch deck，重点是产品功能、ROI 和落地方案，不是给投资人融资用的。",
+    "should_trigger": true,
+    "scene_id": "investor-pitch",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
+  },
+  {
+    "query": "我要做一套 all-hands update slides，给公司全员同步季度进展和士气，不是董事会材料。",
+    "should_trigger": true,
+    "scene_id": "board-briefing",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
+  },
+  {
+    "query": "我要做一套月度运营复盘 slides，给业务团队内部开会用，不是董事会或管理层决策汇报。",
+    "should_trigger": true,
+    "scene_id": "board-briefing",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
+  },
+  {
+    "query": "我要做一套新的合规培训课件给新员工 onboarding，用来讲规则基础和练习题，不是政策更新汇报。",
+    "should_trigger": true,
+    "scene_id": "policy-briefing",
+    "should_use_subskill": false,
+    "expected_routing": "teaching-deck"
+  },
+  {
+    "query": "我要做一套新的 research talk slides，在学术会议上讲实验结果和贡献，不是课堂教学。",
+    "should_trigger": true,
+    "scene_id": "teaching-deck",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
+  },
+  {
+    "query": "帮我做一套 conference talk slides，基于同一篇论文讲实验结果，但这不是答辩。",
+    "should_trigger": true,
+    "scene_id": "thesis-defense",
+    "should_use_subskill": false,
+    "expected_routing": "generic-aippt"
   }
 ]

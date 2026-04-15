@@ -1,14 +1,22 @@
 ---
 name: aippt-thesis-defense
 description: >
-  Route new thesis defense, dissertation defense, academic defense, or research defense deck
-  requests here before generic AIPPT. Use this whenever the user wants a new defense narrative with
-  research question, gap, method, results, contribution, and limitations.
+  Route new thesis defense, dissertation defense, oral defense, viva, academic defense, or research
+  defense deck requests here before generic AIPPT. Use this whenever the user wants a new defense
+  narrative with research question, gap, method, results, contribution, and limitations. Do not use
+  this scene pack for paper proofreading, research posters, conference talks, or non-defense writing
+  tasks.
 ---
 
 # Thesis Defense
 
 Use this scene pack before the generic workflow when the request is a new thesis or research defense deck.
+
+## Route when
+
+- thesis defense / dissertation defense / oral defense / viva
+- academic defense deck with research question, gap, method, and results
+- committee-facing defense presentation rather than a general research talk
 
 ## Defaults
 
@@ -35,6 +43,12 @@ Use this scene pack before the generic workflow when the request is a new thesis
 ## Review bias
 
 - prioritize `citation_visibility`, `chart_legibility`, `readability`
+
+## Near misses
+
+- paper proofreading or abstract polishing -> route away from this scene pack
+- research poster or conference talk -> stay generic unless the deck is explicitly for defense
+- non-defense writing tasks -> route away from this scene pack
 
 ## Outline starter
 

@@ -6,7 +6,12 @@
     "合规解读",
     "policy briefing",
     "regulatory update",
-    "compliance update"
+    "compliance update",
+    "policy update",
+    "regulatory change",
+    "compliance change",
+    "legal update",
+    "product policy deck"
   ],
   "audience_density_bias": "balanced",
   "layout_tendency": {
@@ -43,6 +48,8 @@
   ],
   "eval_ids": [
     "scene-04-policy-briefing-positive",
-    "scene-04-policy-briefing-negative"
+    "scene-04-policy-briefing-negative",
+    "scene-04-policy-briefing-positive-synonym",
+    "scene-04-policy-briefing-nearmiss-teaching"
   ]
 }

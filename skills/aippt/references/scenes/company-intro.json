@@ -7,7 +7,13 @@
     "company intro",
     "company introduction",
     "corporate overview",
-    "企业版介绍"
+    "企业版介绍",
+    "company overview",
+    "business overview",
+    "corporate profile",
+    "about us",
+    "who we are",
+    "enterprise product intro"
   ],
   "audience_density_bias": "balanced",
   "layout_tendency": {
@@ -35,7 +41,7 @@
     "proof",
     "closing"
   ],
-  "evidence_policy": "Prefer official company materials and first-party product evidence. Use external comparisons only when dated and attributable.",
+  "evidence_policy": "Prefer official company site, product docs, release notes, and first-party customer proof. Use third-party comparisons only when dated, attributable, and helpful to the buying decision.",
   "preferred_style_preset": "business",
   "delivery_default": "prompt_bundle_only",
   "review_bias": [
@@ -45,6 +51,9 @@
   ],
   "eval_ids": [
     "scene-01-company-intro-positive",
-    "scene-01-company-intro-negative"
+    "scene-01-company-intro-negative",
+    "scene-01-company-intro-positive-synonym",
+    "scene-01-company-intro-nearmiss-generic",
+    "scene-01-company-intro-nearmiss-product-launch"
   ]
 }

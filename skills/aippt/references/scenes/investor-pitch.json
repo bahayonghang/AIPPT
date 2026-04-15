@@ -7,7 +7,12 @@
     "investor pitch",
     "seed deck",
     "series a pitch",
-    "融资 deck"
+    "融资 deck",
+    "investor pitch deck",
+    "fundraising deck",
+    "vc deck",
+    "venture deck",
+    "startup deck"
   ],
   "audience_density_bias": "balanced",
   "layout_tendency": {
@@ -47,6 +52,9 @@
   ],
   "eval_ids": [
     "scene-02-investor-pitch-positive",
-    "scene-02-investor-pitch-negative"
+    "scene-02-investor-pitch-negative",
+    "scene-02-investor-pitch-positive-synonym",
+    "scene-02-investor-pitch-nearmiss-generic",
+    "scene-02-investor-pitch-nearmiss-sales"
   ]
 }

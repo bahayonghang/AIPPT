@@ -32,6 +32,7 @@
       "scene_id": "generic",
       "should_use_subskill": false,
       "required_artifacts": [
+        "brand_profile",
         "brief_summary",
         "research_dossier",
         "outline",
@@ -60,7 +61,7 @@
     {
       "id": "workflow-04-preferences-and-staged-modes",
       "category": "positive",
-      "prompt": "使用我的默认配置做一套新的产品介绍 deck，先停在 outline_only，确认风格和结构后再继续。",
+      "prompt": "使用我的默认配置做一套新的产品介绍 deck，先停在 outline_only；这仍然是整套新 deck 项目，确认风格和结构后我会继续到 slide spec、page plan 和交付。",
       "should_trigger": true,
       "scene_id": "generic",
       "should_use_subskill": false,
@@ -69,6 +70,7 @@
       ],
       "route_assertions": [
         "preferences are recorded in project metadata",
+        "outline_only remains part of a new-deck project and still triggers AIPPT",
         "outline_only does not bypass approval gates"
       ]
     },
@@ -83,6 +85,15 @@
         "partial regeneration stays inside generated artifacts",
         "delivery_manifest records the regenerated slide ids"
       ]
+    },
+    {
+      "id": "workflow-06-lightweight-outline-negative",
+      "category": "negative",
+      "prompt": "我只想要一个十页演讲提纲，research、style profile、page plan 和 delivery manifest 都不要，你也不用走 AIPPT 的整套合同。",
+      "should_trigger": false,
+      "scene_id": "generic",
+      "should_use_subskill": false,
+      "expected_routing": "light-outline"
     },
     {
       "id": "scene-01-company-intro-positive",
@@ -106,6 +117,36 @@
       "expected_routing": "pptx-editing"
     },
     {
+      "id": "scene-01-company-intro-positive-synonym",
+      "category": "positive",
+      "prompt": "帮我从零做一套 customer-facing company overview / corporate profile deck，给潜在合作伙伴和采购方看，要讲清 who we are、产品能力、客户证明和部署方式。",
+      "should_trigger": true,
+      "scene_id": "company-intro",
+      "should_use_subskill": true,
+      "scene_assertions": [
+        "about us / corporate profile phrasing still routes to company-intro",
+        "customer-facing proof sections remain reflected in outline"
+      ]
+    },
+    {
+      "id": "scene-01-company-intro-nearmiss-generic",
+      "category": "negative",
+      "prompt": "我要从零做一套招聘宣讲 slides，讲公司文化、岗位和成长路径，是新 deck，但不是客户介绍。",
+      "should_trigger": true,
+      "scene_id": "company-intro",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
+    },
+    {
+      "id": "scene-01-company-intro-nearmiss-product-launch",
+      "category": "negative",
+      "prompt": "我要做一套新的产品发布 keynote deck，重点是新品亮点、发布时间表和现场演示，不是企业概览或 about us 材料。",
+      "should_trigger": true,
+      "scene_id": "company-intro",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
+    },
+    {
       "id": "scene-02-investor-pitch-positive",
       "category": "positive",
       "prompt": "请从零开始做一套 Seed 轮融资路演 deck，产品是 AI 客服 SaaS，要突出市场机会、增长数据、团队和融资诉求。",
@@ -122,6 +163,33 @@
       "scene_id": "investor-pitch",
       "should_use_subskill": false,
       "expected_routing": "deck-review"
+    },
+    {
+      "id": "scene-02-investor-pitch-positive-synonym",
+      "category": "positive",
+      "prompt": "帮我做一套新的 fundraising pitch deck 给 VC 看，产品是 AI 软件，重点是 market size、traction、team 和 ask。",
+      "should_trigger": true,
+      "scene_id": "investor-pitch",
+      "should_use_subskill": true,
+      "delivery_mode_expectation": "brand_ready_assets"
+    },
+    {
+      "id": "scene-02-investor-pitch-nearmiss-generic",
+      "category": "negative",
+      "prompt": "我要做一套新的产品发布 keynote deck，重点是产品能力和发布节奏，不是融资材料。",
+      "should_trigger": true,
+      "scene_id": "investor-pitch",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
+    },
+    {
+      "id": "scene-02-investor-pitch-nearmiss-sales",
+      "category": "negative",
+      "prompt": "我要做一套给潜在客户看的 sales pitch deck，重点是产品功能、ROI 和落地方案，不是给投资人融资用的。",
+      "should_trigger": true,
+      "scene_id": "investor-pitch",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
     },
     {
       "id": "scene-03-board-briefing-positive",
@@ -145,6 +213,36 @@
       "expected_routing": "template-editing"
     },
     {
+      "id": "scene-03-board-briefing-positive-synonym",
+      "category": "positive",
+      "prompt": "请准备一套新的 executive operating review / board update deck，给董事会和管理层看，要覆盖经营快照、关键风险和需要决策的事项。",
+      "should_trigger": true,
+      "scene_id": "board-briefing",
+      "should_use_subskill": true,
+      "scene_assertions": [
+        "executive operating review phrasing still routes to board-briefing",
+        "decision-oriented sections remain visible in outline"
+      ]
+    },
+    {
+      "id": "scene-03-board-briefing-nearmiss-generic",
+      "category": "negative",
+      "prompt": "我要做一套 all-hands update slides，给公司全员同步季度进展和士气，不是董事会材料。",
+      "should_trigger": true,
+      "scene_id": "board-briefing",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
+    },
+    {
+      "id": "scene-03-board-briefing-nearmiss-monthly-ops",
+      "category": "negative",
+      "prompt": "我要做一套月度运营复盘 slides，给业务团队内部开会用，不是董事会或管理层决策汇报。",
+      "should_trigger": true,
+      "scene_id": "board-briefing",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
+    },
+    {
       "id": "scene-04-policy-briefing-positive",
       "category": "positive",
       "prompt": "做一套新的政策解读演示，主题是 2026 年 AI 合规要求变化，受众是法务和产品团队，要有时间线、风险点和建议动作。",
@@ -164,6 +262,27 @@
       "scene_id": "policy-briefing",
       "should_use_subskill": false,
       "expected_routing": "copy-polish"
+    },
+    {
+      "id": "scene-04-policy-briefing-positive-synonym",
+      "category": "positive",
+      "prompt": "做一套新的 regulatory change / compliance change deck，给法务和产品团队开会用，要讲清 effective dates、影响范围、风险和推荐动作。",
+      "should_trigger": true,
+      "scene_id": "policy-briefing",
+      "should_use_subskill": true,
+      "scene_assertions": [
+        "regulatory change phrasing still routes to policy-briefing",
+        "time-sensitive facts remain date-stamped"
+      ]
+    },
+    {
+      "id": "scene-04-policy-briefing-nearmiss-teaching",
+      "category": "negative",
+      "prompt": "我要做一套新的合规培训课件给新员工 onboarding，用来讲规则基础和练习题，不是政策更新汇报。",
+      "should_trigger": true,
+      "scene_id": "policy-briefing",
+      "should_use_subskill": false,
+      "expected_routing": "teaching-deck"
     },
     {
       "id": "scene-05-teaching-deck-positive",
@@ -187,6 +306,27 @@
       "expected_routing": "single-slide-design"
     },
     {
+      "id": "scene-05-teaching-deck-positive-synonym",
+      "category": "positive",
+      "prompt": "我要做一套新的 workshop / training deck，用来做两小时入门培训，要有 learning objectives、worked examples 和 exercises。",
+      "should_trigger": true,
+      "scene_id": "teaching-deck",
+      "should_use_subskill": true,
+      "scene_assertions": [
+        "training / workshop phrasing still routes to teaching-deck",
+        "practice-oriented pacing remains visible downstream"
+      ]
+    },
+    {
+      "id": "scene-05-teaching-deck-nearmiss-generic",
+      "category": "negative",
+      "prompt": "我要做一套新的 research talk slides，在学术会议上讲实验结果和贡献，不是课堂教学。",
+      "should_trigger": true,
+      "scene_id": "teaching-deck",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
+    },
+    {
       "id": "scene-06-thesis-defense-positive",
       "category": "positive",
       "prompt": "请从零开始做一套毕业答辩 PPT，包含研究问题、文献缺口、方法、结果、贡献和未来工作。",
@@ -206,6 +346,27 @@
       "scene_id": "thesis-defense",
       "should_use_subskill": false,
       "expected_routing": "paper-writing"
+    },
+    {
+      "id": "scene-06-thesis-defense-positive-synonym",
+      "category": "positive",
+      "prompt": "请帮我从零做一套 dissertation defense / viva slides，给答辩委员会看，要完整覆盖研究问题、方法、结果、贡献和 limitation。",
+      "should_trigger": true,
+      "scene_id": "thesis-defense",
+      "should_use_subskill": true,
+      "scene_assertions": [
+        "dissertation defense / viva phrasing still routes to thesis-defense",
+        "committee-facing academic sections remain reflected in outline"
+      ]
+    },
+    {
+      "id": "scene-06-thesis-defense-nearmiss-generic",
+      "category": "negative",
+      "prompt": "帮我做一套 conference talk slides，基于同一篇论文讲实验结果，但这不是答辩。",
+      "should_trigger": true,
+      "scene_id": "thesis-defense",
+      "should_use_subskill": false,
+      "expected_routing": "generic-aippt"
     }
   ]
 }

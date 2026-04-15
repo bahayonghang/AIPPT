@@ -1,14 +1,22 @@
 ---
 name: aippt-policy-briefing
 description: >
-  Route new policy briefing, regulatory update deck, compliance change summary, or legal/product
-  policy presentation requests here before generic AIPPT. Use this whenever the user wants a new
-  policy interpretation deck with timelines, impacts, risks, and recommended actions.
+  Route new policy briefing, policy update, regulatory update deck, regulatory change deck,
+  compliance change summary, legal update deck, or legal/product policy presentation requests here
+  before generic AIPPT. Use this whenever the user wants a new policy interpretation deck with
+  timelines, impacts, risks, and recommended actions. Do not use this scene pack for email memos,
+  FAQ-only outputs, compliance copy polishing, or non-deck legal writing.
 ---
 
 # Policy Briefing
 
 Use this scene pack before the generic workflow when the request is a new policy or compliance deck.
+
+## Route when
+
+- policy update / policy briefing / regulatory update
+- compliance change or legal update deck
+- policy interpretation deck with timelines, impacts, and actions
 
 ## Defaults
 
@@ -34,6 +42,12 @@ Use this scene pack before the generic workflow when the request is a new policy
 ## Review bias
 
 - prioritize `citation_visibility`, `readability`, `hierarchy`
+
+## Near misses
+
+- memo / FAQ / email-only outputs -> route away from this scene pack
+- compliance onboarding or classroom training decks -> prefer teaching-deck
+- copy-polish requests with no deck deliverable -> route away from this scene pack
 
 ## Outline starter
 

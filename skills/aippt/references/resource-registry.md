@@ -8,6 +8,7 @@ Load only stage-relevant files. Avoid full-library loading by default.
 
 | Stage | File | Purpose |
 | --- | --- | --- |
+| Default path | `golden-path.md` | shortest operator path for standard new-deck requests |
 | Stage 0 | `brand-intake.md` | brand signals, source trust order, inference boundaries |
 | Stage 0 / 6 | `style-vocabulary.md` | style direction, dimensions, palette roles, typography roles, instruction block |
 | Stage 0 / 6 | `style-dimensions.md` | texture / mood / typography / density vocabulary |
@@ -82,6 +83,7 @@ Load only stage-relevant files. Avoid full-library loading by default.
 
 ## Loading guidance
 
+- Start with `golden-path.md` when the request is a standard new-deck project and you need the shortest reliable path.
 - Start with `scene-catalog.json` when the request smells like a repeated deck archetype.
 - Stage 3: always load `argument-architecture.md` and `ghost-deck-playbook.md` together.
 - Stage 4: load `exhibit-intent-taxonomy.md` before finalizing `exhibit_intent`.

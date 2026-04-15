@@ -6,9 +6,11 @@ description: >
   pitch deck, board pack, teaching deck, policy briefing, thesis defense, or structured presentation
   from scratch and expects research, argument structure, page planning, style direction, and delivery
   artifacts instead of ad-hoc slide drafting. Trigger even on requests like "帮我做一套 PPT",
-  "make a presentation", or "create slides" when the intent is a brand-new deck. Do not use this
-  for existing deck edits, critique-only requests, template tweaks, single-slide asks, or export-only
-  work.
+  "make a presentation", or "create slides" when the intent is a brand-new deck. Also trigger when
+  the user wants to stop early at `outline_only` or `spec_only` as a staged checkpoint inside a full
+  new-deck project. Do not use this for existing deck edits, critique-only requests, template tweaks,
+  single-slide asks, export-only work, or lightweight outline / story-direction requests that
+  explicitly do not want AIPPT contracts, research, page planning, or delivery artifacts.
 compatibility:
   optional:
     - filesystem
@@ -21,7 +23,15 @@ compatibility:
 
 ## Positioning
 
-AIPPT is the strategy and contract layer for **new deck creation**.
+AIPPT is the strategy-and-contract operator for **brand-new deck projects**.
+
+Use it when the user wants more than ad-hoc slide drafting. The default AIPPT value is:
+
+- route the request to the right scene pack
+- collect a real intake instead of improvising from one sentence
+- build a traceable deck argument before any production step
+- stop at `outline.approved=false` until the human confirms the structure
+- continue into `slide_spec`, `page_plan`, style instructions, and delivery only after approval
 
 Keep these strengths:
 
@@ -40,7 +50,15 @@ Do not expand AIPPT into:
 
 If the user wants those, route to a downstream editing or rendering skill.
 
-## Natural-language trigger surface
+## Trigger boundary
+
+Trigger AIPPT when the user wants a **new deck project** and expects any meaningful subset of:
+
+- intake or brief alignment
+- research or source-grounded evidence collection
+- argument architecture / ghost-deck outline
+- slide-by-slide planning
+- style direction or delivery artifacts
 
 Typical requests that should trigger AIPPT:
 
@@ -48,14 +66,74 @@ Typical requests that should trigger AIPPT:
 - "make me a pitch deck from our notes and website"
 - "create slides for a board meeting from scratch"
 - "做一套完整教学课件，不只是提纲，要到逐页规划"
+- "先做到 outline_only / spec_only，确认后再继续整套新 deck"
 
 Typical requests that should **not** trigger AIPPT:
 
 - existing PPTX / Google Slides editing
 - critique-only or deck review only
 - single-slide design
-- outline only with no production contract needed
 - export or file conversion only
+- a lightweight brainstorming outline with **no** AIPPT contracts or downstream artifacts
+
+Important boundary:
+
+- **Do trigger** if the user says "先只做到 outline_only" or "先停在 spec_only" **and** this is clearly a new-deck project that will continue after approval.
+- **Do not trigger** if the user only wants a casual outline or story arc and explicitly does not want research, contract artifacts, page planning, or AIPPT delivery outputs.
+
+## First-turn operator protocol
+
+Always do these steps before producing any outline:
+
+1. **Decide route**: scene pack or generic AIPPT.
+2. **Extract known inputs** from the user message first.
+3. **Ask only for missing gaps**, not for everything again.
+4. **State the staged path** so the user knows AIPPT will stop at outline approval before production.
+
+Minimum first-turn intake checklist:
+
+- brand / company / product
+- official sources and trusted materials
+- audience and use context
+- desired audience action after the deck
+- duration or page budget if known
+- known assets, screenshots, brand rules, or forbidden elements
+- desired stopping point: `outline_only`, `spec_only`, `prompt_bundle_only`, `svg_pages`, or `brand_ready_assets`
+
+Use `references/brand-intake.md` for the full checklist.
+
+## Default operator path
+
+When the user does not ask for a special branch, follow the shortest happy path in:
+
+- `references/golden-path.md`
+
+The default sequence is:
+
+1. route + intake
+2. `brand_profile` + `brief_summary`
+3. `research_dossier`
+4. ghost-deck `outline`
+5. hard stop for approval
+6. `slide_spec`
+7. `page_plan`
+8. `style_profile`
+9. delivery + validation
+
+## Scene routing quick map
+
+Before running the generic workflow, check whether the request clearly smells like one of these deck archetypes:
+
+| Scene | Typical request signals | Route to |
+| --- | --- | --- |
+| `company-intro` | company overview, enterprise intro, customer-facing who-we-are deck | `subskills/company-intro/SKILL.md` |
+| `investor-pitch` | fundraising, seed / series A, traction, team, ask | `subskills/investor-pitch/SKILL.md` |
+| `board-briefing` | board deck, management update, operating review, decision points | `subskills/board-briefing/SKILL.md` |
+| `policy-briefing` | regulation, compliance change, policy interpretation, timeline + risks | `subskills/policy-briefing/SKILL.md` |
+| `teaching-deck` | lecture, training, workshop, lesson, learning objectives | `subskills/teaching-deck/SKILL.md` |
+| `thesis-defense` | defense, dissertation, research contribution, literature gap, method/results | `subskills/thesis-defense/SKILL.md` |
+
+If no scene clearly fits, stay on generic AIPPT.
 
 ## Subskill-first routing
 
@@ -100,6 +178,7 @@ Scene packs **refine** the workflow. They never bypass the hard gates.
 
 - `outline.approved=false` on first outline pass
 - no `slide_spec`, `page_plan`, prompt bundle, or SVG delivery before explicit outline approval
+- `outline_only` and `spec_only` are valid staged stops **only when the request is still a new-deck AIPPT project**
 - `delivery_manifest` is only valid after deterministic checks pass
 - scene pack routing may change defaults, but not the gates
 

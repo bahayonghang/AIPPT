@@ -1,15 +1,23 @@
 ---
 name: aippt-company-intro
 description: >
-  Route new company introduction, corporate overview, enterprise product intro, or customer-facing
-  "who we are / what we do" deck requests here before falling back to generic AIPPT. Use this
-  whenever the user wants a brand-new company intro deck, enterprise overview, or product-led
-  corporate presentation rather than editing an existing file.
+  Route new company introduction, company overview, corporate overview, corporate profile,
+  business overview, enterprise product intro, or customer-facing "about us / who we are / what we
+  do" deck requests here before falling back to generic AIPPT. Use this whenever the user wants a
+  brand-new company or product-led intro deck for prospects, partners, procurement, or customer
+  conversations. Do not use this scene pack for hiring decks, single customer case-study decks,
+  product launch keynotes, or edits to existing files.
 ---
 
 # Company Intro
 
 Use this scene pack before the generic workflow when the request is a new company introduction deck.
+
+## Route when
+
+- company overview / business overview / corporate profile
+- about us / who we are / what we do deck
+- customer-facing enterprise or product intro deck
 
 ## Defaults
 
@@ -36,6 +44,12 @@ Use this scene pack before the generic workflow when the request is a new compan
 ## Review bias
 
 - prioritize `hierarchy`, `layout_balance`, `citation_visibility`
+
+## Near misses
+
+- hiring or recruiting decks -> stay on generic AIPPT unless a dedicated hiring scene exists
+- single customer case-study decks -> stay generic rather than forcing company-intro
+- product launch keynote decks -> stay generic unless the goal is still a company/product overview
 
 ## Outline starter
 

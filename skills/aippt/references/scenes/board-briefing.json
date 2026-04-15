@@ -6,7 +6,11 @@
     "board deck",
     "board briefing",
     "管理层汇报",
-    "经营汇报"
+    "经营汇报",
+    "board update",
+    "executive operating review",
+    "board-facing management update",
+    "executive management review"
   ],
   "audience_density_bias": "dense",
   "layout_tendency": {
@@ -45,6 +49,9 @@
   ],
   "eval_ids": [
     "scene-03-board-briefing-positive",
-    "scene-03-board-briefing-negative"
+    "scene-03-board-briefing-negative",
+    "scene-03-board-briefing-positive-synonym",
+    "scene-03-board-briefing-nearmiss-generic",
+    "scene-03-board-briefing-nearmiss-monthly-ops"
   ]
 }
