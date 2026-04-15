@@ -1,13 +1,15 @@
 # Workflow
 
-AIPPT v3 uses `scene-first routing + generic staged contract`.
+AIPPT uses `scene-first routing + golden path + staged contract`.
 
-## Routing
+## Routing + intake
 
 1. Check `scene-catalog.json`
 2. If a scene matches, read `subskills/<scene>/SKILL.md`
-3. Apply scene defaults
+3. Apply scene defaults only
 4. Resume the generic AIPPT stages
+
+Golden path: `route + intake -> brand_profile + brief_summary -> research_dossier -> outline hard stop -> slide_spec -> page_plan -> style_profile -> delivery + validation`
 
 Scene packs never bypass the hard gates.
 
@@ -24,6 +26,7 @@ Still required:
 Hard stop:
 
 - first outline keeps `approved=false`
+- `outline_only` stops at outline
 
 ## Production contract
 
@@ -40,10 +43,14 @@ New style/layout expectations:
 - `style_profile` should include `style_instruction_block`
 - `slide_spec` / `page_plan` may declare `layout_hint` / `layout_family`
 - `page_plan.final_layout` remains the canonical geometry target
+- `spec_only` stops at `slide_spec` and does not continue into `page_plan`
 
-Scene-aware additions:
+## Validation
 
-- `required_sections` should be visible in the outline
-- `default_story_arc` should appear in the story-role sequence
-- `review_bias` should appear in `slide_spec.review_focus`
-- `audience_density_bias` / `layout_tendency` should propagate into downstream contracts or manifest metadata
+`validate-artifacts` checks contract consistency; with `--scene-pack`, it also checks that scene defaults flow downstream.
+
+## Delivery
+
+Scene-aware additions should flow downstream, but only as defaults and review signals.
+
+Partial regeneration rule: if generated artifacts are already approved and have explicit `slide_id`s, only those slides may be rebuilt, and the matching validators must run again.

@@ -1,6 +1,6 @@
 # 快速开始
 
-## 1. 先判断是 generic 还是 scene pack
+## 1. 先路由再 intake
 
 如果请求明显属于这些场景，先走 scene pack：
 
@@ -43,21 +43,22 @@ npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch
 
 ## 3. 进入 staged workflow
 
-- Stage 0-2：品牌、brief、research
-- Stage 3：outline hard stop
-- Stage 4-5：slide spec / page plan
-- Stage 6-8：style、delivery、validation
+标准顺序是：
+
+`route + intake -> brand_profile + brief_summary -> research_dossier -> outline hard stop -> slide_spec -> page_plan -> style_profile -> delivery + validation`
 
 硬规则：
 
 - 首次 `outline.approved=false`
-- scene pack 不能绕过 hard stop
+- `outline_only` 只停在 outline
+- `spec_only` 只停在 `slide_spec`，不会继续到 `page_plan`
+- scene pack 只会细化默认值，不会绕过 hard stop
 
 ## 4. 生成与校验
 
 先 build，再 validate。
 
-如果你是 scene-aware 工作流，两个脚本都传 `--scene-pack`。
+如果你是 scene-aware 工作流，相关脚本都传 `--scene-pack`。
 
 如果只想停在阶段边界，可以使用 staged modes：
 
@@ -65,3 +66,7 @@ npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch
 - `spec_only`
 
 这两个模式不会绕过 approval gate，也不会提前生成 prompt bundle。
+
+## 5. 部分重建
+
+AIPPT 生成过的工件，如果已经批准且带有明确 `slide_id`，可以按页局部重建；重建后要重新跑对应 validator。

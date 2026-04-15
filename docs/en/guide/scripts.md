@@ -1,5 +1,7 @@
 # Scripts
 
+This page covers every script in `docs/package.json`, plus `read-preferences.mjs`.
+
 ## Catalog and setup
 
 ```bash
@@ -25,6 +27,8 @@ npm run aippt:create-scene-pack -- \
   --description "Use first-party case proof and before/after narrative."
 ```
 
+`create-scene-pack` scaffolds the scene JSON, subskill, outline starter, and eval stub.
+
 ## Production and validation
 
 ```bash
@@ -49,6 +53,8 @@ npm run aippt:build-prompts -- \
   --slides S03,S04
 ```
 
+`build-prompt-bundle.mjs` supports `--slides`. If a flow is scene-aware, pass `--scene-pack` where supported.
+
 ```bash
 cd docs
 npm run aippt:validate-artifacts -- \
@@ -58,4 +64,22 @@ npm run aippt:validate-artifacts -- \
   --style-profile ../output/specs/style-profile.json \
   --delivery-manifest ../output/prompts/delivery-manifest.json \
   --scene-pack company-intro
+```
+
+```bash
+cd docs
+npm run aippt:validate-svg -- \
+  --input ../output/svg \
+  --page-plan ../output/specs/page-plan.json \
+  --manifest ../output/prompts/delivery-manifest.json
+```
+
+Run `validate-svg` before `build-preview` when SVG output exists.
+
+```bash
+cd docs
+npm run aippt:build-preview -- \
+  --svg-dir ../output/svg \
+  --output ../output/preview/index.html \
+  --manifest ../output/prompts/delivery-manifest.json
 ```

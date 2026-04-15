@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: AIPPT
-  text: 从零创建新演示文稿的研究驱动型 Skill
-  tagline: "用“论证合同 + 生产合同”替代“先排版后补逻辑”，让每页结论、证据与版面都可追溯、可校验。"
+  text: 从零创建全新 deck 项目的 scene-first Skill
+  tagline: "先路由、再 intake、再合同；用 golden path、硬门和 validator 把论证、风格、布局和交付串成可追溯流程。"
   actions:
     - theme: brand
       text: 快速开始
@@ -17,21 +17,21 @@ hero:
       link: https://github.com/bahayonghang/AIPPT
 
 features:
-  - title: 只做新 deck
-    details: "面向从主题、资料和品牌约束出发的新建 deck，不吞掉现有 deck 编辑与点评场景。"
-  - title: 研究先于结论
-    details: "所有关键事实、数字和时间线都必须能回溯到 `research_dossier` 与 source ID。"
-  - title: 大纲有 Hard Stop
-    details: "`outline.approved` 是执行门槛，在 sticky-note 大纲确认前不能进入渲染阶段。"
-  - title: 双合同规划
-    details: "outline 锁 `governing_thought/pillar/proof`，`slide_spec + page_plan` 锁 WHAT/HOW，避免中途拍脑袋决策。"
-  - title: 资源层可控
-    details: "通过 `resource-registry`、`resource-menu` 和 `narrative-rhythm` 管理轻量资源层，而不是回到超重型模板库。"
-  - title: 脚本与交付可验证
-    details: "支持 prompt bundle、SVG、preview 与 delivery manifest；`validate-artifacts` / `validate-svg` 可做硬规则校验。"
+  - title: Scene-first routing
+    details: "6 个内置 scene pack 先定默认值，再回到通用 staged contract。"
+  - title: Golden path
+    details: "标准新 deck 路径是 intake → research → outline hard stop → slide_spec → page_plan → style_profile → delivery。"
+  - title: Hard gate 保持
+    details: "第一次 outline 必须 `approved=false`；`outline_only` 和 `spec_only` 只是合法阶段停点，不是绕门。"
+  - title: 偏好可注入
+    details: "可从 `./.aippt/EXTEND.json` 与 `~/.aippt/EXTEND.json` 读取项目/用户默认值。"
+  - title: 双层样式系统
+    details: "style preset、style dimensions、layout tendency 与 `style_instruction_block` 一起下传。"
+  - title: 预览与校验
+    details: "支持 scene pack 脚手架、prompt bundle、SVG pages、preview 和 validator 运行。"
 ---
 
-## 为什么新版 AIPPT 要强调“中间工件”
+## 为什么 AIPPT 强调中间工件
 
 很多“帮我做一套 PPT”请求，其实同时包含：
 

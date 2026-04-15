@@ -1,29 +1,25 @@
 # 评测
 
-AIPPT v3 的评测分四层：
-
-1. generic workflow 回归
-2. trigger boundary 回归
-3. scene-pack 路由回归
-4. scene-aware validator 回归
-
-## 机器可读文件
+## 维护中的回归来源
 
 - `skills/aippt/evals/evals.json`
 - `skills/aippt/evals/trigger-evals.json`
+- `skills/aippt/references/eval-prompts.md`
+
+## scaffold，不是主回归
+
+- `skills/aippt/evals/scene-stubs/README.md`
 - `skills/aippt/evals/scene-stubs/*.json`
 
-## 人工评测提示
-
-- `skills/aippt/references/eval-prompts.md`
+这些 stub 是脚手架，后续应晋升到主回归集。
 
 ## 必查项
 
-- generic 新 deck 场景不退化
-- 现有 deck 编辑 / review / 单页 / outline-only 仍不触发
-- 每个内置 scene pack 至少有 1 正例 + 1 近邻反例
-- `outline.approved=false` 在 scene pack 下也不能被绕过
-- `validate-artifacts --scene-pack` 能检查 sections / story arc / review bias
+- generic trigger 不退化
+- non-trigger 边界不误触发
+- 每个内置 scene 都有正例和近邻负例
+- `outline.approved=false` 在 scene 路由下仍被保留
+- 下游能体现 scene defaults / preferences / style instruction block
 
 ## 建议流程
 

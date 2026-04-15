@@ -1,10 +1,10 @@
 # Artifacts and Output Tree
 
-This page documents the AIPPT artifact contract (v2).
+This page documents the current AIPPT artifact contract.
 
-## Planned state
+## Stage-complete state
 
-A deck is considered planned only when all exist:
+A deck is stage-complete only when all exist:
 
 - `brand_profile`
 - `brief_summary`
@@ -14,12 +14,16 @@ A deck is considered planned only when all exist:
 - `page_plan`
 - `style_profile`
 
-## Delivered state
+`outline_only` stops at `outline`; `spec_only` stops at `slide_spec` and does not reach `page_plan`.
 
-In addition to planned state:
+## Final delivery state
+
+In addition to stage-complete state:
 
 - `delivery_manifest`
 - `review_report` (when validation/refinement finds issues)
+
+`delivery_manifest` is the final handoff metadata, usually produced after validators.
 
 ## Wrapper tags
 
@@ -33,21 +37,20 @@ In addition to planned state:
 [DELIVERY_MANIFEST]...[/DELIVERY_MANIFEST]
 ```
 
-## v2 required fields
+## Required fields
 
 ### `outline` (argument layer)
 
 Must include:
 
 - `governing_thought`
-- `engagement_archetype`
 - `pillar_map`
 - `transition_map`
 - `quality_gates`
 - `slides[].argument_claim`
 - `slides[].proof_question`
 
-### `slide_spec` (WHAT)
+### `slide_spec` (WHAT contract)
 
 Must include:
 
@@ -56,18 +59,20 @@ Must include:
 - `exhibit_intent`
 - `evidence_layer`
 - `data_requirements`
-- `fit_risk`
-- `layout_hint` (optional, but recommended)
-- `layout_family` (optional, but recommended)
+- `content_budget`
+- `layout_candidates`
+- `review_focus`
 
-### `page_plan` (HOW)
+### `page_plan` (HOW contract)
 
 Must include:
 
 - `layout_hint`
 - `layout_family`
+- `final_layout`
 - `proof_trace`
 - `exhibit_blueprint`
+- `card_map`
 - `rhythm_slot`
 - `adjacency_check`
 - `overflow_decision`
@@ -76,12 +81,11 @@ Must include:
 
 Must include:
 
-- `style_direction`
+- preset or custom `style_direction`
 - `style_dimensions`
-- `style_instruction_block`
 - `palette_roles`
 - `typography_roles`
-- `brand_override_rules`
+- `style_instruction_block`
 
 ## Preferred output tree
 
@@ -101,11 +105,11 @@ output/
 │   ├── 01-s01-title.md
 │   └── delivery-manifest.json
 ├── svg/
-└── preview/
-    └── index.html
+├── preview/
+└── project.json
 ```
 
-## Manifest minimum (v2)
+## Manifest minimum
 
 `delivery_manifest` should include:
 

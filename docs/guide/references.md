@@ -1,35 +1,24 @@
 # 参考层与索引
 
-AIPPT v3 不再鼓励在多处手写长文件清单。
-
-唯一映射入口：
-
-- `skills/aippt/references/resource-registry.md`
-- `skills/aippt/references/scenes/scene-catalog.json`
+`resource-registry.md` 是 canonical routing map；完整文件清单以它为准，本页只说明“先看什么”。
 
 ## 你应该先看什么
 
-- 判断是否命中场景：先看 `scene-catalog.json`
-- 查阶段资源：看 `resource-registry.md`
-- 看 scene 默认值：读 `scenes/<scene>.json`
-- 看窄场景说明：读 `subskills/<scene>/SKILL.md`
+- 路由问题：先看 `scene-catalog.json`
+- 阶段资源问题：看 `resource-registry.md`
+- 最短默认路径：看 `golden-path.md`
+- scene 默认值：读 `scenes/<scene>.json`
+- 窄场景说明：读 `subskills/<scene>/SKILL.md`
 
-## 资源分层
+## 资源分层（非完整清单）
 
-- `references/scenes/*.json`
-  场景元数据：触发词、默认 sections、story arc、style bias、density bias、layout tendency、review bias
-- `references/styles/*.yaml`
-  视觉 token 资源
-- `references/style-dimensions.md`
-  风格维度词汇层
-- `references/style-auto-routing.md`
-  style preset 自动推荐规则
-- `references/layout-gallery.md`
-  `layout_hint` 视觉 archetype 词汇层
-- `references/*.md`
-  staged workflow 的通用规则
-- `subskills/<scene>/`
-  scene-first 的窄工作流
+- 核心 workflow refs：intake / research / outline / slide_spec / page_plan / style / review
+- scene resources：scene JSON、scene subskill、scene outline starter
+- style resources：style preset、style dimensions、auto-routing、style vocabulary
+- scripts / assets：workspace、build、validate、preview、preview template
+- evals：主回归集、人工评测提示、scene stub 脚手架
+
+需要精确文件名时，回到 `resource-registry.md`。
 
 ## 脚本入口
 

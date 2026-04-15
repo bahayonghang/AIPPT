@@ -1,5 +1,7 @@
 # 脚本
 
+覆盖 `docs/package.json` 的所有脚本，以及 `read-preferences.mjs`。
+
 ## Catalog / Setup
 
 查看场景、style、交付模式、validator：
@@ -33,6 +35,8 @@ npm run aippt:create-scene-pack -- \
   --description "Use first-party case proof and before/after narrative."
 ```
 
+`create-scene-pack` 会同时脚手架 scene JSON、subskill、outline starter 和 eval stub。
+
 ## Production
 
 生成 prompt bundle：
@@ -61,6 +65,8 @@ npm run aippt:build-prompts -- \
   --slides S03,S04
 ```
 
+`build-prompt-bundle.mjs` 支持 `--slides`。如果是 scene-aware 流程，支持的地方尽量传 `--scene-pack`。
+
 合同校验：
 
 ```bash
@@ -83,6 +89,8 @@ npm run aippt:validate-svg -- \
   --page-plan ../output/specs/page-plan.json \
   --manifest ../output/prompts/delivery-manifest.json
 ```
+
+preview + SVG 的推荐顺序是先 `validate-svg`，再 `build-preview`。
 
 预览生成：
 

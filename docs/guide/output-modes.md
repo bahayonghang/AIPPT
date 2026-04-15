@@ -20,12 +20,13 @@ AIPPT 支持五种模式。
 
 适合：
 
-- 已批准 outline，但想先确认 `slide_spec` / `page_plan`
-- 暂时不进入渲染交付
+- 已批准 outline，但想先确认 `slide_spec`
+- 暂时不进入 page planning
 
 规则：
 
-- 停在 production contract 阶段
+- 停在 `slide_spec`
+- 不生成 `page_plan`
 - 不生成 prompt bundle
 - 不生成 `delivery_manifest`
 
@@ -96,7 +97,7 @@ SVG 为可选项，仅在用户明确要求时附带。
 
 而 `outline_only` / `spec_only` 属于 staged stopping points，不属于最终交付完成态。
 
-## Manifest 关键字段（v2）
+## Manifest 关键字段
 
 `delivery_manifest` 至少应包含：
 
@@ -106,10 +107,3 @@ SVG 为可选项，仅在用户明确要求时附带。
 - `input_files`
 - `outputs`
 - per-slide: `slide_id/title/story_role/argument_claim/proof_question/exhibit_intent/prompt_file`
-
-## Office 兼容性说明
-
-SVG 兼容性保持保守：
-
-- 高信心：Microsoft 365、PowerPoint 2024/2021/2019
-- 需本地验证：PowerPoint 2016

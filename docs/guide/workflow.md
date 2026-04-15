@@ -1,14 +1,17 @@
 # 工作流
 
-AIPPT v3 = `scene-first routing + generic staged contract`。
+AIPPT = `scene-first routing + golden path + staged contract`。
 
-## Step 0：路由
+## Step 0：路由 + intake
 
 先判断：
 
 - 是否命中 `scene-catalog.json`
 - 若命中，先读对应 `subskills/<scene>/SKILL.md`
+- scene pack 只会改默认值，不会绕过门禁
 - 然后回到通用 stage contract
+
+黄金路径：`route + intake -> brand_profile + brief_summary -> research_dossier -> outline hard stop -> slide_spec -> page_plan -> style_profile -> delivery + validation`
 
 ## Step 1：Argument contract
 
@@ -23,6 +26,7 @@ AIPPT v3 = `scene-first routing + generic staged contract`。
 Hard stop：
 
 - 首次 outline 必须 `approved=false`
+- `outline_only` 只停在 outline
 
 ## Step 2：Production contract
 
@@ -39,22 +43,11 @@ Hard stop：
 - `style_profile` 应包含 `style_instruction_block`
 - `slide_spec` / `page_plan` 可声明 `layout_hint` / `layout_family`
 - `page_plan.final_layout` 仍是最终几何落点
-
-新增 scene-aware 要求：
-
-- `required_sections` 要在 outline 中体现
-- `default_story_arc` 要在 `story_role` 序列中体现
-- `review_bias` 要在 `slide_spec.review_focus` 中体现
-- `audience_density_bias` / `layout_tendency` 要能传导到下游合同或 manifest
+- `spec_only` 只停在 `slide_spec`，不会进入 `page_plan`
 
 ## Step 3：Validation
 
-`validate-artifacts` 现在除了原有合同一致性，还会在传入 `--scene-pack` 时检查：
-
-- scene 与 manifest 一致
-- outline 是否覆盖 required sections
-- story arc 是否成立
-- review bias 是否落到逐页 review_focus
+`validate-artifacts` 会检查合同一致性；传入 `--scene-pack` 时，还会检查 scene 默认值是否真正落到下游。
 
 ## Step 4：Delivery
 
@@ -63,3 +56,5 @@ Scene pack 只影响默认值，不改变交付模型：
 - `prompt_bundle_only`
 - `svg_pages`
 - `brand_ready_assets`
+
+部分重建规则：AIPPT 生成过且已批准的工件，如果带明确 `slide_id`，可以只重建指定页；完成后要重新跑对应 validator。

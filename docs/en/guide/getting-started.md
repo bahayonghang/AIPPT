@@ -1,6 +1,6 @@
 # Getting Started
 
-## 1. Decide between generic AIPPT and a scene pack
+## 1. Route before intake
 
 Check the catalog first:
 
@@ -34,18 +34,22 @@ Supported defaults include scene, style preset, delivery mode, language, strict 
 
 ## 3. Run the staged workflow
 
-- Stage 0-2: brand, brief, research
-- Stage 3: outline hard stop
-- Stage 4-5: slide spec and page plan
-- Stage 6-8: style, delivery, validation
+The standard path is:
 
-The first outline must keep `approved=false`.
+`route + intake -> brand_profile + brief_summary -> research_dossier -> outline hard stop -> slide_spec -> page_plan -> style_profile -> delivery + validation`
+
+Rules:
+
+- the first outline must keep `approved=false`
+- `outline_only` stops at outline
+- `spec_only` stops at `slide_spec` and does not continue into `page_plan`
+- scene packs only refine defaults; they never bypass hard gates
 
 ## 4. Build and validate
 
 Build first, then validate.
 
-If you are using a scene-aware workflow, pass `--scene-pack` to both scripts.
+If you are using a scene-aware workflow, pass `--scene-pack` to the relevant scripts.
 
 If you want to stop at a stage boundary, use staged modes:
 
@@ -53,3 +57,7 @@ If you want to stop at a stage boundary, use staged modes:
 - `spec_only`
 
 These modes do not bypass approvals and do not generate prompt bundles early.
+
+## 5. Partial regeneration
+
+If AIPPT-generated artifacts are already approved and have explicit `slide_id`s, you can regenerate only selected slides; rerun the matching validators afterward.

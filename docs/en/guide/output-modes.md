@@ -15,11 +15,12 @@ Rules:
 
 ## `spec_only`
 
-Use when outline is approved but you want to confirm `slide_spec` / `page_plan` before delivery packaging.
+Use when outline is approved but you want to confirm `slide_spec` before page planning.
 
 Rules:
 
-- stop at the production-contract stage
+- stop at `slide_spec`
+- do not generate `page_plan`
 - do not generate prompt bundles
 - do not generate `delivery_manifest`
 
@@ -78,7 +79,7 @@ All final-delivery modes require:
 
 `outline_only` and `spec_only` are staged stopping points, not final delivery states.
 
-## Manifest minimum (v2)
+## Manifest minimum
 
 `delivery_manifest` should include:
 
@@ -88,10 +89,3 @@ All final-delivery modes require:
 - `input_files`
 - `outputs`
 - per-slide: `slide_id`, `title`, `story_role`, `argument_claim`, `proof_question`, `exhibit_intent`, `prompt_file`
-
-## Office compatibility note
-
-SVG support is treated conservatively:
-
-- high confidence: Microsoft 365 / PowerPoint 2024/2021/2019
-- local verification required: PowerPoint 2016

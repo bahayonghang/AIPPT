@@ -6,21 +6,29 @@
 npx skills add bahayonghang/AIPPT
 ```
 
-AIPPT is a Claude Code skill for building a **new deck from scratch** with a contract-first workflow.
+AIPPT is a Claude Code skill for **brand-new deck projects**. It is contract-first: research, argument, layout, style, and delivery are staged and validated before handoff.
 
-It is optimized for:
+Use it for full new-deck work, including staged checkpoints like `outline_only` and `spec_only` when they belong to a larger deck build.
 
-- research-backed new PPT requests
-- argument architecture before layout work
-- portable production artifacts
-- deterministic validation before delivery
+Do not use AIPPT for:
 
-## What changed in v3
+- casual outline-only brainstorming with no contract path
+- critique-only or review-only requests
+- single-slide work
+- export-only or conversion-only work
+- template tweaks
+- editing existing `.pptx/.ppt/.key/Google Slides` files
 
-AIPPT now has two routing layers:
+## Current skill surface
 
-- `generic AIPPT`: the main staged workflow
+AIPPT now routes through two layers:
+
+- `generic AIPPT`: the default staged workflow
 - `scene packs`: narrow subskills for recurring deck types
+- `golden-path.md`: the shortest default operator path for standard new-deck requests
+- `./.aippt/EXTEND.json` and `~/.aippt/EXTEND.json`: project/user defaults for scene, style, delivery mode, language, strict review, and style dimensions
+- dual-layer style + layout system: preset/style dimensions plus layout archetype/final geometry
+- scriptable delivery surface: prompt bundle, SVG validation, static preview, and scene-pack scaffolding
 
 Built-in scene packs:
 
@@ -31,45 +39,24 @@ Built-in scene packs:
 - `teaching-deck`
 - `thesis-defense`
 
-The root skill remains the strategy and contract layer. It does **not** become a PPTX editor or `deck.json` runtime.
+The root skill stays the contract layer. It does not become a slide editor runtime.
 
-## When to use AIPPT
+## Golden path
 
-Use AIPPT when the user wants a new:
+The shortest default operator path is:
 
-- company overview deck
-- investor pitch
-- board or executive briefing
-- policy or market briefing
-- teaching deck
-- thesis defense deck
-- full deck workflow from source material to delivery artifacts
-
-Do not use AIPPT for:
-
-- editing an existing `.pptx/.ppt/.key/Google Slides`
-- reviewing a finished deck only
-- template-only tweaks
-- single-slide requests
-- outline-only requests
-
-## Workflow model
-
-AIPPT keeps a strict staged flow:
-
-1. brand intake
-2. brief alignment
-3. research dossier
+1. route + intake
+2. `brand_profile` + `brief_summary`
+3. `research_dossier`
 4. outline hard stop
-5. slide spec
-6. page plan
-7. style profile + delivery mode
-8. delivery execution
-9. verification and review
+5. `slide_spec`
+6. `page_plan`
+7. `style_profile`
+8. delivery + validation
 
-Non-negotiable gate:
+Hard gate: the first outline must keep `approved=false`.
 
-- first outline must keep `approved=false`
+Scene packs only refine defaults; they never bypass gates.
 
 ## Output model
 
@@ -87,75 +74,39 @@ output/
 
 Delivery modes:
 
+- `outline_only`
+- `spec_only`
 - `prompt_bundle_only`
 - `svg_pages`
 - `brand_ready_assets`
 
-## Key commands
+## Key commands / script entrypoints
 
-List scenes, styles, delivery modes, and validators:
-
-```bash
-cd docs
-npm run aippt:list-catalog
-```
-
-Initialize a workspace:
-
-```bash
-cd docs
-npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch
-```
-
-Build prompt bundle:
-
-```bash
-cd docs
-npm run aippt:build-prompts -- \
-  --slide-spec ../output/specs/slide-spec.json \
-  --page-plan ../output/specs/page-plan.json \
-  --brand-profile ../output/briefing/brand-profile.md \
-  --style-profile ../output/specs/style-profile.json \
-  --scene-pack investor-pitch \
-  --output-dir ../output/prompts
-```
-
-Validate contracts:
-
-```bash
-cd docs
-npm run aippt:validate-artifacts -- \
-  --outline ../output/specs/outline.json \
-  --slide-spec ../output/specs/slide-spec.json \
-  --page-plan ../output/specs/page-plan.json \
-  --style-profile ../output/specs/style-profile.json \
-  --delivery-manifest ../output/prompts/delivery-manifest.json \
-  --scene-pack investor-pitch
-```
+- `cd docs && npm run aippt:list-catalog`
+- `cd docs && npm run aippt:init-workspace -- --output-dir ../output --scene-id investor-pitch`
+- `node skills/aippt/scripts/read-preferences.mjs`
+- `cd docs && npm run aippt:create-scene-pack -- --id customer-story --label "Customer Story" --description "Use first-party case proof and before/after narrative."`
+- `cd docs && npm run aippt:build-prompts -- --slide-spec ../output/specs/slide-spec.json --page-plan ../output/specs/page-plan.json --brand-profile ../output/briefing/brand-profile.md --style-profile ../output/specs/style-profile.json --scene-pack investor-pitch --output-dir ../output/prompts`
+- `cd docs && npm run aippt:validate-artifacts -- --outline ../output/specs/outline.json --slide-spec ../output/specs/slide-spec.json --page-plan ../output/specs/page-plan.json --style-profile ../output/specs/style-profile.json --delivery-manifest ../output/prompts/delivery-manifest.json --scene-pack investor-pitch`
+- `cd docs && npm run aippt:validate-svg -- --input ../output/svg --page-plan ../output/specs/page-plan.json --manifest ../output/prompts/delivery-manifest.json`
+- `cd docs && npm run aippt:build-preview -- --svg-dir ../output/svg --output ../output/preview/index.html --manifest ../output/prompts/delivery-manifest.json`
 
 ## Canonical maps
 
-Use these as the source of truth:
+Use these as source of truth:
 
-- [`skills/aippt/references/resource-registry.md`](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/resource-registry.md)
-- [`skills/aippt/references/scenes/scene-catalog.json`](D:/Documents/Code/Agents/AIPPT/skills/aippt/references/scenes/scene-catalog.json)
-
-Avoid duplicating long file inventories elsewhere.
+- [`skills/aippt/references/resource-registry.md`](skills/aippt/references/resource-registry.md)
+- [`skills/aippt/references/golden-path.md`](skills/aippt/references/golden-path.md)
+- [`skills/aippt/references/scenes/scene-catalog.json`](skills/aippt/references/scenes/scene-catalog.json)
 
 ## Evaluation
 
-AIPPT keeps three regression layers:
+Regression sources:
 
 - `skills/aippt/evals/evals.json`
 - `skills/aippt/evals/trigger-evals.json`
 - `skills/aippt/references/eval-prompts.md`
-
-These now cover:
-
-- generic new-deck requests
-- scene-pack routing
-- existing-deck edit boundaries
-- near-miss non-trigger cases
+- `skills/aippt/evals/scene-stubs/README.md` + generated stubs as scaffold coverage to promote into the main suites
 
 ## Docs
 

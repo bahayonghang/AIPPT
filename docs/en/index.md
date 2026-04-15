@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: AIPPT
-  text: A research-driven skill for building new decks from scratch
-  tagline: "Replace ad-hoc slide making with dual contracts: argument contract + production contract, both traceable and script-verifiable."
+  text: A scene-first skill for brand-new deck projects
+  tagline: "Route first, then intake, then contract: the golden path, hard gates, and validators keep argument, style, layout, and delivery traceable."
   actions:
     - theme: brand
       text: Get Started
@@ -17,18 +17,18 @@ hero:
       link: https://github.com/bahayonghang/AIPPT
 
 features:
-  - title: New decks only
-    details: "Built for new deck creation, not for editing or critiquing an existing PPTX or slide file."
-  - title: Evidence before claims
-    details: "Fact-heavy slides must stay traceable to `research_dossier` entries and source IDs."
-  - title: Outline hard stop
-    details: "`outline.approved` is the execution gate. Rendering must not start before the sticky-note outline is confirmed."
-  - title: Dual planning contracts
-    details: "Outline locks governing thought/pillars/proof chain; `slide_spec + page_plan` lock WHAT/HOW execution details."
-  - title: Controlled resource layer
-    details: "`resource-registry`, `resource-menu`, and `narrative-rhythm` add structure without expanding AIPPT into a heavyweight template warehouse."
-  - title: Verifiable tooling
-    details: "Prompt bundles, SVG pages, previews, and delivery manifests are validated by `validate-artifacts` and `validate-svg`."
+  - title: Scene-first routing
+    details: "Six built-in scene packs refine defaults before the generic staged contract resumes."
+  - title: Golden path
+    details: "The default new-deck path is intake → research → outline hard stop → slide_spec → page_plan → style_profile → delivery."
+  - title: Hard gate stays
+    details: "The first outline must keep `approved=false`; `outline_only` and `spec_only` are valid stage stops, not bypasses."
+  - title: Preferences are injectable
+    details: "Project and user defaults can come from `./.aippt/EXTEND.json` and `~/.aippt/EXTEND.json`."
+  - title: Dual-layer style system
+    details: "Style presets, style dimensions, layout tendency, and `style_instruction_block` travel together downstream."
+  - title: Preview and validation
+    details: "The flow supports scene scaffolding, prompt bundles, SVG pages, previews, and validator runs."
 ---
 
 ## Why AIPPT focuses on intermediate artifacts

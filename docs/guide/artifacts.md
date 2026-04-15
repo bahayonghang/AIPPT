@@ -1,10 +1,10 @@
 # 工件与输出树
 
-本页描述 AIPPT 的 artifact contract（v2）。
+本页描述 AIPPT 的当前 artifact contract。
 
-## 计划完成态
+## 阶段完成态
 
-以下工件齐备才算完成规划：
+以下工件齐备，才算完成 staged planning：
 
 - `brand_profile`
 - `brief_summary`
@@ -14,12 +14,16 @@
 - `page_plan`
 - `style_profile`
 
-## 交付完成态
+`outline_only` 停在 `outline`；`spec_only` 停在 `slide_spec`，还不会进入 `page_plan`。
 
-在计划完成态基础上，还需要：
+## 最终交付态
+
+在阶段完成态基础上，还需要：
 
 - `delivery_manifest`
 - `review_report`（存在验证或 refinement 问题时）
+
+`delivery_manifest` 是最终 handoff 元数据，通常出现在 validator 之后。
 
 ## 常用 wrapper tags
 
@@ -33,21 +37,20 @@
 [DELIVERY_MANIFEST]...[/DELIVERY_MANIFEST]
 ```
 
-## v2 核心字段要求
+## 核心字段要求
 
 ### `outline`（论证层）
 
 至少包含：
 
 - `governing_thought`
-- `engagement_archetype`
 - `pillar_map`
 - `transition_map`
 - `quality_gates`
 - `slides[].argument_claim`
 - `slides[].proof_question`
 
-### `slide_spec`（WHAT）
+### `slide_spec`（WHAT 合同）
 
 至少包含：
 
@@ -56,18 +59,20 @@
 - `exhibit_intent`
 - `evidence_layer`
 - `data_requirements`
-- `fit_risk`
-- `layout_hint`（可选，但推荐）
-- `layout_family`（可选，但推荐）
+- `content_budget`
+- `layout_candidates`
+- `review_focus`
 
-### `page_plan`（HOW）
+### `page_plan`（HOW 合同）
 
 至少包含：
 
 - `layout_hint`
 - `layout_family`
+- `final_layout`
 - `proof_trace`
 - `exhibit_blueprint`
+- `card_map`
 - `rhythm_slot`
 - `adjacency_check`
 - `overflow_decision`
@@ -76,12 +81,11 @@
 
 至少包含：
 
-- `style_direction`
+- preset or custom `style_direction`
 - `style_dimensions`
-- `style_instruction_block`
 - `palette_roles`
 - `typography_roles`
-- `brand_override_rules`
+- `style_instruction_block`
 
 ## 推荐输出树
 
@@ -101,11 +105,11 @@ output/
 │   ├── 01-s01-title.md
 │   └── delivery-manifest.json
 ├── svg/
-└── preview/
-    └── index.html
+├── preview/
+└── project.json
 ```
 
-## Manifest（v2）最低要求
+## Manifest 最低要求
 
 `delivery_manifest` 建议至少包含：
 
